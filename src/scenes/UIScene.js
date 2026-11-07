@@ -8,7 +8,7 @@ import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();document.querySelectorAll('[data-find-place]').forEach(button=>{
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();document.querySelectorAll('[data-find-place]').forEach(button=>{
  button.addEventListener('click',()=>{
   this.world.highlightPlace(button.dataset.findPlace);
   this.note(button.dataset.findPlace==='coop'?'🐔 Kandang ayam berada di sebelah kebun, dekat rumah pemain.':
@@ -24,6 +24,7 @@ this.keyboardNotebookHandler=event=>{
  if(key==='g'){event.preventDefault();this.libraryGuide();return;}
  if(key==='m'){event.preventDefault();this.missionsMenu();return;}
  if(key==='h'){event.preventDefault();this.decorMenu();return;}
+ if(key==='v'){event.preventDefault();this.festivalGuide();return;}
  const tab={i:'inventory',r:'recipes',j:'journal'}[key];
  if(tab){event.preventDefault();this.openNotebook(tab);}
 };
