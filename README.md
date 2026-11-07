@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.7
+# Kampung Gizi Ceria — Phaser v1.8
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -342,3 +342,30 @@ Denah enam blok `docs/denah-konsep-awal.svg`, interior dollhouse terbuka, koordi
 - **Penyimpanan:** `GameState.data.timeWeather` memuat fase dan cuaca. Save lama `kampung-gizi-pixel-v02` tetap digunakan; belum ada fitur yang perlu dipasang ulang. Cuaca di dalam game **bukan prakiraan cuaca nyata**.
 
 Pengujian otomatis `tests/time-weather.test.mjs` memeriksa urutan fase, hujan, persistensi, reset, integrasi dengan pertanian, dan keterjagaan denah; `tests/browser-smoke.mjs` memeriksa siang/malam, waktu setelah tidur, serta HUD di desktop dan emulasi HP.
+
+
+## v1.8 — Misi Harian, Lencana, dan Perpustakaan Gizi
+
+Versi ini mempertahankan **denah enam blok** pada `docs/denah-konsep-awal.svg`: Rumah Pemain (kebun dan peternakan), Rumah Warga, Kolam Ikan, Pasar Tradisional, Restoran Sehat, dan Toko Swalayan. Perpustakaan ditempatkan sebagai **ruang baca terbuka di dalam Rumah Warga (blok tengah atas)**, sehingga tidak menambah blok baru, menggeser jalan, atau mengubah dinding/collision.
+
+### Perpustakaan & Kak Rani
+- Rak dan buku gizi, karpet baca, serta **Kak Rani**, pustakawan baru dengan sprite dan rute harian.
+- Pemain mendekati rak buku lalu tekan **E/AKSI** untuk mengakses kuis makanan bergizi, Isi Piringku, dan buku ringkas tentang kelompok makanan.
+- Kak Rani dapat disapa, memperoleh hati pertemanan seperti warga lain, dan mengantar pemain ke aktivitas perpustakaan.
+- Tombol **📚 Perpustakaan (G)** dan penanda lokasi mengarahkan ke ruang baca; pembelajaran berlangsung di dalam perpustakaan, bukan di menu global. Dialog edukasi NPC lain menjadi petunjuk menuju perpustakaan. Chef Bimo tetap mengajarkan resep masakan.
+- Materi sederhana tentang kelompok makanan dan Isi Piringku yang dibuat pada v1.6 tetap dipertahankan.
+
+### Misi harian
+- Lima kegiatan: **tanam bibit, panen sayur, masak hidangan, sapa warga, belajar gizi**.
+- Setiap jenis misi memiliki hadiah bintang dan Koin Ceria. Kemajuan dihitung dari aksi berhasil, bukan dari tombol yang hanya dibuka.
+- Pemain membuka **🏅 Misi (M)** untuk melihat progres dan mengklaim hadiah. Hadiah tidak dapat diklaim lagi pada hari yang sama.
+- Tidur memulai hari baru dan mereset hanya progres misi harian; total aktivitas dan lencana tetap tersimpan.
+
+### Lencana pencapaian
+- Enam lencana: Sahabat Kebun, Panen Ceria, Koki Kecil, Teman Baik, Pembaca Gizi, dan Bintang Kampung.
+- Pencapaian terbuka berdasarkan aktivitas sepanjang permainan dan dapat diklaim **satu kali saja**, termasuk setelah ganti hari.
+
+### Kompatibilitas dan QA
+- `src/systems/MissionSystem.js` menyimpan tugas, progres, klaim, total aktivitas, serta lencana di `GameState.data.missions`; `src/systems/SocialSystem.js` menambah teman `rani`. Key `kampung-gizi-pixel-v02` tidak berubah.
+- Save v1.7 dan lebih lama dilengkapi data baru secara aman; inventori, resep, hati lama, waktu dan cuaca, serta quest Bu Sari tetap dipertahankan.
+- `tests/missions.test.mjs` menguji batas klaim, hadiah, perpindahan hari, kompatibilitas save, serta ruang perpustakaan dan rute Kak Rani. Tes browser `tests/browser-smoke.mjs` kini memeriksa pembelajaran dari perpustakaan, menu misi, klaim lencana, dan kontrol HP.
