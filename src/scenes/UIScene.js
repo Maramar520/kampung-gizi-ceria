@@ -1,4 +1,5 @@
 import {LearningSystem,FOOD_GROUPS,FOOD_OPTIONS,PLATE_STEPS,inspectPlate,LEARNING_SOURCE} from '../systems/LearningSystem.js';
+import {DECOR_ITEMS,DECOR_SLOTS} from '../systems/HomeDecorSystem.js';
 import {CROPS,CROP_IDS} from '../systems/GardenSystem.js';
 import {INGREDIENTS,STEPS,RECIPES,RECIPE_IDS,missingFor,knownRecipe,CookingSystem} from '../systems/CookingSystem.js';
 import {QuestSystem} from '../systems/QuestSystem.js';
@@ -374,9 +375,86 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   });
   this.show('🍳 Pilih Menu Masakan','Pilih resep yang sudah kamu pelajari. Hidangan baru memberi poin gizi di dalam game.',actions);
  }
+ decorMenu(){
+  const owned=this.world.decor.data.owned;
+  const slots=this.world.decor.view();
+  const overview='<div class="decor-board">'+slots.map(slot=>'<div class="decor-slot"><strong>'+
+   slot.name+'</strong><span>'+ (slot.item?DECOR_ITEMS[slot.item].emoji:'▫️') +
+   '</span><small>'+slot.label+'</small></div>').join('')+'</div>';
+  this.show('🏡 Dekorasi Rumah Pemain',
+   'Hias rumahmu dengan Koin Ceria. Pilih perabot, lalu tentukan sudut rumah. Dekorasi tidak menghalangi jalan.',
+   [...Object.entries(DECOR_ITEMS).filter(([id])=>!owned.includes(id)).map(([id,item])=>({
+    label:item.emoji+' Beli '+item.name+' · '+item.price+' KC',
+    fn:()=>{if(!this.world.decor.buy(id)){this.note('Koin belum cukup.');return;}
+     this.refresh();this.decorMenu();this.note('Perabot berhasil dibeli!');}
+   })),
+   ...DECOR_SLOTS.map(slot=>({label:'🎨 Atur '+slot.name,fn:()=>this.decorSlotMenu(slot.id)})),
+   {label:'Kembali ke kasur',fn:()=>this.bedMenu()}
+   ],overview);
+ }
+ decorSlotMenu(slotId){
+  const slot=DECOR_SLOTS.find(s=>s.id===slotId);
+  if(!slot)return this.decorMenu();
+  const owned=this.world.decor.data.owned,placed=this.world.decor.data.slots;
+  const choices=owned.filter(id=>!Object.entries(placed).some(([key,value])=>key!==slotId&&value===id));
+  this.show('🎨 '+slot.name,'Pilih hiasan yang sudah dimiliki untuk sudut ini.',[
+   ...choices.map(id=>({label:DECOR_ITEMS[id].emoji+' '+DECOR_ITEMS[id].name,
+    fn:()=>{this.world.decor.place(slotId,id);this.world.decorArt.render();this.refresh();this.decorMenu();}})),
+   {label:'▫️ Kosongkan sudut',fn:()=>{
+    this.world.decor.place(slotId,null);this.world.decorArt.render();this.refresh();this.decorMenu();
+   }},
+   {label:'Kembali',fn:()=>this.decorMenu()}
+  ]);
+ }
+ bedMenu(){
+  this.show('🛏️ Rumah Pemain',
+   'Kamu bisa tidur untuk memulai hari baru atau menghias rumah menggunakan Koin Ceria.',[
+    {label:'🏠 Hias rumah',fn:()=>this.decorMenu()},
+    {label:'🌙 Tidur hingga pagi',fn:()=>{
+     const s=this.state.data;this.world.playInteraction('sleep');
+     s.energy=100;s.day++;this.world.clock.startDay();this.refresh();
+     this.show('☀️ Selamat pagi!','Hari '+s.day+' dimulai. '+
+      (this.world.clock.weather==='Hujan'?'Hari ini hujan! Tanaman di kebun tersiram secara otomatis.':
+       'Periksa kebunmu untuk melihat sayuran yang siap dipanen!'));
+    }}
+   ]);
+ }
+ restaurantMenu(){
+  const status=this.world.restaurantOrders.status,order=status.order;
+  const recipe=RECIPES[order.recipe],known=knownRecipe(this.state.data,order.recipe);
+  const missing=missingFor(this.state.data,order.recipe);
+  const summary=order.customer+' memesan '+recipe.name+'.\nBahan: '+recipe.ingredients.join(', ')+
+   '.\nHadiah: '+order.coins+' Koin Ceria + '+order.stars+' ⭐.\n'+
+   (status.served?'Pesanan hari ini sudah selesai!':
+    status.prepared?'Masakan sudah siap diantar kepada Chef Bimo.':
+    'Masak resep ini di kompor rumah atau dapur restoran, kemudian antarkan ke Chef Bimo.');
+  const buttons=[];
+  if(!status.served&&status.prepared)buttons.push({label:'🍽️ Antar pesanan kepada pelanggan',fn:()=>{
+   const reward=this.world.restaurantOrders.serve();
+   if(reward){this.refresh();this.note('Pesanan sukses! +'+reward.coins+' KC +'+reward.stars+' ⭐');}
+   this.restaurantMenu();
+  }});
+  if(!status.served&&!status.prepared){
+   if(!known)buttons.push({label:'📖 Pelajari resep pesanan',fn:()=>{
+    this.cooking.learn(order.recipe);this.refresh();this.restaurantMenu();
+   }});
+   buttons.push({label:'🍳 Memasak di dapur restoran',fn:()=>{
+    if(!known)return this.show('📖 Pelajari dahulu','Temui Chef Bimo dan pelajari resep sebelum memasak.',[
+     {label:'Kembali',fn:()=>this.restaurantMenu()}]);
+    if(missing.length)return this.show('🧺 Bahan belum lengkap','Cari bahan: '+missing.join(', ')+'. Beli di Pasar Tradisional atau panen dari kebun.',[
+     {label:'Kembali',fn:()=>this.restaurantMenu()}]);
+    this.activeRecipe=order.recipe;this.cookStep(0);
+   }});
+  }
+  buttons.push({label:'Kembali ke Chef Bimo',fn:()=>this.chefMenu()});
+  this.show('🍽️ Pesanan Restoran Sehat',summary,buttons,
+   '<div class="order-ticket">'+recipe.emoji+' <strong>'+recipe.name+'</strong> · '+order.customer+
+   (status.served?' ✅ Selesai':status.prepared?' 🍽️ Siap disajikan':' 🧾 Menunggu')+'</div>');
+ }
  chefMenu(){
   const greeting=this.friendsLine('chef');
-  const actions=[{label:'📚 Kuis kelompok makanan di perpustakaan',fn:()=>this.libraryGuide()},...RECIPE_IDS.map(id=>({
+  const actions=[{label:'🧾 Lihat pesanan warga hari ini',fn:()=>this.restaurantMenu()},
+   {label:'📚 Kuis kelompok makanan di perpustakaan',fn:()=>this.libraryGuide()},...RECIPE_IDS.map(id=>({
    label:'📖 Pelajari '+RECIPES[id].name+(knownRecipe(this.state.data,id)?' ✓':''),
    fn:()=>{this.cooking.learn(id);this.refresh();this.chefMenu();this.note('Resep '+RECIPES[id].name+' dipelajari!');}
   }))];
@@ -386,8 +464,13 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const id=this.activeRecipe||'nasi-telur-sayur',recipe=RECIPES[id];
   if(step===3){
    if(!this.cooking.finishRecipe(id))return this.show('Dapur','Resep atau bahan belum lengkap.');
+   const forOrder=this.world.restaurantOrders.onCook(id);
    this.missions.record('cook');this.refresh();this.world.playInteraction('cook');
-   return this.show('🎉 Masakan berhasil!',recipe.emoji+' '+recipe.name+' selesai! '+(id==='nasi-telur-sayur'?'Antarkan ke Bu Sari.':'Poin gizi bertambah!'),[{label:'Selesai',fn:()=>this.close()}],'<div class="cookstage" style="font-size:48px">'+recipe.emoji+'</div>');
+   return this.show('🎉 Masakan berhasil!',recipe.emoji+' '+recipe.name+' selesai! '+
+    (forOrder?'Pesanan restoran sudah siap. Antarkan kepada Chef Bimo.':
+     id==='nasi-telur-sayur'?'Antarkan ke Bu Sari.':'Poin gizi bertambah!'),[
+    ...(forOrder?[{label:'🧾 Lihat tiket pesanan',fn:()=>this.restaurantMenu()}]:[]),
+    {label:'Selesai',fn:()=>this.close()}],'<div class="cookstage" style="font-size:48px">'+recipe.emoji+'</div>');
   }
   const title=['Cuci bahan','Masak di dapur','Selesaikan masakan'][step];
   this.show('🍳 '+recipe.name+' · '+(step+1)+'/3',title+' · Selesaikan tantangan memasak.',[],'');
@@ -412,6 +495,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='tani'||id==='nia')return this.friendMenu(id);
   if(id==='chef')return this.chefMenu();
   if(id==='stove')return this.chooseRecipe();
+  if(id==='restaurant-kitchen')return this.chooseRecipe();
   if(id==='npc'){
    const greeting=this.friendsLine('sari');
    if(s.done)return this.show('👩‍🌾 Bu Sari',greeting+'\nTerima kasih! Kamu boleh terus berkebun dan mencoba resep lain.',[
@@ -425,9 +509,6 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    ]);
    if(this.quest.complete()){this.refresh();return this.show('🏆 Quest selesai!',greeting+'\nTerima kasih! Hadiah 50 Koin Ceria telah diterima.');}
   }
-  if(id==='bed')return this.show('🛏️ Kasur','Tidur untuk mengisi energi dan memajukan pertumbuhan tanaman.',[{label:'🌙 Tidur hingga pagi',fn:()=>{
-   this.world.playInteraction('sleep');s.energy=100;s.day++;this.world.clock.startDay();this.refresh();
-   this.show('☀️ Selamat pagi!','Hari '+s.day+' dimulai. '+(this.world.clock.weather==='Hujan'?'Hari ini hujan! Tanaman di kebun tersiram secara otomatis.':'Periksa kebunmu untuk melihat sayuran yang siap dipanen!'));
-  }}]);
+  if(id==='bed')return this.bedMenu();
  }
 }
