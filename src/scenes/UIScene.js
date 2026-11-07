@@ -61,15 +61,18 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ];
   this.show('🧺 Pasar Tradisional','Beli bahan masakan atau bibit. Sayuran juga dapat ditanam di kebun!',items);
  }
- storeMenu(){
-  const products=[['beras',14,'🍚'],['telur',17,'🥚'],['bayam',12,'🥬'],['tomat',17,'🍅']];
-  const items=products.map(([id,price,icon])=>({label:icon+' '+id+' · '+price+' KC',fn:()=>{
-   if(this.state.data.coins<price){this.note('Koin tidak cukup.');return;}
-   this.state.data.coins-=price;
-   this.state.data.inventory[id]=(this.state.data.inventory[id]||0)+1;
-   this.refresh();this.storeMenu();this.note('Berhasil belanja di swalayan!');
-  }}));
-  this.show('🏪 Toko Swalayan','Toko modern menyediakan bahan kebutuhan. Harga berbeda dengan pasar tradisional.',items);
+ familyHomeMenu(){
+  const rain=this.world.clock.weather==='Hujan';
+  this.show('🏡 Rumah Pak Tani & Bu Sari',
+   'Ini rumah keluarga Pak Tani dan Bu Sari di blok kanan bawah. Interiornya terlihat langsung dari peta. '+
+   (rain?'Sekarang hujan, Pak Tani dan Bu Sari berteduh di sini.':'Saat hujan, Pak Tani dan Bu Sari pulang ke rumah ini.')+
+   ' Nia akan berteduh di Pasar Tradisional saat hujan.',[
+    {label:'👨‍🌾 Cari Pak Tani dan Bu Sari',fn:()=>{
+     this.close();
+     this.note(rain?'Keduanya sedang berjalan menuju atau berada di dalam rumah.':'Temui mereka saat berjalan di kampung; mereka pulang saat hujan.');
+    }},
+    {label:'Kembali ke kampung',fn:()=>this.close()}
+   ],'<div class="farm-preview">🏠 🛏️ 🪴</div>');
  }
  friendsLine(id){
   const p=this.social.greet(id,this.world.phaseIndex??0);
@@ -399,7 +402,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id)this.world.playInteraction(id);
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
   if(id==='market')return this.market();
-  if(id==='store')return this.storeMenu();
+  if(id==='store')return this.familyHomeMenu();
   if(id==='village')return this.villageMenu();
   if(id==='library')return this.libraryMenu();
   if(id==='rani')return this.librarianMenu();
