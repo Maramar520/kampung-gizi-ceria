@@ -1,3 +1,4 @@
+import {OBSTACLES} from './WorldGeometry.js';
 const C={grass:0x91c881,road:0xe8d1a4,wall:0x986e57};
 export function createTextures(scene){
  const g=scene.make.graphics({x:0,y:0},false);
@@ -274,16 +275,7 @@ export function buildWorld(scene) {
     r(deco,274+i*6,271,3,5,0x76a16b);
     r(deco,272+i*6,268,6,5,i%2?0xf7cb91:0xf2a7ad);
   }
-  // Collision adalah data stabil dari v0.3, bukan berdasarkan detail dekorasi.
-  const walls=[
-    {x:258,y:90,w:364,h:13},{x:258,y:90,w:13,h:265},{x:609,y:90,w:13,h:265},
-    {x:258,y:343,w:156,h:12},{x:466,y:343,w:156,h:12},
-    {x:53,y:212,w:213,h:12},{x:53,y:212,w:12,h:130},{x:253,y:212,w:12,h:130},
-    {x:703,y:211,w:210,h:12},{x:703,y:211,w:12,h:140},{x:901,y:211,w:12,h:140}
-  ];
-  const furniture=[
-    {x:289,y:137,w:68,h:93},{x:511,y:153,w:83,h:66},
-    {x:423,y:250,w:86,h:53},{x:80,y:259,w:120,h:31},{x:746,y:268,w:116,h:30}
-  ];
-  return [...walls,...furniture];
+  // Hitbox dan titik interaksi tersentral di WorldGeometry.js.
+  return OBSTACLES;
+
 }
