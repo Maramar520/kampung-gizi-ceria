@@ -53,8 +53,8 @@ test('buku resep dan quest utama tetap berlaku setelah tanaman ditambah',()=>{
  const s=state();
  assert.equal(recipeView(s.data).ready,true);
  assert.equal(questView(s.data).steps[1].done,true);
- assert.equal(inventoryView(s.data).length,6);
- assert.equal(recipeCatalog(s.data).length,4);
+ assert.equal(inventoryView(s.data).length,7);
+ assert.equal(recipeCatalog(s.data).length,5);
  assert.equal(recipeCatalog(s.data)[1].known,false);
  s.data.recipesKnown={'sup-wortel-tomat':true};
  assert.equal(recipeCatalog(s.data)[1].known,true);
