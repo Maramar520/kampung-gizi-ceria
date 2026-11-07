@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v0.4
+# Kampung Gizi Ceria — Phaser v0.5
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -59,3 +59,27 @@ Grafik masih pixel art prosedural sederhana, bukan spritesheet profesional. Proy
 5. Cari Bu Sari di jalan kampung dan serahkan hidangan.
 
 **Status:** perubahan kode dan tes sintaks dapat diperiksa lewat GitHub Actions, sedangkan tampilan aktual browser perlu diverifikasi di perangkat.
+
+
+## v0.5 — Interactive Cooking & Character Polish
+
+- Sprite karakter player, Bu Sari, dan Chef Bimo lebih detail: rambut, baju, sepatu, wajah, dan aksesori pixel art.
+- Detail furnitur: motif selimut, keranjang sayur, panci, rak dapur, papan menu restoran dan dekorasi jendela.
+- Animasi interaksi pemain/NPC dengan ikon aktivitas singkat.
+- Minigame memasak:
+  1. **Cuci bayam:** ketuk tombol 5 kali.
+  2. **Masak nasi:** tekan dan tahan tombol hingga meter mencapai 100%.
+  3. **Masak telur:** tekan tepat di area hijau dua kali.
+- Mouse, touch, dan keyboard bisa digunakan pada kontrol minigame.
+- Membatalkan minigame tidak menghabiskan bahan; bahan digunakan setelah seluruh tahap selesai.
+- Sistem quest, progres LocalStorage, interior terbuka, dan collision lama tetap dipertahankan.
+- GitHub Actions menjalankan pemeriksaan sintaks JS dan tes regresi melalui Node.js.
+
+### Uji manual
+1. Temui Bu Sari dan belanja beras, telur dan bayam di pasar.
+2. Temui Chef Bimo untuk membuka resep.
+3. Pergi ke kompor rumah, lalu lakukan semua minigame.
+4. Antarkan hidangan ke Bu Sari untuk hadiah +50 KC.
+5. Ulangi dengan menutup minigame sebelum selesai: inventori seharusnya tetap utuh.
+
+**Batasan:** Tes logika bukan pengganti verifikasi browser end-to-end. Aset masih prosedural dan Phaser dimuat dari CDN.
