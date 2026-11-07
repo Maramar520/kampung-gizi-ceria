@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.6
+# Kampung Gizi Ceria — Phaser v1.7
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -328,3 +328,17 @@ Tanpa memindahkan keenam blok peta atau mengganti key penyimpanan, versi ini men
 - Piring enam bagian dalam permainan hanyalah media belajar proporsi, **bukan** takaran individual, nasihat medis, atau alat evaluasi kesehatan.
 
 **Pengujian:** `tests/learning.test.mjs` mencakup kategori makanan, soal, pilihan yang keliru, pembatasan hadiah, penyimpanan lama dan reset. `tests/browser-smoke.mjs` menjalankan kuis, pengulangan soal, konstruksi piring, pemeriksaan reward, lalu mengetes tombol sentuh menu belajar pada emulasi Pixel 7.
+
+
+## v1.7 — Siklus Waktu, Malam dan Cuaca Kampung
+
+Denah enam blok `docs/denah-konsep-awal.svg`, interior dollhouse terbuka, koordinat karakter, collision, dan seluruh gameplay v1.6 dipertahankan. Tidak ada bangunan yang ditambah, dipindah, atau dihapus.
+
+- **Fase kampung:** Pagi → Siang → Sore → Malam. Setiap fase siang berjalan selama sekitar **35 detik saat bermain**, berhenti sewaktu dialog terbuka. Malam bertahan sampai pemain tidur di kasur; tidur mengisi energi, menambah hari, dan mengembalikan suasana pagi.
+- **Visual:** cahaya keemasan pagi, siang terang, sore hangat, malam biru gelap dengan cahaya lampu dan bintang, awan bergerak, serta percikan hujan. Dibuat dengan grafis Phaser prosedural melalui `src/world/WeatherArt.js`; tanpa gambar eksternal dan tanpa scene tambahan.
+- **Cuaca:** cerah, hujan, berawan menurut hari permainan (jadwal deterministik agar progres save konsisten). Hujan muncul pada hari kedua, misalnya. **Petak berkebun yang ditanam saat hujan otomatis tersiram**, termasuk bibit yang baru ditanam pada hari hujan. Hujan tidak mengubah koin atau inventori.
+- **NPC:** Bu Sari, Chef Bimo, Pak Tani, dan Nia punya rute fase pagi–siang–sore–malam. Mereka berjalan lebih dekat area berteduh saat hujan, dan beraktivitas lebih terbatas saat malam. Dialog malam tersedia untuk keempat warga.
+- **HUD:** panel baru menunjukkan ikon cuaca, fase, dan kondisi kampung, responsif untuk HP dan desktop.
+- **Penyimpanan:** `GameState.data.timeWeather` memuat fase dan cuaca. Save lama `kampung-gizi-pixel-v02` tetap digunakan; belum ada fitur yang perlu dipasang ulang. Cuaca di dalam game **bukan prakiraan cuaca nyata**.
+
+Pengujian otomatis `tests/time-weather.test.mjs` memeriksa urutan fase, hujan, persistensi, reset, integrasi dengan pertanian, dan keterjagaan denah; `tests/browser-smoke.mjs` memeriksa siang/malam, waktu setelah tidur, serta HUD di desktop dan emulasi HP.
