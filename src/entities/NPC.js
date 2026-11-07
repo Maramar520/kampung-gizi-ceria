@@ -2,6 +2,7 @@ export class NPC {
  constructor(scene,{x,y,name,texture,stops}){
   this.scene=scene;this.texture=texture;this.name=name;this.facing='down';this.stops=stops||[];this.index=0;this.loop=true;this.finished=false;this.workPause=0;this.activity='';
   this.sprite=scene.add.image(x,y,texture+'-down-0').setOrigin(.5,.76);
+  this.activityText=scene.add.text(x,y-69,'',{fontFamily:'monospace',fontSize:'11px',color:'#315544',backgroundColor:'#fff5d8',padding:{x:4,y:3}}).setOrigin(.5).setDepth(1750).setVisible(false);
   this.label=name?scene.add.text(x,y-45,name,{fontFamily:'monospace',fontSize:'13px',color:'#345b43',fontStyle:'bold'}).setOrigin(.5):null;
  }
  get x(){return this.sprite.x}get y(){return this.sprite.y}
@@ -12,12 +13,14 @@ export class NPC {
  update(dt){
   if(this.workPause>0){
    this.workPause=Math.max(0,this.workPause-dt);
+   this.activityText.setText(this.activity).setPosition(this.x,this.y-70).setVisible(!!this.activity).setDepth(1750);
    const frame=Math.floor(this.scene.time.now/450)%2;
    this.sprite.setTexture(this.texture+'-'+this.facing+'-'+frame)
     .setDepth(this.y+1);
    if(this.label)this.label.setPosition(this.x,this.y-45).setDepth(900);
    return;
   }
+  this.activityText.setVisible(false);
   let walking=false,dx=0,dy=0;
   if(this.stops.length&&!this.finished){
    const target=this.stops[this.index];dx=target.x-this.x;dy=target.y-this.y;
