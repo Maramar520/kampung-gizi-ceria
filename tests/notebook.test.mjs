@@ -9,7 +9,7 @@ const {inventoryView,recipeView,questView,ITEM_INFO}=await import(
 const blank=()=>({inventory:{},coins:100,recipeKnown:false,cooked:false,done:false});
 test('inventory starts empty but shows all three ingredients and price',()=>{
  const items=inventoryView(blank());
- assert.equal(items.length,6);
+ assert.equal(items.length,7);
  assert.ok(items.every(i=>i.quantity===0));
  assert.equal(items.find(i=>i.id==='telur').price,15);
  assert.equal(ITEM_INFO.bayam.emoji,'🥬');
