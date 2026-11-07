@@ -75,7 +75,7 @@ test('NPC daily routines and visual layers do not change original map or collisi
  assert.equal(OBSTACLES.length,34);
  const world=readFileSync(new URL('../src/scenes/WorldScene.js',import.meta.url),'utf8');
  assert.match(world,/this\.clock\.phase/);
- assert.match(world,/workRoute\(id,phase\)/);
+ assert.match(world,/workRoute\(id,festivalPhase\)/);
  assert.match(world,/raining/);
  assert.match(world,/new WeatherArt/);
 });
