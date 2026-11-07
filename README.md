@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v0.6
+# Kampung Gizi Ceria — Phaser v0.7
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -96,3 +96,25 @@ Grafik masih pixel art prosedural sederhana, bukan spritesheet profesional. Proy
 - Tes baru `tests/world.test.mjs` menggunakan BFS untuk memeriksa akses pintu rumah dan kelima titik interaksi berdasarkan hitbox aktual.
 
 **Catatan:** perubahan sistem navigasi tidak mengubah struktur Phaser dan rumah tetap memiliki interior yang terlihat langsung. Tes logika otomatis tetap harus dilengkapi pengujian browser manual.
+
+
+## v0.7 — Tas, Buku Resep dan Jurnal Quest
+
+- Tombol menu baru di atas game: **🎒 Tas**, **📖 Resep**, dan **📋 Misi**.
+- Pintasan keyboard: `I` membuka tas, `R` membuka buku resep, `J` membuka jurnal, `Esc` menutup.
+- Tas menampilkan emoji bahan, jumlah milik pemain, kategori bahan, dan harga pembelian.
+- Buku resep menunjukkan apakah resep Nasi Telur Sayur sudah dipelajari dari Chef Bimo, bahan yang masih kurang, dan tiga tahap minigame memasak.
+- Jurnal memperlihatkan empat langkah quest Bu Sari dan menandai langkah yang sudah selesai.
+- Semua tampilan menggunakan data existing di `GameState` dan `CookingSystem`; tidak ada migrasi save file dan progres lama tetap digunakan.
+- Panel berukuran besar dan dapat discroll di ponsel; kontrol keyboard dan mouse tetap tersedia.
+- `tests/notebook.test.mjs` menambah pengujian state inventori, resep, jurnal dan konsistensi setelah bahan dipakai.
+
+### Cara menguji
+1. Buka game dan tekan `I`: semua bahan semula 0, atau sesuai save.
+2. Tekan `R`: resep terkunci hingga berbicara dengan Chef Bimo.
+3. Beli bahan di pasar; buka tas/buku resep untuk melihat jumlah yang berubah.
+4. Tekan `J`: jurnal menandai belajar resep dan belanja bahan.
+5. Masak tiga tahap lalu antarkan ke Bu Sari. Jurnal harus menampilkan semua tugas selesai.
+6. Tutup panel dengan `Esc`, klik X, atau klik area luar panel.
+
+Visual tetap berupa pixel art prosedural; interior rumah tetap terlihat dari luar dan tidak ada loading saat masuk.
