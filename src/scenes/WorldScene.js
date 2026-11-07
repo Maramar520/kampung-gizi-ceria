@@ -12,7 +12,7 @@ import {SocialSystem} from '../systems/SocialSystem.js';
 import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
 import {WeatherArt} from '../world/WeatherArt.js';
-import {rainyRoute,dryReturnRoute} from '../world/ShelterRoutes.js';
+import {rainyRoute,dryReturnRoute,isInsideShelter} from '../world/ShelterRoutes.js';
 import {workRoute} from '../world/NpcWorkRoutes.js';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
 import {HomeDecorArt} from '../world/HomeDecorArt.js';
@@ -110,14 +110,31 @@ export class WorldScene extends Phaser.Scene {
   this.lastRaining=raining;
   this.routineKey=key;
   if(raining){
-   this.sari.setRoutine(rainyRoute('sari'),'BU SARI',false);
-   this.tani.setRoutine(rainyRoute('tani'),'PAK TANI',false);
-   this.nia.setRoutine(rainyRoute('nia'),'NIA',false);
+   // A villager already inside a shelter stays inside; villagers at work
+   // leave through their current building's door before taking the road.
+   for(const [id,npc,label] of [['sari',this.sari,'BU SARI'],
+    ['tani',this.tani,'PAK TANI'],['nia',this.nia,'NIA']]){
+    let prefix=[];
+    if(isInsideShelter(id,npc)){
+     npc.setRoutine([{x:npc.x,y:npc.y}],label,false);
+     npc.nextJobRoute=null;
+     continue;
+    }
+    if((id==='sari'||id==='nia')&&npc.x<393&&npc.y>=340)
+     prefix=[{x:211,y:339},{x:211,y:318}];
+    else if(id==='sari'&&npc.x>=500&&npc.x<=714&&npc.y>=339)
+     prefix=[{x:607,y:339},{x:607,y:319},{x:448,y:281}];
+    else if(id==='nia'&&npc.x>=500&&npc.x<=714&&npc.y<239)
+     prefix=[{x:608,y:208},{x:608,y:237},{x:608,y:281}];
+    npc.setRoutine([...prefix,...rainyRoute(id)],label,false);
+    npc.nextJobRoute=null;
+   }
    this.chef.setRoutine([{x:618,y:468},{x:618,y:476},{x:618,y:468}],'');
    this.rani.setRoutine([{x:692,y:197},{x:692,y:211}],'KAK RANI');
    return;
   }
   if(justStoppedRaining){
+   this.sari.nextJobRoute=null;this.tani.nextJobRoute=null;this.nia.nextJobRoute=null;
    this.sari.setRoutine(dryReturnRoute('sari',this.sari),'BU SARI',false);
    this.tani.setRoutine(dryReturnRoute('tani',this.tani),'PAK TANI',false);
    this.nia.setRoutine(dryReturnRoute('nia',this.nia),'NIA',false);
