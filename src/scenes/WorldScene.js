@@ -12,6 +12,7 @@ import {SocialSystem} from '../systems/SocialSystem.js';
 import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
 import {WeatherArt} from '../world/WeatherArt.js';
+import {rainyRoute,dryReturnRoute} from '../world/ShelterRoutes.js';
 
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
@@ -81,7 +82,7 @@ export class WorldScene extends Phaser.Scene {
   this.tweens.add({targets:subject,scaleX:1.12,scaleY:.88,duration:110,yoyo:true,
    ease:'Sine.easeOut',onComplete:()=>subject.setScale(1)});
   const emoji={stove:'🍳',market:'🧺',bed:'💤',chef:'📖',garden:'🌱',
-   coop:'🥚',pond:'🎣',store:'🛒',village:'🏡',npc:'✨',tani:'🌱',nia:'💬',library:'📚',rani:'📖'}[kind]||'✨';
+   coop:'🥚',pond:'🎣',store:'🏡',village:'🏡',npc:'✨',tani:'🌱',nia:'💬',library:'📚',rani:'📖'}[kind]||'✨';
   const puff=this.add.text(x,y-47,emoji,{fontSize:'22px'}).setOrigin(.5).setDepth(2200);
   this.tweens.add({targets:puff,y:y-77,alpha:0,duration:650,
    ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
@@ -92,10 +93,32 @@ export class WorldScene extends Phaser.Scene {
  updateRoutines(){
   const phase=this.clock.phase,day=this.game.state.data.day;
   const raining=this.clock.weather==='Hujan';
-  const key=day+'-'+phase+'-'+this.clock.weather;
+  this.phaseIndex=phase;
+  this.dailyPhase=this.clock.description.phase;
+  // Saat hujan, rute tidak direset ketika jam berubah: NPC harus benar-benar
+  // mencapai interior, kemudian berhenti di sana sampai hujan usai.
+  const key=day+'-'+(raining?'rain':phase)+'-'+this.clock.weather;
   if(this.routineKey===key)return;
+  const justStoppedRaining=this.lastRaining===true&&!raining;
+  this.lastRaining=raining;
   this.routineKey=key;
-  // Semua jalur NPC berada di jalan tengah. Tidak memotong dinding atau kolam.
+  if(raining){
+   this.sari.setRoutine(rainyRoute('sari'),'BU SARI',false);
+   this.tani.setRoutine(rainyRoute('tani'),'PAK TANI',false);
+   this.nia.setRoutine(rainyRoute('nia'),'NIA',false);
+   this.chef.setRoutine([{x:618,y:468},{x:618,y:476},{x:618,y:468}],'');
+   this.rani.setRoutine([{x:692,y:197},{x:692,y:211}],'KAK RANI');
+   return;
+  }
+  if(justStoppedRaining){
+   this.sari.setRoutine(dryReturnRoute('sari',this.sari),'BU SARI',false);
+   this.tani.setRoutine(dryReturnRoute('tani',this.tani),'PAK TANI',false);
+   this.nia.setRoutine(dryReturnRoute('nia',this.nia),'NIA',false);
+   this.chef.setRoutine([{x:618,y:468},{x:667,y:468}],'');
+   this.rani.setRoutine([{x:692,y:186},{x:692,y:209}],'KAK RANI');
+   return;
+  }
+  // Cuaca cerah: rutinitas biasa memakai jalur yang sudah ada.
   const sariPlans=[
    {label:'BU SARI · BERJALAN',points:[{x:448,y:281},{x:410,y:281},{x:410,y:315},{x:448,y:315}]},
    {label:'BU SARI · WARGA',points:[{x:448,y:280},{x:479,y:280},{x:479,y:245},{x:448,y:245}]},
