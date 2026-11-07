@@ -45,6 +45,24 @@ export class WorldScene extends Phaser.Scene {
   this.chef.setRoutine(b.points,b.label);
   this.dailyPhase=['Pagi','Siang','Sore'][phase];
  }
+ highlightPlace(id){
+  const places={coop:{x:805,y:125,label:'🐔 KANDANG AYAM · KANAN ATAS'},
+                pond:{x:785,y:536,label:'🎣 KOLAM IKAN · KANAN BAWAH'}};
+  const p=places[id];if(!p)return;
+  this.keysHeld.clear();
+  if(this.landmarkCircle){this.tweens.killTweensOf(this.landmarkCircle);this.landmarkCircle.destroy();}
+  if(this.landmarkLabel){this.tweens.killTweensOf(this.landmarkLabel);this.landmarkLabel.destroy();}
+  this.landmarkCircle=this.add.circle(p.x,p.y,67,0xffe49c,0.23)
+   .setStrokeStyle(7,0xfff5aa,1).setDepth(2000);
+  this.landmarkLabel=this.add.text(p.x,id==='coop'?216:463,p.label,{
+   fontFamily:'monospace',fontSize:'14px',fontStyle:'bold',color:'#303e2d',
+   backgroundColor:'#fff1b1',padding:{x:10,y:6}
+  }).setOrigin(.5).setDepth(2001);
+  this.tweens.add({targets:this.landmarkCircle,scale:1.3,alpha:0,duration:2100,
+   onComplete:()=>{this.landmarkCircle?.destroy();this.landmarkCircle=null;}});
+  this.tweens.add({targets:this.landmarkLabel,alpha:0,delay:1700,duration:500,
+   onComplete:()=>{this.landmarkLabel?.destroy();this.landmarkLabel=null;}});
+ }
  getNearest(){
   const s=this.game.state.data;
   return nearestInteraction(s,this.zones.map(z=>z.id==='npc'?{...z,x:this.sari.x,y:this.sari.y}:z))?.id??null;
