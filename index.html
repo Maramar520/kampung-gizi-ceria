@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kampung Gizi Ceria — Phaser v1.5</title>
+<title>Kampung Gizi Ceria — Phaser v1.6</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#e9eddc;color:#415644;font:14px system-ui,sans-serif}header{text-align:center;padding:10px}h1{margin:0;color:#4c7958;font-size:24px}header p{margin:3px}.shell{max-width:1060px;margin:auto;padding:8px}.hud{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:8px}.chip{background:#fff9e9;border:2px solid #b7cda8;border-radius:10px;padding:8px;text-align:center;font-weight:700}.chip small{display:block;color:#7b8b75;font-weight:500}.gamewrap{position:relative;border:6px solid #6e9670;border-radius:14px;overflow:hidden}#game canvas{display:block;width:100%;image-rendering:pixelated}.toast{position:absolute;top:9px;left:50%;transform:translateX(-50%);background:#fff8e9;border:2px solid #a6bd87;border-radius:8px;padding:7px 12px;text-align:center;pointer-events:none;max-width:95%;font-weight:bold}.bottom{display:flex;gap:8px;margin:10px 0;align-items:center}.quest{background:#fff8e5;border:2px solid #c6d5b0;padding:10px;border-radius:10px;flex:1}button{background:#64976b;color:white;border:0;border-bottom:3px solid #477a51;border-radius:9px;padding:10px 15px;font-weight:700;cursor:pointer}.controls{display:flex;justify-content:center;gap:14px;align-items:center;margin:8px}.dpad{display:grid;grid-template-columns:repeat(3,45px);grid-template-rows:repeat(2,40px);gap:3px;touch-action:none}.dpad button{padding:0;font-size:20px}.dpad [data-dir=up]{grid-column:2}.dpad [data-dir=left]{grid-column:1;grid-row:2}.dpad [data-dir=down]{grid-column:2;grid-row:2}.dpad [data-dir=right]{grid-column:3;grid-row:2}.modal{position:absolute;inset:0;background:#243f31a8;display:flex;align-items:center;justify-content:center;padding:12px}.hidden{display:none!important}.panel{background:#fff7e8;border:5px solid #b88561;border-radius:14px;padding:17px;width:min(520px,100%);max-height:95%;overflow:auto}.panel h2{margin:0 0 8px;color:#80583c}.panel p{line-height:1.6}.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.choices button{flex:1;min-width:130px}.close{float:right;background:#b17a64}.cookstage{background:#f0e1c8;padding:12px;border-radius:10px;margin:10px 0;text-align:center}.progress{height:12px;background:#d2c3a6;border-radius:8px;overflow:hidden}.progress div{height:100%;background:#79ad7b;transition:width .15s}@media(max-width:700px){.hud{grid-template-columns:repeat(3,1fr)}.chip{font-size:12px}.bottom{flex-wrap:wrap}}
 
@@ -174,13 +174,37 @@ button{touch-action:manipulation}
  #dialog .panel{max-height:92dvh;padding:12px}
  #dialog .choices button{min-height:48px}
 }
+
+/* v1.6 education: six-petal balanced plate (2 staples, 1 protein, 2 vegetable, 1 fruit). */
+.hud{grid-template-columns:repeat(7,minmax(0,1fr))}
+.nutrition-tip{background:#f1f6dc;border:2px solid #b6c994;border-radius:12px;padding:12px;line-height:1.6;margin:10px 0}
+.nutrition-tip small{display:block;color:#617859;margin-top:6px}
+.learning-celebrate{text-align:center;font-size:42px;background:#f9ecd3;padding:15px;border-radius:12px}
+.plate-preview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,78px);gap:4px;
+ border:8px solid #f6f5ee;outline:3px solid #b7c2b8;border-radius:50%;overflow:hidden;background:#fff;padding:6px;margin:12px auto;max-width:330px}
+.plate-piece{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px}
+.plate-piece span{font-size:29px}
+.plate-piece small{font-size:10px;line-height:1.2}
+.plate-piece.pokok{background:#f8e6a7}
+.plate-piece.lauk{background:#edc6a4}
+.plate-piece.sayur{background:#c2e5b5}
+.plate-piece.buah{background:#f7cfb4}
+.plate-explain{text-align:center;color:#63745d;font-size:12px}
+#dialog .choices button{min-height:46px;line-height:1.4}
+@media(max-width:720px){.hud{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .hud .chip{padding:6px 2px;font-size:12px}
+ .plate-preview{grid-template-rows:repeat(2,63px);max-width:270px;padding:4px}
+ .plate-piece span{font-size:23px}
+ .plate-piece small{font-size:9px}
+}
 </style>
 </head>
 <body>
-<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.5</small></h1><p>Cozy pixel art v1.5 · NPC & pertemanan harian</p></header>
+<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.6</small></h1><p>Cozy pixel art v1.6 · Belajar Gizi & Isi Piringku</p></header>
 <main class="shell">
 <section class="hud">
 <div class="chip">🪙 <span id="coins"></span><small>Koin</small></div>
+<div class="chip">⭐ <span id="stars">0</span><small>Bintang Belajar</small></div>
 <div class="chip">⚡ <span id="energy"></span><small>Energi</small></div>
 <div class="chip">🍚 <span id="carb"></span><small>Karbo</small></div>
 <div class="chip">🥚 <span id="protein"></span><small>Protein</small></div>
@@ -192,6 +216,7 @@ button{touch-action:manipulation}
 <button type="button" data-open-notebook="recipes" title="Buku resep (R)">📖 Resep <small>R</small></button>
 <button type="button" data-open-notebook="journal" title="Jurnal quest (J)">📋 Misi <small>J</small></button>
 <button type="button" id="friendsButton" title="Lihat pertemanan NPC (F)">🤝 Teman <small>F</small></button>
+<button type="button" id="learningButton" title="Belajar Gizi (G)">⭐ Belajar <small>G</small></button>
 </nav>
 <nav class="place-shortcuts" aria-label="Temukan lokasi di peta">
  <span>📍 Cari lokasi:</span>
