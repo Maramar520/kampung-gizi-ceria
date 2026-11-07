@@ -35,6 +35,9 @@ jobs:
           test -f tests/social.test.mjs
           test -f src/systems/LearningSystem.js
           test -f tests/learning.test.mjs
+          test -f src/systems/TimeWeatherSystem.js
+          test -f src/world/WeatherArt.js
+          test -f tests/time-weather.test.mjs
       - name: Run system regression tests
         run: node --test tests/*.test.mjs
 
