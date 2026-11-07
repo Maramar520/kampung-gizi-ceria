@@ -23,8 +23,8 @@ this.keyboardNotebookHandler=event=>{
  const tab={i:'inventory',r:'recipes',j:'journal'}[key];
  if(tab){event.preventDefault();this.openNotebook(tab);}
 };
-window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once('shutdown',()=>window.removeEventListener('keydown',this.keyboardNotebookHandler));$('reset').onclick=()=>{if(confirm('Reset semua progres game?')){this.state.reset();this.world.player.sprite.setPosition(446,291);this.world.keysHeld.clear();this.world.sari.sprite.setPosition(448,281);this.close();this.refresh();this.note('Progres direset!')}};document.querySelectorAll('[data-dir]').forEach(button=>{const dir=button.dataset.dir;button.addEventListener('pointerdown',e=>{e.preventDefault();button.setPointerCapture(e.pointerId);this.world.keysHeld.add(dir)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(ev,()=>this.world.keysHeld.delete(dir))});this.time.addEvent({delay:500,loop:true,callback:()=>this.refresh()})}
- refresh(){const s=this.state.data;for(const id of ['coins','energy','carb','protein','vitamin','day'])$(id).textContent=s[id];$('status').textContent=this.state.status;$('stars').textContent=this.learning?.stars??0;$('phase').textContent=this.world?.dailyPhase||'Pagi';$('quest').textContent=this.quest.description;this.state.save();this.notebook?.refresh();this.world?.gardenArt?.render();this.updateInteractionHint()}
+window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once('shutdown',()=>window.removeEventListener('keydown',this.keyboardNotebookHandler));$('reset').onclick=()=>{if(confirm('Reset semua progres game?')){this.state.reset();this.world.clock.startDay();this.world.player.sprite.setPosition(446,291);this.world.keysHeld.clear();this.world.sari.sprite.setPosition(448,281);this.close();this.refresh();this.note('Progres direset!')}};document.querySelectorAll('[data-dir]').forEach(button=>{const dir=button.dataset.dir;button.addEventListener('pointerdown',e=>{e.preventDefault();button.setPointerCapture(e.pointerId);this.world.keysHeld.add(dir)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(ev,()=>this.world.keysHeld.delete(dir))});this.time.addEvent({delay:500,loop:true,callback:()=>this.refresh()})}
+ refresh(){const s=this.state.data;for(const id of ['coins','energy','carb','protein','vitamin','day'])$(id).textContent=s[id];$('status').textContent=this.state.status;$('stars').textContent=this.learning?.stars??0;$('phase').textContent=this.world?.clock?.description.phase||'Pagi';$('weather').textContent=this.world?.clock?.description.label||'🌤️ Pagi · Cerah';$('quest').textContent=this.quest.description;this.state.save();this.notebook?.refresh();this.world?.gardenArt?.render();this.updateInteractionHint()}
  updateInteractionHint(){
   const element=$('interactionHelp');if(!element||!this.world)return;
   const id=this.world.getNearest();
@@ -232,7 +232,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   }
   if(!actions.length)actions.push({label:'🌙 Tunggu sampai panen',fn:()=>{this.close();this.note('Gunakan kasur untuk memulai hari berikutnya.');}});
   const seeds=CROP_IDS.map(id=>CROPS[id].emoji+' '+CROPS[id].name+': '+view.seedsByCrop[id]).join(' · ');
-  this.show('🌿 Kebun Sayur','Hari '+this.state.data.day+' · '+seeds+'.\nTanam, siram, tidur di rumah, lalu panen! Wortel dan tomat perlu 2 hari.',actions,'<div class="garden-preview">'+icons+'</div>');
+  const weatherTip=this.world.clock.weather==='Hujan'?' 🌧️ Hujan menyiram tanaman secara otomatis.':'';
+  this.show('🌿 Kebun Sayur','Hari '+this.state.data.day+' · '+seeds+'.\nTanam, siram, tidur di rumah, lalu panen! Wortel dan tomat perlu 2 hari.'+weatherTip,actions,'<div class="garden-preview">'+icons+'</div>');
  }
  coopMenu(){
   const status=this.dailyLife.status;
@@ -328,8 +329,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    if(this.quest.complete()){this.refresh();return this.show('🏆 Quest selesai!',greeting+'\nTerima kasih! Hadiah 50 Koin Ceria telah diterima.');}
   }
   if(id==='bed')return this.show('🛏️ Kasur','Tidur untuk mengisi energi dan memajukan pertumbuhan tanaman.',[{label:'🌙 Tidur hingga pagi',fn:()=>{
-   this.world.playInteraction('sleep');s.energy=100;s.day++;this.refresh();
-   this.show('☀️ Selamat pagi!','Hari '+s.day+' dimulai. Periksa kebunmu untuk melihat sayuran yang siap dipanen!');
+   this.world.playInteraction('sleep');s.energy=100;s.day++;this.world.clock.startDay();this.refresh();
+   this.show('☀️ Selamat pagi!','Hari '+s.day+' dimulai. '+(this.world.clock.weather==='Hujan'?'Hari ini hujan! Tanaman di kebun tersiram secara otomatis.':'Periksa kebunmu untuk melihat sayuran yang siap dipanen!'));
   }}]);
  }
 }
