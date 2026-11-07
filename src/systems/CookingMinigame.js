@@ -8,7 +8,7 @@ export class CookingMinigame {
     for(const fn of this.cleanupCallbacks.splice(0))fn();
     this.finished=true;
   }
-  mount(step,done){
+  mount(step,done,recipe=null){
     this.stop();
     this.finished=false;
     const root=document.getElementById('cookVisual');
@@ -25,7 +25,7 @@ export class CookingMinigame {
     const count=text=>{const b=document.getElementById('miniCount');if(b)b.textContent=text;};
     const finish=()=>{if(this.finished)return;this.stop();done();};
     if(step===0){
-      panel('<span class="mini-food mini-wash">🥬</span><span class="mini-water">💧💧</span>','Cuci sayur dengan 5 ketukan.','💦 Bilas sayur');
+      panel('<span class="mini-food mini-wash">'+(recipe?.emoji||'🥬')+'</span><span class="mini-water">💧💧</span>','Bersihkan bahan untuk '+(recipe?.name||'masakan')+' dengan 5 ketukan.','💦 Cuci bahan');
       let taps=0; count('0 / 5 bilasan');
       this.bind(document.getElementById('miniButton'),'click',()=>{
         if(this.finished)return;
@@ -34,7 +34,7 @@ export class CookingMinigame {
         if(taps>=5)finish();
       });
     } else if(step===1){
-      panel('<span class="mini-food mini-pot">🍲</span><span class="mini-steam">♨ ♨ ♨</span>','Tekan dan tahan tombol selama sekitar 2 detik untuk memasak nasi.','✋ Tahan untuk memasak');
+      panel('<span class="mini-food mini-pot">🍲</span><span class="mini-steam">♨ ♨ ♨</span>','Tekan dan tahan tombol untuk memanaskan masakan.','✋ Tahan untuk memasak');
       let heat=0,holding=false;
       const button=document.getElementById('miniButton');
       const setHolding=v=>{holding=v;button.classList.toggle('is-holding',v);};
@@ -52,7 +52,7 @@ export class CookingMinigame {
       }});
     } else {
       // Indikator timing bergerak bolak-balik di area hijau.
-      panel('<span class="mini-food mini-egg">🍳</span>','Tekan saat penanda berada di zona hijau. Butuh 2 kali tepat.','🍳 Balik telur!');
+      panel('<span class="mini-food mini-egg">🍳</span>','Tekan saat penanda masuk zona hijau sebanyak 2 kali.','🍳 Balik telur!');
       const stage=document.querySelector('.mini-stage');
       const timing=document.createElement('div');timing.className='timing-track';
       timing.innerHTML='<div class="timing-target"></div><div class="timing-marker" id="timingMarker"></div>';
