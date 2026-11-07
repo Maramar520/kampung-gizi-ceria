@@ -47,6 +47,9 @@ jobs:
           test -f src/systems/RestaurantOrderSystem.js
           test -f src/world/NpcWorkRoutes.js
           test -f tests/v19.test.mjs
+          test -f src/systems/FestivalSystem.js
+          test -f src/world/FestivalArt.js
+          test -f tests/festival.test.mjs
       - name: Run system regression tests
         run: node --test tests/*.test.mjs
 
