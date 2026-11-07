@@ -1,4 +1,4 @@
-import {OBSTACLES} from './WorldGeometry.js';
+import {OBSTACLES,LAYOUT} from './WorldGeometry.js';
 const C={grass:0x91c881,road:0xe8d1a4,wall:0x986e57};
 export function createTextures(scene){
  const g=scene.make.graphics({x:0,y:0},false);
@@ -74,246 +74,119 @@ export function createTextures(scene){
 }
 
 export function buildWorld(scene) {
-  // Semua interior digambar langsung di WorldScene. Tidak ada perpindahan scene.
-  const ground = scene.add.graphics().setDepth(-100);
-  const deco = scene.add.graphics().setDepth(-75);
-  const ink = 0x6c624e, cream = 0xfff4d5;
-  const r = (g,x,y,w,h,c) => { g.fillStyle(c,1); g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h)); };
-  const outline = (g,x,y,w,h,c,edge=ink,t=3) => { r(g,x-t,y-t,w+t*2,h+t*2,edge); r(g,x,y,w,h,c); };
-  const sign = (s,x,y,size=15,color='#584e41') => scene.add.text(x,y,s,{
-    fontFamily:'monospace',fontSize:size+'px',fontStyle:'bold',
-    color,backgroundColor:'#fff2d3',padding:{x:5,y:3}
-  }).setOrigin(.5).setDepth(500);
-  const flower = (x,y,c=0xfbf0c3) => {
-    r(ground,x-1,y-4,2,6,0x568c56);
-    r(ground,x-4,y-7,8,4,c);r(ground,x-2,y-9,4,8,c);r(ground,x-1,y-6,2,2,0xe3b855);
-  };
-  const pebble=(x,y)=>{r(ground,x,y,6,3,0xdec79e);r(ground,x+2,y-1,3,1,0xffedc9)};
-  const bush=(x,y)=> {
-    r(ground,x-15,y,30,8,0x567f55);
-    r(ground,x-12,y-9,24,14,0x609963);
-    r(ground,x-6,y-14,15,13,0x85b874);
-    r(ground,x+4,y-8,4,3,0xc2d9a0);
-  };
-  const tree=(x,y)=> {
-    r(deco,x-7,y,14,29,0x947045);r(deco,x-4,y+3,5,16,0xb18a55);
-    outline(deco,x-25,y-22,51,30,0x58885a,0x3c714d,2);
-    r(deco,x-20,y-33,40,20,0x6ba86b);r(deco,x-12,y-40,26,14,0x80bb79);
-    r(deco,x-17,y-23,8,4,0xa2d08a);r(deco,x+6,y-30,7,4,0xa2d08a);
-    r(deco,x-3,y-20,4,4,0xe9b66f);
-  };
-  const flowerBox=(x,y,w)=> {
-    outline(deco,x,y,w,15,0xb07d55,0x785c45,2);
-    for(let i=9;i<w-5;i+=13){r(deco,x+i,y-8,3,11,0x659b5d);r(deco,x+i-4,y-10,10,6,i%2?0xf4c2a7:0xf4df89);}
-  };
-  const rug=(x,y,w,h,color)=> {
-    outline(deco,x,y,w,h,color,0xc5a782,3);
-    for(let q=x+11;q<x+w-8;q+=16){r(deco,q,y+7,7,3,0xffe8c1);r(deco,q,y+h-10,7,3,0xffe8c1);}
-  };
-  const plant=(x,y)=>{
-    r(deco,x-6,y-1,13,12,0xac7963);r(deco,x-4,y+3,9,3,0xe7af88);
-    r(deco,x-2,y-22,4,23,0x528a62);
-    r(deco,x-13,y-18,12,8,0x6ea46d);r(deco,x+2,y-22,12,9,0x6fae71);
-    r(deco,x-6,y-28,11,12,0x90c284);
-  };
-  const floor=(x,y,w,h,c,detail)=>{
-    outline(ground,x,y,w,h,c,0x956e58,3);
-    for(let py=y+13;py<y+h-9;py+=23) {
-      r(ground,x+8,py,w-16,2,detail);
-      for(let px=x+(py%2?20:36);px<x+w-10;px+=61)r(ground,px,py-10,2,10,detail);
-    }
-  };
-  const wall=(x,y,w,h,c)=>{r(deco,x,y,w,h,0x785b49);r(deco,x+2,y+2,w-4,h-4,c)};
-  const house=(x,y,w,h,floorColor,trim)=> {
-    floor(x,y,w,h,floorColor,0xe5c39d);
-    // Cutaway: hanya dinding atas dan sisi, bagian depan memiliki bukaan lebar.
-    wall(x,y,w,13,trim);wall(x,y,12,h,trim);wall(x+w-12,y,12,h,trim);
-    wall(x,y+h-12,(w-52)/2,12,trim);
-    wall(x+(w+52)/2,y+h-12,(w-52)/2,12,trim);
-    r(deco,x+(w-52)/2,y+h-7,52,5,0xd2a170);
-    r(deco,x+13,y+15,w-26,3,0xfff4d4);
-    for(let q=0;q<3;q++){r(deco,x+27+q*24,y+3,13,5,0xd5a478);}
-  };
-  const shelf=(x,y,w=66)=>{
-    outline(deco,x,y,w,28,0xb78458,0x795b47,2);
-    r(deco,x+5,y+4,w-10,4,0xe6bc81);
-    for(let i=0;i<Math.floor((w-10)/11);i++){r(deco,x+8+i*11,y+10,6,14,[0x89ae83,0xf1bc76,0x9cb4cb][i%3]);}
-    r(deco,x+5,y+21,w-10,3,0x805e48);
-  };
-  const table=(x,y,w,h,color=0xc69465)=>{
-    outline(deco,x,y,w,h,color,0x805d46,3);
-    r(deco,x+4,y+3,w-8,4,0xe3b98b);
-    r(deco,x+8,y+h-5,9,5,0x88634c);r(deco,x+w-18,y+h-5,9,5,0x88634c);
-  };
-  const chair=(x,y)=>{
-    outline(deco,x,y,20,19,0xd5ad7d,0x86644e,2);
-    r(deco,x+4,y+4,12,10,0xeacf9f);
-  };
-  // Padang rumput pastel dengan variasi rerumputan yang konsisten.
-  r(ground,0,0,960,600,0x9dcb86);
-  for(let y=6;y<600;y+=16)for(let x=8;x<960;x+=18){
-    const n=(x*13+y*29)%19;
-    if(n<8){r(ground,x,y,3,5,n%2?0x82bb79:0x88bd78);r(ground,x+5,y+2,2,3,0xb5d798);}
+ const ground=scene.add.graphics().setDepth(-100);
+ const deco=scene.add.graphics().setDepth(-75);
+ const r=(g,x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
+ const frame=(g,x,y,w,h,c,edge=0x88694c,t=3)=>{r(g,x-t,y-t,w+t*2,h+t*2,edge);r(g,x,y,w,h,c);};
+ const label=(str,x,y,size=13)=>scene.add.text(x,y,str,{
+  fontFamily:'monospace',fontSize:size+'px',fontStyle:'bold',color:'#574d3e',
+  backgroundColor:'#fff3d4',padding:{x:5,y:3}
+ }).setOrigin(.5).setDepth(550);
+ const tuft=(x,y)=>{r(ground,x,y,3,5,0x74b075);r(ground,x+5,y+2,2,3,0xb9d899);};
+ const flower=(x,y,c)=>{r(ground,x,y,2,8,0x5b9867);r(ground,x-4,y-3,10,5,c);r(ground,x-1,y-6,4,9,c);r(ground,x,y-2,2,2,0xf9e39d);};
+ const bush=(x,y)=>{r(ground,x-13,y,26,8,0x4f8356);r(ground,x-10,y-9,22,15,0x6fae70);r(ground,x-4,y-14,12,9,0x8fc985);};
+ const tree=(x,y)=>{r(deco,x-5,y,10,19,0x916f4e);frame(deco,x-19,y-26,40,29,0x6d9f65,0x578751,2);r(deco,x-12,y-33,28,14,0x8cc67d);r(deco,x-8,y-18,8,3,0xb5dc9b);};
+ const flowerBox=(x,y,w)=>{frame(deco,x,y,w,10,0xb9885d,0x836149,2);for(let p=x+8;p<x+w-4;p+=14){r(deco,p,y-8,3,10,0x629961);r(deco,p-4,y-10,10,6,((p/14)|0)%2?0xeaa9aa:0xf2db95);}};
+ const shelf=(x,y,w)=>{frame(deco,x,y,w,27,0xc09162,0x87634a,2);r(deco,x+4,y+6,w-8,3,0xf1c999);for(let p=x+7;p<x+w-8;p+=11)r(deco,p,y+11,7,12,[0xa1b98b,0xe8b779,0x91b1c7][Math.floor(p/11)%3]);r(deco,x+4,y+23,w-8,3,0x80624b);};
+ const table=(x,y,w,h,c=0xc39261)=>{frame(deco,x,y,w,h,c,0x785941,3);r(deco,x+5,y+4,w-10,4,0xf2c997);r(deco,x+8,y+h-5,7,5,0x937153);r(deco,x+w-15,y+h-5,7,5,0x937153);};
+ const room=(key,c,trim,topEntrance=false)=>{
+  const b=LAYOUT[key];frame(ground,b.x,b.y,b.w,b.h,c,0x9e7757,3);
+  for(let y=b.y+23;y<b.y+b.h-10;y+=22){r(ground,b.x+8,y,b.w-16,2,0xe8c29c);}
+  const {x,y,w,h}=b, gap=52,half=(w-gap)/2;
+  r(deco,x,y,11,h,trim);r(deco,x+w-11,y,11,h,trim);
+  if(topEntrance){
+   r(deco,x,y,half,11,trim);r(deco,x+half+gap,y,w-half-gap,11,trim);
+   r(deco,x,y+h-11,w,11,trim);r(deco,x+half,y-4,gap,8,0xe4c28a);
+  }else{
+   r(deco,x,y,w,11,trim);
+   r(deco,x,y+h-11,half,11,trim);r(deco,x+half+gap,y+h-11,w-half-gap,11,trim);
+   r(deco,x+half,y+h-5,gap,7,0xe4c28a);
   }
-  // Lintasan kampung: tetap pada koordinat v0.3 agar NPC & quest tak berpindah.
-  outline(ground,432,350,96,251,0xebd8b1,0xc8b58b,1);
-  outline(ground,0,425,960,65,0xebd8b1,0xc8b58b,1);
-  outline(ground,126,351,75,99,0xebd8b1,0xc8b58b,1);
-  outline(ground,775,349,75,100,0xebd8b1,0xc8b58b,1);
-  // v1.1: jalan memutar ke kandang. Jalur di sisi kanan restoran tetap dapat dilalui.
-  outline(ground,922,190,23,236,0xf0dabb,0xc5a880,1);
-  outline(ground,851,186,93,22,0xf0dabb,0xc5a880,1);
-  for(let y=217;y<416;y+=29){r(ground,929,y,11,3,0xddc39d);}
-  for(let x=864;x<929;x+=23){r(ground,x,194,13,3,0xdac19c);}
-  // Titian kecil dari jalan desa menuju dermaga kolam.
-  for(let x=749;x<831;x+=18){r(ground,x,491,13,4,0xdfbd8f);}
-
-  for(let x=16;x<950;x+=65){r(ground,x,455,22,3,0xd8bd94);pebble(x+27,468);}
-  for(let y=369;y<594;y+=44){r(ground,467,y,26,3,0xd8bd94);}
-  for(const [x,y] of [[24,387],[225,389],[643,379],[931,402],[116,510],[716,521]])bush(x,y);
-  for(const [x,y,c] of [[31,361,0xf2b8ac],[211,519,0xf3e6a7],[680,406,0xd8bbeb],[605,543,0xffe3ae],[878,519,0xffe3ae],[27,494,0xffd3bd],[683,540,0xf3b6b0]])flower(x,y,c);
-  for(const [x,y] of [[46,558],[81,539],[229,557],[630,569],[674,564],[908,574]])pebble(x,y);
-  // Kebun mini: bedeng sayur rapi dan pagar kayu.
-  sign('KEBUN SAYUR',131,55,14);
-  outline(ground,24,78,192,110,0xc2a17a,0x877554,3);
-  for(let row=0;row<3;row++)for(let col=0;col<5;col++){
-    const x=36+col*36,y=85+row*32;
-    r(ground,x,y,27,23,0x8d684b);r(ground,x+3,y+3,21,17,0xab7a53);
-    r(ground,x+7,y+9,6,7,0x4b9258);r(ground,x+14,y+5,8,13,0x6cae69);
-    r(ground,x+12,y+4,4,7,(row+col)%2?0xb7d06d:0xf0a362);
-  }
-  for(let x=19;x<=223;x+=24){r(deco,x,189,5,13,0x946f4d);r(deco,x,194,18,4,0xd0ac79);}
-  // Rumah dollhouse: ubin dan dinding tetap tampak dari luar.
-  house(258,90,364,265,0xf6dfbb,0xb88067);
-  sign('RUMAH CERIA',440,73,17);
-  // Zona kasur, dapur, sudut makan. Jangan mengubah hitbox lama.
-  rug(277,121,115,125,0xdbb3a1);
-  // Kasur sesuai posisi collider asli x289..357 / y137..230.
-  outline(deco,289,137,68,93,0x9cafc7,0x647d91,3);
-  r(deco,298,145,50,23,0xfff4e1);r(deco,304,150,39,10,0xfefefe);
-  r(deco,298,172,50,48,0xc3d6e0);
-  r(deco,301,186,44,4,0xe6eff0);r(deco,303,203,42,3,0xe6eff0);
-  shelf(391,130,67);
-  plant(381,223);
-  // Kabinet dapur di dinding belakang.
-  shelf(520,114,77);
-  // Kompor x511..594 / y153..219.
-  outline(deco,511,153,83,66,0x9cb1a2,0x657c6b,3);
-  r(deco,516,157,73,12,0xdce4d3);
-  for(const x of [528,562]){outline(deco,x,176,21,20,0x394d50,0x647173,2);r(deco,x+6,181,9,8,0x697675);}
-  r(deco,521,206,64,8,0x738d7a);r(deco,533,210,4,3,0xe2d1ab);r(deco,567,210,4,3,0xe2d1ab);
-  rug(396,236,134,82,0xa8c3a2);
-  table(423,250,86,53);
-  r(deco,433,263,24,16,0xf8ead5);r(deco,439,267,12,7,0xd6dbbb);
-  r(deco,475,264,22,17,0xfbf3df);r(deco,482,270,8,8,0xe4ab61);
-  chair(396,265);chair(519,265);
-  // Jendela depan, rak sepatu, dan keset di sisi pintu.
-  outline(deco,272,270,31,48,0xa2b9bc,0x7c715e,2);
-  r(deco,286,274,3,40,0xfff4d7);r(deco,275,293,25,3,0xfff4d7);
-  flowerBox(554,323,43);
-  r(deco,421,353,38,7,0x916e50);r(deco,429,358,23,5,0xc99b68);
-  // Pasar tradisional terbuka, tirai kanopi warna-warni.
-  house(53,212,213,140,0xf4dda7,0xb67a5c);
-  sign('PASAR SEGAR',160,190,16);
-  for(let i=0;i<9;i++){
-    r(deco,55+i*23,201,23,12,i%2?0xffe7bc:0xe18b80);
-    r(deco,55+i*23,211,23,4,i%2?0xc6a471:0xb26b65);
-  }
-  shelf(84,230,113);
-  // Meja pasar tetap sesuai hitbox x80..200, y259..290
-  table(80,259,120,31,0xc18d58);
-  for(let x=91;x<191;x+=22){r(deco,x,252,14,9,0x719d57);r(deco,x+3,247,8,6,x%2?0xebae5f:0x9cbd70);}
-  outline(deco,208,244,34,54,0x9ab37a,0x718b60,2);
-  r(deco,213,251,24,7,0xd1e1aa);r(deco,213,264,24,7,0xd1e1aa);
-  flowerBox(66,323,65);
-  sign('BELANJA  E',163,321,12);
-  // Restoran gizi: meja koki, piring dan sudut makan.
-  house(703,211,210,140,0xefd5bb,0xb77e60);
-  sign('RESTORAN GIZI',808,190,15);
-  for(let i=0;i<9;i++){
-    r(deco,705+i*23,200,23,13,i%2?0xffe8b5:0xd48771);
-    r(deco,705+i*23,211,23,4,i%2?0xcaa07f:0xa86659);
-  }
-  shelf(720,234,68);
-  rug(725,304,147,31,0xe6baa2);
-  table(746,268,116,30,0xb8835e);
-  for(let x=763;x<=837;x+=36){
-    outline(deco,x,257,19,15,0xe7e5d3,0xb9b9a6,1);
-    r(deco,x+6,261,7,6,x%2?0x84b47c:0xe7a86e);
-  }
-  r(deco,733,280,7,25,0x8d6d56);r(deco,866,280,7,25,0x8d6d56);
-  plant(887,320);
-  // Pohon dan lampu jalan: visual only, tidak menghalangi jalur pemain.
-  for(const [x,y] of [[656,105],[667,169],[928,105],[37,544],[915,541]])tree(x,y);
-  for(const [x,y] of [[236,410],[643,440],[890,414]]) {
-    r(deco,x,y,5,26,0x6d725b);
-    outline(deco,x-5,y-11,15,13,0xffdf9c,0x946d4f,2);
-    r(deco,x-2,y-8,9,5,0xfff4c8);
-  }
-  // Label Bu Sari mengikuti NPC-nya, jangan memasang label statis di atas jalur.
-  // Detail furnitur tambahan yang tidak mengubah collision atau tata letak.
-  // Rak sepatu, selimut bermotif, ubin dapur, teko, dan pot masak.
-  for(let i=0;i<4;i++){
-    r(deco,302+i*11,184+(i%2)*6,7,3,0xfff7ed);
-    r(deco,525+i*16,139,10,3,0xe9c89a);
-  }
-  r(deco,529,173,21,3,0x768f7e);
-  r(deco,534,168,11,6,0x8ea0a2);
-  r(deco,538,165,3,3,0xe7e9d7);
-  r(deco,556,171,14,6,0xb9b7ae);
-  r(deco,560,168,6,3,0xeee2bf);
-  r(deco,448,253,22,5,0xe8c49b);
-  r(deco,455,258,13,3,0x965f49);
-  r(deco,286,284,2,33,0xfffcdf);
-  r(deco,281,293,15,2,0xfffcdf);
-  // Anyaman keranjang dan tumpukan sayur di pasar.
-  for(let i=0;i<5;i++){
-    const x=86+i*21;
-    r(deco,x,268,17,12,0xb9804f);
-    r(deco,x+2,270,13,7,0xe0ad66);
-    for(let j=0;j<3;j++)r(deco,x+4+j*4,266-(j%2)*4,5,5,i%2?0xe9b56c:0x77ad67);
-    r(deco,x+5,279,11,2,0x8b603f);
-  }
-  // Papan menu dan tempat duduk pada restoran.
-  outline(deco,797,228,70,26,0x5b786b,0x654f44,2);
-  r(deco,804,236,41,2,0xf9e8c5);r(deco,804,242,33,2,0xf9e8c5);
-  r(deco,847,235,10,10,0xe3b66f);
-  r(deco,717,323,23,6,0x986f55);
-  r(deco,719,315,4,9,0xb78e69);
-  r(deco,740,319,5,5,0xb78e69);
-  // Bunga hias di ambang jendela rumah.
-  for(let i=0;i<4;i++) {
-    r(deco,274+i*6,271,3,5,0x76a16b);
-    r(deco,272+i*6,268,6,5,i%2?0xf7cb91:0xf2a7ad);
-  }
-  // v1.2: furnitur cozy yang tetap berada di footprint lama dan bukan collider baru.
-  // Selimut patchwork dan bantal bersulam.
-  for(let row=0;row<3;row++)for(let col=0;col<3;col++){
-    r(deco,303+col*14,179+row*12,12,10,(row+col)%2?0xe6d7bc:0xa8c5ba);
-    r(deco,307+col*14,183+row*12,4,3,0xfff5dc);
-  }
-  r(deco,308,148,25,3,0xe1d8c9);
-  r(deco,342,150,4,8,0xfffcf3);
-  // Dua cangkir teh dan alas makan.
-  for(const [x,y] of [[444,272],[482,272]]){
-    r(deco,x-2,y-1,13,9,0x8e6c51);
-    r(deco,x,y,9,5,0xfff5e2);
-    r(deco,x+3,y+1,3,2,0xd5a16d);
-  }
-  // Rak dapur: kendi, toples bumbu, dan daun.
-  for(const [x,c] of [[523,0xe9ae70],[543,0xa0bc87],[568,0xc9977b]]){
-    r(deco,x,128,13,11,0x896c50);r(deco,x+2,127,9,3,0xf5d5a3);
-    r(deco,x+3,131,7,5,c);
-  }
-  // Lampu rumah di atas meja dan tekstur rotan pasar.
-  r(deco,492,105,5,15,0x98765b);r(deco,481,117,27,7,0xf6d79d);
-  r(deco,487,124,16,3,0xffe7b3);
-  for(let x=85;x<197;x+=19){r(deco,x,289,10,3,0x80573f);r(deco,x+4,285,3,7,0xcf9b63);}
-  // Keranjang dan papan kecil di meja restoran.
-  r(deco,858,301,14,12,0xa87852);r(deco,861,297,9,5,0xe7bb77);
-  r(deco,864,295,3,5,0x659e64);
-  for(let i=0;i<4;i++){r(deco,775+i*20,333,7,3,i%2?0xf5dec0:0xe6b7a3);}
-  // Hitbox dan titik interaksi tersentral di WorldGeometry.js.
-  return OBSTACLES;
-
+  r(deco,x+11,y+15,w-22,3,0xfff4d7);
+  for(let p=x+21;p<x+w-18;p+=25)r(deco,p,y+4,12,4,0xf0c49d);
+ };
+ // Aksen hijau tenang dan akses kampung sama persis dengan komposisi 3 kolom × 2 baris.
+ r(ground,0,0,960,600,0xa4cd91);
+ for(let y=9;y<600;y+=17)for(let x=7;x<960;x+=19)if((x*7+y*11)%17<7)tuft(x,y);
+ // JALAN dari denah: jalan silang y=282, dua jalan vertikal x=448 dan x=760.
+ frame(ground,418,15,61,570,0xead5af,0xd3b18a,2);
+ frame(ground,736,15,49,570,0xead5af,0xd3b18a,2);
+ frame(ground,8,261,944,49,0xead5af,0xd3b18a,2);
+ for(let x=20;x<955;x+=58){r(ground,x,282,25,3,0xd7b88f);}
+ for(let y=28;y<570;y+=38){r(ground,446,y,4,17,0xeedbb7);r(ground,759,y,3,17,0xeedbb7);}
+ // jalur masuk tambahan yang jelas, tanpa menutupi blok denah.
+ for(const [x,y,w,h] of [[124,235,43,29],[595,237,27,28],[192,307,37,34],[590,308,35,34],[859,308,24,34]]){
+  r(ground,x,y,w,h,0xf0d9b7);
+  for(let a=x+5;a<x+w-4;a+=17)r(ground,a,y+7,8,3,0xdfbb91);
+ }
+ // Sudut taman di blok yang tidak menghalangi jalan.
+ for(const [x,y] of [[21,243],[401,248],[486,245],[724,245],[940,246],[24,568],[400,563],[483,565],[728,565],[939,562]])bush(x,y);
+ for(const [x,y] of [[18,45],[943,58],[18,384],[946,390],[397,44]])tree(x,y);
+ for(const [x,y,c] of [[31,323,0xf2b7a0],[407,319,0xf4da8d],[485,308,0xe2acd0],[728,309,0xffd59e],[942,323,0xe3c3ec],[25,574,0xffd69c],[709,572,0xf8bac3]])flower(x,y,c);
+ // RUMAH PEMAIN di kiri atas: potongan interior terbuka sepanjang permainan.
+ room('home',0xf6dfbd,0xb68168);
+ label('RUMAH PEMAIN',144,32,14);
+ frame(deco,68,99,51,81,0xa3bacd,0x718a9b,3);
+ r(deco,76,105,36,19,0xfff9ea);r(deco,77,128,34,45,0xc4dcda);
+ for(let row=0;row<3;row++)for(let col=0;col<2;col++)r(deco,79+col*17,135+row*11,15,9,(row+col)%2?0xe9d1bf:0xa9c4bc);
+ shelf(132,78,73);shelf(165,171,52);
+ // kompor tetap di dalam hitbox pada denah kiri atas
+ frame(deco,171,107,47,46,0x91ada2,0x668071,3);
+ for(const x of [181,199]){frame(deco,x,115,13,14,0x43545b,0x778c86,1);r(deco,x+4,118,6,6,0x697a74);}
+ r(deco,175,142,39,7,0xe4ddc9);
+ table(144,174,55,30);r(deco,155,181,17,12,0xf9f4e8);r(deco,176,182,13,9,0xe4a874);
+ r(deco,120,182,17,17,0xdab38a);r(deco,123,186,10,7,0xf3d4a4);
+ flowerBox(58,219,58);
+ r(deco,60,191,13,19,0xb88165);r(deco,63,189,7,4,0x6ea16b);
+ // KEBUN kecil di sebelah kanan rumah, tetap 3 petak interaktif.
+ const garden=LAYOUT.garden;
+ frame(ground,garden.x,garden.y,garden.w,garden.h,0xbdab83,0x8c7756,2);
+ label('KEBUN',322,45,13);
+ for(let y=60;y<=141;y+=15){r(deco,254,y,4,8,0xc49b70);r(deco,387,y,4,8,0xc49b70);}
+ for(let x=261;x<388;x+=21){r(deco,x,58,5,10,0xb58b5f);}
+ // PETERNAKAN menempel di area rumah, bukan di pojok kanan peta.
+ label('TERNAK',325,150,12);
+ // RUMAH WARGA bagian tengah atas — interior terbuka, bukan label placeholder.
+ room('village',0xf2dcbf,0xa98265);
+ label('RUMAH WARGA',606,32,14);
+ frame(deco,551,106,54,40,0xceb48f,0x947255,3);
+ r(deco,557,114,41,11,0xfaf4e6);r(deco,557,130,41,6,0xa9c5b8);
+ shelf(626,83,67);table(630,169,50,32,0xc19a73);
+ r(deco,648,177,16,12,0xfff0d7);
+ flowerBox(509,220,70);
+ frame(deco,509,86,27,36,0xa4c6cc,0x9b7861,2);
+ r(deco,521,88,3,32,0xfff4d6);r(deco,511,102,23,3,0xfff4d6);
+ // KOLAM di kanan atas ditambahkan di FarmArt sesuai pond footprint.
+ // PASAR TRADISIONAL: blok kiri bawah dengan meja dan 2 kios berbeda.
+ room('market',0xf3ddb4,0xb57c63,true);
+ label('PASAR TRADISIONAL',210,322,14);
+ for(let i=0;i<13;i++){r(deco,48+i*26,336,26,9,i%2?0xffe7bc:0xe18e83);}
+ shelf(72,364,126);shelf(233,367,123);
+ table(84,392,204,35,0xb8865a);
+ for(let x=95;x<282;x+=22){r(deco,x,386,16,9,0x82aa65);r(deco,x+3,382,10,6,(x%3)?0xeab073:0xa9c57d);}
+ for(let x=94;x<283;x+=25){r(deco,x,412,19,10,0xa5784d);r(deco,x+3,406,12,8,0xe3b774);}
+ table(94,465,107,26,0xc49c70);table(226,466,103,25,0xc49c70);
+ for(const [x,y] of [[114,453],[265,451],[295,445]]){r(deco,x,y,19,13,0xdab47d);r(deco,x+5,y-6,10,8,0x74ad65);}
+ flowerBox(59,529,92);
+ // RESTORAN SEHAT: blok tengah bawah, interior bebas dimasuki dari jalan.
+ room('restaurant',0xf3d6bc,0xb88269,true);
+ label('RESTORAN SEHAT',607,322,14);
+ for(let i=0;i<9;i++)r(deco,504+i*24,335,24,9,i%2?0xf8e6b2:0xc98274);
+ shelf(515,360,64);
+ table(533,395,145,36,0xb98961);
+ for(let x=548;x<671;x+=35){frame(deco,x,383,20,15,0xf5ecdb,0xb2a79b,1);r(deco,x+6,387,8,6,x%2?0x80aa7b:0xe5b073);}
+ table(522,482,49,31,0xd3a881);table(639,481,51,31,0xd3a881);
+ frame(deco,630,366,60,21,0x58796b,0x745944,2);
+ r(deco,636,373,42,2,0xf5e9c2);r(deco,637,379,34,2,0xf5e9c2);
+ flowerBox(505,524,73);
+ // TOKO SWALAYAN: blok kanan bawah, interior berbeda dari pasar.
+ room('store',0xe7e4cb,0x8aa78b,true);
+ label('TOKO SWALAYAN',867,322,12);
+ frame(deco,825,389,84,35,0x9cbaa2,0x6d8c7e,2);
+ for(let x=831;x<905;x+=13){r(deco,x,395,9,20,[0xe6ae6f,0xa8c0db,0xf0d19d][Math.floor(x/13)%3]);}
+ shelf(822,449,94);shelf(824,499,89);
+ r(deco,820,363,31,17,0xa7d3d8);r(deco,824,366,22,4,0xe7f5e7);
+ frame(deco,882,364,35,17,0xc5a56e,0x887450,2);
+ label('MINIMARKET',870,541,11);
+ return OBSTACLES;
 }
