@@ -24,3 +24,6 @@ jobs:
           test -f src/entities/NPC.js
           test -f src/systems/CookingSystem.js
           test -f src/systems/QuestSystem.js
+          test -f src/systems/CookingMinigame.js
+      - name: Run system regression tests
+        run: node --test tests/*.test.mjs
