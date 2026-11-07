@@ -65,6 +65,22 @@ async function testDesktop(browser){
    await actionAt(page,z[0],z[1],z[2]);
    await close(page);
  }
+ // v1.4: play actions through actual dialogs, then verify the rendered pose.
+ await actionAt(page,320,141,'Kebun');
+ await page.getByRole('button',{name:/Tanam Bayam.*Petak 1/}).click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'plant');
+ await page.getByRole('button',{name:/Siram Bayam.*Petak 1/}).click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'water');
+ await close(page);
+ await actionAt(page,128,162,'Kasur');
+ await page.getByRole('button',{name:/Tidur hingga pagi/}).click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'sleep');
+ await close(page);
+ await actionAt(page,320,141,'Kebun');
+ await page.getByRole('button',{name:/Panen Bayam.*Petak 1/}).click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'harvest');
+ await close(page);
+
  const currentSari=await page.evaluate(()=>{
   const n=window.__kampungQA.scene.getScene('WorldScene').sari;
   return {x:n.x,y:n.y};
@@ -86,6 +102,7 @@ async function testDesktop(browser){
  await actionAt(page,194,161,'Menu');
  await page.getByRole('button',{name:/Nasi Telur Sayur.*siap/}).click();
  for(let i=0;i<5;i++)await page.locator('#miniButton').click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'cook');
  await page.waitForFunction(()=>document.querySelector('#dialogTitle')?.textContent?.includes('2/3'));
  let area=await page.locator('#miniButton').boundingBox();
  await page.mouse.move(area.x+area.width/2,area.y+area.height/2);
@@ -123,7 +140,9 @@ async function testDesktop(browser){
  await page.getByRole('button',{name:/Kumpulkan 2 telur/}).click();
  await close(page);
  await actionAt(page,869,246,'Kolam');
- for(let i=0;i<3;i++){
+ await page.getByRole('button',{name:/Lempar kail/}).click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'fish');
+ for(let i=1;i<3;i++){
   await page.getByRole('button',{name:/Lempar kail/}).click();
  }
  await page.getByRole('button',{name:/Selesai/}).click();
