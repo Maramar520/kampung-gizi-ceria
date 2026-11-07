@@ -5,6 +5,7 @@ export class NPC {
   this.label=name?scene.add.text(x,y-45,name,{fontFamily:'monospace',fontSize:'13px',color:'#345b43',fontStyle:'bold'}).setOrigin(.5):null;
  }
  get x(){return this.sprite.x}get y(){return this.sprite.y}
+ setRoutine(stops,label){if(stops?.length){this.stops=stops;this.index=0;}if(label&&this.label)this.label.setText(label);}
  update(dt){
   let walking=false,dx=0,dy=0;
   if(this.stops.length){
