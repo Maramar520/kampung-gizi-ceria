@@ -1,73 +1,126 @@
 import {OBSTACLES,LAYOUT} from './WorldGeometry.js';
-const C={grass:0x91c881,road:0xe8d1a4,wall:0x986e57};
+
+// v1.4: semua sprite dan pose kegiatan digambar secara prosedural.
+// Kunci tekstur sprite lama dipertahankan agar posisi, NPC, dan save tetap kompatibel.
+export const CHARACTER_ACTIONS=Object.freeze(['sleep','water','harvest','cook','fish','plant']);
 export function createTextures(scene){
  const g=scene.make.graphics({x:0,y:0},false);
- const r=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h)};
- const characters=[
-  ['player',0x77a6da,0x554135,0xf3c69e,false],
-  ['sari',0xd98e7b,0x654634,0xeabd94,false],
-  ['chef',0xe9e5d6,0x654b36,0xf0c49c,true]
- ];
- // Sprites are generated at runtime: 4 directions, two alternating walking poses.
- for(const [name,shirt,hair,skin,chefHat] of characters){
-  for(const direction of ['down','up','side']){
+ const rect=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
+ const palette={
+  player:{shirt:0x7caad3,shade:0x4c83b0,hair:0x594536,skin:0xf3c8a5,accent:0xe4c184},
+  sari:{shirt:0xe4a18c,shade:0xc67877,hair:0x674637,skin:0xf1cba5,accent:0xf0d5a9},
+  chef:{shirt:0xf0eee4,shade:0xc4d7cd,hair:0x665041,skin:0xf1c6a4,accent:0x8abc9d}
+ };
+ const draw=(name,dir,frame,action=null)=>{
+  const p=palette[name],walk=frame!==0&&!action,step=walk?(frame===1?2:-2):0;
+  const bounce=walk?(frame===1?-1:1):0;
+  const side=dir==='side',back=dir==='up';
+  // Bayangan tidak bergerak vertikal; tubuhnya bergerak agar langkah terasa hidup.
+  rect(5,42,26,3,0x5d8f6a);
+  rect(8,43,21,2,0x7eaf82);
+  rect(9+step,35,8,9,0x4a576b);
+  rect(19-step,35,8,9,0x4a576b);
+  rect(9+step,41,8,3,0x3b4152);
+  rect(19-step,41,8,3,0x3b4152);
+  // Pakaian anak chibi: kerah, ikat pinggang dan detail kancing.
+  rect(7,23+bounce,23,15,p.shade);
+  rect(9,23+bounce,19,12,p.shirt);
+  rect(11,23+bounce,12,3,0xffeedc);
+  rect(17,26+bounce,3,3,p.accent);
+  rect(16,32+bounce,5,2,0xf2d4a2);
+  // Gerakan tangan disesuaikan per aksi.
+  const armY=action==='water'||action==='fish'||action==='cook'?18:
+   action==='harvest'||action==='plant'?29:24;
+  const armRaise=action==='water'||action==='fish'||action==='cook';
+  rect(4,armY+bounce,6,12,p.skin);
+  rect(28,armRaise?18+bounce:24+bounce,5,12,p.skin);
+  rect(5,armY+2+bounce,3,6,0xdca987);
+  // Kepala besar dan rambut berlapis untuk proporsi chibi.
+  rect(7,4+bounce,23,21,p.skin);
+  rect(9,6+bounce,19,17,0xf6d5b5);
+  if(back){
+   rect(6,2+bounce,25,18,p.hair);
+   rect(9,15+bounce,19,5,0x6d503b);
+   rect(12,5+bounce,13,4,0x937155);
+  }else{
+   rect(6,1+bounce,25,10,p.hair);
+   rect(6,8+bounce,5,12,p.hair);
+   rect(side?7:27,8+bounce,4,9,p.hair);
+   rect(11,3+bounce,14,3,0x91745b);
+   rect(side?21:12,15+bounce,3,4,0x41362f);
+   if(!side)rect(23,15+bounce,3,4,0x41362f);
+   rect(side?21:14,20+bounce,9,2,0xd99186);
+   rect(9,19+bounce,4,3,0xe8a69b);
+   if(!side)rect(27,19+bounce,3,3,0xe8a69b);
+  }
+  // Karakter berbeda: rambut Bu Sari, celemek koki, dan tas pemain.
+  if(name==='sari'){
+   if(!back){rect(5,9+bounce,4,17,p.hair);rect(29,10+bounce,4,14,p.hair);}
+   rect(12,34+bounce,13,3,0xb56f68);
+   rect(11,28+bounce,15,6,0xf4beaa);
+  }else if(name==='chef'){
+   rect(7,1+bounce,24,7,0xffffff);
+   rect(10,bounce,18,4,0xffffff);
+   rect(9,7+bounce,19,4,0xdfebe5);
+   rect(12,27+bounce,15,12,0xfffaf0);
+   rect(13,30+bounce,3,9,0xd1dcd5);
+   rect(22,29+bounce,3,3,p.accent);
+   rect(22,35+bounce,3,3,p.accent);
+  }else{
+   rect(back?20:9,24+bounce,4,13,0xcaa66f);
+   if(!back){rect(22,29+bounce,6,8,0x977252);rect(23,31+bounce,3,3,0xe4ba86);}
+   rect(11,26+bounce,4,7,0x5b8abd);
+  }
+  if(action==='sleep'){
+   // Mata terpejam dan selimut malam, bukan teleportasi player.
+   rect(11,16+bounce,7,2,0x514039);
+   rect(22,16+bounce,6,2,0x514039);
+   rect(8,29,22,8,0xb0c7bf);
+   rect(13,32,6,3,0xe4eedc);
+  }
+  if(action==='water'){
+   // Penyiram di tangan kanan; garis air biru berayun.
+   rect(28,17,8,7,0x79a7b5);
+   rect(30,14,4,4,0xc3e0e0);
+   rect(33,22,3,4,0x77c4de);
+   if(frame>0){rect(34,29,2,6,0x74bad9);rect(29,34,3,5,0x81ccdf);}
+  }
+  if(action==='harvest'){
+   rect(26,27,10,10,0x9e764b);
+   rect(27,24,8,4,0xcaa36a);
+   rect(29,20,3,5,0x5c9c60);
+   if(frame>0)rect(33,18,4,6,0x7ab56a);
+  }
+  if(action==='plant'){
+   rect(28,32,6,6,0x8b6549);
+   rect(29,27,4,7,0x559f61);
+   if(frame>0)rect(34,35,3,4,0xc3a275);
+  }
+  if(action==='cook'){
+   rect(28,16,8,6,0x9ea9a5);
+   rect(31,13,2,3,0xffffff);
+   rect(30,23,6,2,0xdfbc79);
+   if(frame>0){rect(32,9,3,5,0xf8d2a2);rect(27,7,2,4,0xf9d9b0);}
+  }
+  if(action==='fish'){
+   rect(29,14,3,11,0x8c6b4c);
+   rect(31,12,7,2,0xb7ab84);
+   rect(37,14,2,18,0x91c3d6);
+   if(frame>0)rect(36,33,4,4,0xdfeee7);
+  }
+ };
+ for(const name of Object.keys(palette)){
+  for(const dir of ['down','up','side']){
    for(const frame of [0,1,2]){
-    g.clear();
-    const moving=frame!==0,leg=frame===1?2:-2;
-    r(4,42,24,3,0x5c8d65); // soft pixel shadow
-    // Boots and legs alternate on each step so NPCs really walk.
-    r(9+(moving?leg:0),35,7,9,0x5c677e);
-    r(19-(moving?leg:0),35,7,9,0x5c677e);
-    r(7,22,21,15,shirt);
-    r(5,24+(frame===1?2:0),5,11,skin);
-    r(27,24+(frame===2?2:0),4,11,skin);
-    r(8,5,20,20,skin);
-    if(direction==='up'){
-     r(7,1,22,15,hair);r(9,13,18,6,hair);
-    }else if(direction==='side'){
-     r(8,1,20,9,hair);r(8,8,5,9,hair);
-     r(22,16,3,3,0x4d3b31);r(27,17,3,3,skin);
-    }else{
-     r(7,1,22,8,hair);r(7,7,4,8,hair);r(25,7,4,8,hair);
-     r(12,16,3,3,0x433831);r(22,16,3,3,0x433831);
-     r(15,21,7,2,0xc08074);
-    }
-    // Outline wajah, sorot rambut, motif baju dan detail sepatu per karakter.
-    r(8,5,2,14,0x7e5945);
-    if(direction==='down'){
-      r(11,4,11,2,0x876a54);
-      r(12,15,2,2,0xffffff);r(22,15,2,2,0xffffff);
-      r(10,22,4,2,0xe7a493);r(24,22,4,2,0xe7a493);
-    }else if(direction==='up'){
-      r(11,3,15,2,0x8f6d51);r(13,12,12,2,0x49362e);
-    }else{r(12,4,10,2,0x91745b);r(21,15,2,2,0xffffff);}
-    r(7,23,21,3,0xffffff);
-    r(14,26,7,7,0xf4dba5);
-    r(16,27,3,3,name==='sari'?0xd67975:name==='chef'?0x8db7a3:0x82a8cf);
-    r(9+(moving?leg:0),42,7,2,0x393e52);
-    r(19-(moving?leg:0),42,7,2,0x393e52);
-    if(name==='sari'){
-      r(8,27,5,9,0xf0b7a2);r(22,27,5,9,0xf0b7a2);
-      if(direction==='down')r(7,4,2,14,0x654634);
-      r(12,33,13,4,0xbd736c);
-    }
-    if(name==='player'){
-      // Tas selempang dan garis kantong dari bahan pixel art.
-      if(direction==='up')r(19,24,9,10,0x947257);
-      else {r(9,26,15,3,0xe6bc88);r(20,30,6,7,0xb99168);}
-      r(11,24,3,12,0x5b83b6);
-      r(24,24,3,12,0x5b83b6);
-    }
-    if(chefHat){
-      r(8,1,21,5,0xffffff);r(11,0,15,3,0xffffff);
-      r(10,7,17,4,0xdde7dc);
-      r(13,26,11,12,0xfaf6e8);
-      r(13,27,2,12,0xd5dfd4);
-      r(19,29,3,3,0x9fc9a3);
-      r(19,35,3,3,0x9fc9a3);
-    }
-    g.generateTexture(name+'-'+direction+'-'+frame,36,48);
+    g.clear();draw(name,dir,frame);
+    g.generateTexture(name+'-'+dir+'-'+frame,42,48);
    }
+  }
+ }
+ for(const action of CHARACTER_ACTIONS){
+  for(const frame of [0,1,2]){
+   g.clear();draw('player','down',frame,action);
+   g.generateTexture('player-action-'+action+'-'+frame,42,48);
   }
  }
  g.destroy();
