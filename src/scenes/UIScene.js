@@ -6,7 +6,12 @@ import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=480;this.state.data.y=530;this.world.player.sprite.setPosition(480,530);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();document.querySelectorAll('[data-find-place]').forEach(button=>{
+ button.addEventListener('click',()=>{
+  this.world.highlightPlace(button.dataset.findPlace);
+  this.note(button.dataset.findPlace==='coop'?'🐔 Kandang ayam di kanan atas peta.':'🎣 Kolam ikan di kanan bawah peta.');
+ });
+});$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=480;this.state.data.y=530;this.world.player.sprite.setPosition(480,530);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
 this.keyboardNotebookHandler=event=>{
  if(event.repeat||event.altKey||event.ctrlKey||event.metaKey)return;
  const target=event.target;
