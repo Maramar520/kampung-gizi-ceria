@@ -351,18 +351,18 @@ Versi ini mempertahankan **denah enam blok** pada `docs/denah-konsep-awal.svg`: 
 ### Perpustakaan & Kak Rani
 - Rak dan buku gizi, karpet baca, serta **Kak Rani**, pustakawan baru dengan sprite dan rute harian.
 - Pemain mendekati rak buku lalu tekan **E/AKSI** untuk mengakses kuis makanan bergizi, Isi Piringku, dan buku ringkas tentang kelompok makanan.
-- Kak Rani dapat disapa, memperoleh hati pertemanan seperti warga lain, dan mengantar pemain ke aktivitas perpustakaan.
+- Kak Rani dapat disapa, memperoleh hati pertemanan seperti warga lain, mengantar pemain ke aktivitas perpustakaan, dan meminta bantuan menaruh buku sayuran ke rak yang benar. Pilihan keliru bisa dicoba ulang.
 - Tombol **📚 Perpustakaan (G)** dan penanda lokasi mengarahkan ke ruang baca; pembelajaran berlangsung di dalam perpustakaan, bukan di menu global. Dialog edukasi NPC lain menjadi petunjuk menuju perpustakaan. Chef Bimo tetap mengajarkan resep masakan.
 - Materi sederhana tentang kelompok makanan dan Isi Piringku yang dibuat pada v1.6 tetap dipertahankan.
 
 ### Misi harian
-- Lima kegiatan: **tanam bibit, panen sayur, masak hidangan, sapa warga, belajar gizi**.
+- Enam kegiatan: **tanam bibit, panen sayur, masak hidangan, sapa warga, membantu Kak Rani merapikan buku, belajar gizi**.
 - Setiap jenis misi memiliki hadiah bintang dan Koin Ceria. Kemajuan dihitung dari aksi berhasil, bukan dari tombol yang hanya dibuka.
 - Pemain membuka **🏅 Misi (M)** untuk melihat progres dan mengklaim hadiah. Hadiah tidak dapat diklaim lagi pada hari yang sama.
 - Tidur memulai hari baru dan mereset hanya progres misi harian; total aktivitas dan lencana tetap tersimpan.
 
 ### Lencana pencapaian
-- Enam lencana: Sahabat Kebun, Panen Ceria, Koki Kecil, Teman Baik, Pembaca Gizi, dan Bintang Kampung.
+- Tujuh lencana: Sahabat Kebun, Panen Ceria, Koki Kecil, Teman Baik, Penolong Perpustakaan, Pembaca Gizi, dan Bintang Kampung.
 - Pencapaian terbuka berdasarkan aktivitas sepanjang permainan dan dapat diklaim **satu kali saja**, termasuk setelah ganti hari.
 
 ### Kompatibilitas dan QA
