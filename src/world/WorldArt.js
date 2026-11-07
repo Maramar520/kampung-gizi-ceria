@@ -226,13 +226,13 @@ export function buildWorld(scene) {
  label('TERNAK',325,150,12);
  // RUMAH WARGA bagian tengah atas — interior terbuka, bukan label placeholder.
  room('village',0xf2dcbf,0xa98265);
- label('RUMAH WARGA',606,32,14);
+ label('PERPUSTAKAAN',606,32,14);
  frame(deco,551,106,54,40,0xceb48f,0x947255,3);
  r(deco,557,114,41,11,0xfaf4e6);r(deco,557,130,41,6,0xa9c5b8);
  shelf(626,83,67);table(630,169,50,32,0xc19a73);
  // v1.8: perpustakaan gizi menjadi sudut baca terbuka dalam rumah warga.
  // Tidak ada perubahan hitbox atau pintu dari denah enam blok.
- label('📚 PERPUSTAKAAN',650,62,11);
+ label('📚 RUANG BACA',650,62,11);
  frame(deco,637,142,52,20,0xb1ccaf,0x77958d,2);
  for(let i=0;i<5;i++){r(deco,642+i*9,148,6,4,[0xe5b882,0xd8a6a0,0x92abc4][i%3]);}
  for(let i=0;i<4;i++){r(deco,633+i*15,91,9,13,[0xc9a6c6,0xe8bd7d,0x94c2b0,0xacc4e1][i%4]);}
