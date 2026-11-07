@@ -48,6 +48,19 @@ export class GardenArt {
     if(high&&crop==='wortel')for(const x of [center-12,center,center+12]){rect(x-4,a.y+35,8,13,0xe79e4a);rect(x-2,a.y+36,4,5,0xf9bf72);}
     if(high&&crop==='tomat')for(const x of [center-12,center,center+12]){rect(x-5,a.y+22,10,10,0xd96057);rect(x-2,a.y+21,4,3,0x4c8c56);}
     if(high&&crop==='kangkung')for(const x of [center-12,center,center+12]){rect(x-8,a.y+16,16,8,0x4a9159);rect(x-6,a.y+10,12,8,0x6ab96e);}
+    if(high&&crop==='selada')for(const x of [center-12,center,center+12]){
+     rect(x-9,a.y+16,17,12,0x88c776);rect(x-6,a.y+12,11,10,0xb2df8d);
+     rect(x-2,a.y+15,4,6,0xd9ebaa);
+    }
+    if(high&&crop==='brokoli')for(const x of [center-12,center,center+12]){
+     rect(x-2,a.y+20,5,21,0x579461);rect(x-10,a.y+11,20,13,0x448458);
+     rect(x-7,a.y+6,14,11,0x70ac66);rect(x-3,a.y+5,7,5,0x96c979);
+    }
+    if(high&&crop==='labu')for(const x of [center-12,center,center+12]){
+     rect(x-7,a.y+33,15,11,0xd18b49);rect(x-5,a.y+30,11,17,0xe7a854);
+     rect(x-1,a.y+27,3,5,0x548555);rect(x-3,a.y+33,2,11,0xf8bd71);
+     rect(x+4,a.y+33,2,11,0xbb783e);
+    }
     if(plot.watered){
      for(const x of [a.x+6,a.x+33])rect(x,a.y+51,5,3,0x8ab7cf);
     }
