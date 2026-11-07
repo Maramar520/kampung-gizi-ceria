@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.0.1
+# Kampung Gizi Ceria — Phaser v1.1
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -205,3 +205,25 @@ Peternakan ayam dan kolam ikan kini ditambahkan langsung pada `WorldScene`; ruma
 - Untuk berinteraksi tetap jalan mendekati bangunan dan tekan **E / AKSI**.
 
 Jika browser masih menampilkan tampilan lama, muat ulang dengan **Cmd+Shift+R** (Mac) atau **Ctrl+Shift+R** (Windows). Pemeriksaan sintaks otomatis tidak menggantikan inspeksi visual di browser.
+
+## v1.1 — QA Desktop/HP dan Visual Polish
+
+- Lapisan gambar kandang dan kolam dirender di belakang pemain; karakter tidak lagi tertutup oleh permukaan kolam.
+- Jalan kecil di sisi kanan restoran memberi petunjuk visual menuju kandang. Batu pijakan menuju dermaga dan detail teratai/pantulan air ditambahkan.
+- Tombol arah diperbesar ke 56 × 56 px; tombol AKSI setinggi minimal 64 px. Di layar sempit, tata letak kontrol diatur agar mudah disentuh.
+- Label interaksi yang mudah dibaca tampil sebagai baris HTML di bawah game, selain petunjuk kecil di kanvas.
+- Input berjalan dibersihkan setiap kali dialog terbuka sehingga karakter tidak terus bergerak setelah menu ditutup.
+- Minigame telur memiliki target lebih lebar dan indikator lebih lambat.
+- Bridge `?qa=1` hanya tersedia saat game dibuka pada localhost/127.0.0.1 untuk pengujian browser, tidak aktif pada GitHub Pages.
+
+### Pengujian otomatis
+
+GitHub Actions sekarang menjalankan dua pekerjaan:
+1. **syntax** — `node --check` dan seluruh tes logika `node --test tests/*.test.mjs`.
+2. **browser** — Chromium Playwright dalam dua konfigurasi: desktop 1280×850 dan perangkat seluler Pixel 7 393×852.
+
+`tests/browser-smoke.mjs` memeriksa game berhasil dibuka, delapan lokasi interaksi, tas dan jurnal quest, pembelian bahan, belajar resep, tiga tahap memasak, penyerahan quest, memelihara ayam, memancing, dan ukuran kontrol HP. Pengujian menjalankan interaksi game sungguhan, tetapi memindahkan karakter antar lokasi melalui QA bridge supaya tidak bergantung pada waktu tempuh; tes BFS dalam `tests/world.test.mjs` memverifikasi keterjangkauan lokasi berdasarkan collision.
+
+Tangkapan layar desktop dan HP diunggah sebagai artifact **qa-browser-screenshots** pada halaman Actions, bila run berhasil atau gagal setelah membuat gambar.
+
+**Batas pengujian:** pengecekan Chromium headless tidak menggantikan tes pengguna langsung pada Safari iPhone, browser Android, atau semua ukuran layar. Sebelum rilis publik lebih luas, cobalah navigasi dengan kontrol sentuh di perangkat asli.
