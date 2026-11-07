@@ -102,7 +102,11 @@ async function testDesktop(browser){
  assert.match(await page.locator('#dialogTitle').textContent(),/berhasil/i);
  await close(page);
  assert.equal((await gameData()).cooked,true);
- await actionAt(page,350,477,'Quest selesai');
+ const sari=await page.evaluate(()=>{
+  const npc=window.__kampungQA.scene.getScene('WorldScene').sari;
+  return {x:npc.x,y:npc.y};
+ });
+ await actionAt(page,sari.x,sari.y,'Quest selesai');
  await close(page);
  assert.equal((await gameData()).done,true);
 
