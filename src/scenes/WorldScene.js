@@ -13,6 +13,10 @@ import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
 import {WeatherArt} from '../world/WeatherArt.js';
 import {rainyRoute,dryReturnRoute} from '../world/ShelterRoutes.js';
+import {workRoute} from '../world/NpcWorkRoutes.js';
+import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
+import {HomeDecorArt} from '../world/HomeDecorArt.js';
+import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
 
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
@@ -25,6 +29,9 @@ export class WorldScene extends Phaser.Scene {
   this.dailyLife=new DailyLifeSystem(this.game.state);
   this.social=new SocialSystem(this.game.state);
   this.missions=new MissionSystem(this.game.state);
+  this.decor=new HomeDecorSystem(this.game.state);
+  this.restaurantOrders=new RestaurantOrderSystem(this.game.state);
+  this.decorArt=new HomeDecorArt(this,this.decor);
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
   this.weatherArt=new WeatherArt(this,this.clock);
@@ -118,39 +125,31 @@ export class WorldScene extends Phaser.Scene {
    this.rani.setRoutine([{x:692,y:186},{x:692,y:209}],'KAK RANI');
    return;
   }
-  // Cuaca cerah: rutinitas biasa memakai jalur yang sudah ada.
-  const sariPlans=[
-   {label:'BU SARI · BERJALAN',points:[{x:448,y:281},{x:410,y:281},{x:410,y:315},{x:448,y:315}]},
-   {label:'BU SARI · WARGA',points:[{x:448,y:280},{x:479,y:280},{x:479,y:245},{x:448,y:245}]},
-   {label:'BU SARI · PASAR',points:[{x:448,y:300},{x:416,y:300},{x:416,y:332},{x:448,y:332}]}
-  ];
-  const chefPlans=[
-   [{x:618,y:468},{x:667,y:468},{x:667,y:505},{x:618,y:505}],
-   [{x:617,y:480},{x:652,y:480},{x:652,y:517},{x:617,y:517}],
-   [{x:618,y:448},{x:660,y:448},{x:660,y:490},{x:618,y:490}]
-  ];
-  const a=sariPlans[(phase+day%2)%3];
-  this.sari.setRoutine(phase===3?[{x:478,y:245},{x:478,y:263},{x:478,y:245}]:raining?
-   [{x:449,y:277},{x:462,y:277},{x:462,y:283}]:a.points,'BU SARI');
-  this.chef.setRoutine(phase===3?[{x:617,y:480},{x:617,y:506},{x:625,y:506}]:chefPlans[phase], '');
-  const taniRoutes=[
-   [{x:403,y:189},{x:401,y:217},{x:408,y:243},{x:403,y:198}],
-   [{x:405,y:226},{x:407,y:249},{x:398,y:248},{x:399,y:208}],
-   [{x:402,y:204},{x:401,y:238},{x:408,y:248},{x:403,y:193}]
-  ];
-  const niaRoutes=[
-   [{x:405,y:316},{x:412,y:286},{x:482,y:286},{x:479,y:314}],
-   [{x:412,y:280},{x:481,y:280},{x:479,y:252},{x:417,y:280}],
-   [{x:405,y:312},{x:419,y:287},{x:483,y:287},{x:470,y:316}]
-  ];
-  this.tani.setRoutine(phase===3?[{x:402,y:232},{x:403,y:235},{x:402,y:232}]:raining?
-   [{x:405,y:241},{x:403,y:232},{x:407,y:241}]:taniRoutes[(phase+day%2)%3],'PAK TANI');
-  this.nia.setRoutine(phase===3?[{x:478,y:277},{x:479,y:283},{x:478,y:277}]:raining?
-   [{x:414,y:283},{x:421,y:283},{x:414,y:283}]:niaRoutes[phase%3],'NIA');
-  this.rani.setRoutine(phase===3?
-   [{x:692,y:208},{x:692,y:213}]:
-   raining?[{x:692,y:197},{x:692,y:211}]:
-   [{x:692,y:186},{x:692,y:209},{x:692,y:191}],'KAK RANI');
+  // v1.9: jalur kerja melewati pintu yang sama dengan pemain dan
+  // berhenti di pos kegiatan (kebun, pasar, dapur, perpustakaan).
+  for(const [id,npc] of [['sari',this.sari],['tani',this.tani],
+   ['nia',this.nia],['chef',this.chef],['rani',this.rani]]){
+   const route=workRoute(id,phase);
+   let prefix=[];
+   if((id==='sari'||id==='tani')&&npc.x>817&&npc.y>340){
+    prefix=dryReturnRoute(id,npc);
+   }else if((id==='sari'||id==='nia')&&npc.x<392&&npc.y>340){
+    prefix=[{x:211,y:339},{x:211,y:318},
+     {x:id==='sari'?448:405,y:id==='sari'?281:317}];
+   }else if(id==='sari'&&npc.x>500&&npc.x<714&&npc.y>339){
+    prefix=[{x:607,y:339},{x:607,y:319},{x:448,y:281}];
+   }else if(id==='nia'&&npc.x>500&&npc.x<714&&npc.y<239){
+    prefix=[{x:608,y:208},{x:608,y:237},{x:608,y:281},{x:448,y:281},{x:405,y:317}];
+   }
+   const label=({sari:'BU SARI',tani:'PAK TANI',nia:'NIA',chef:'',rani:'KAK RANI'})[id];
+   if(prefix.length){
+    npc.setRoutine([...prefix,...route],label,false);
+    npc.nextJobRoute={route,label};
+   }else{
+    npc.setRoutine(route,label,phase!==3);
+    npc.nextJobRoute=null;
+   }
+  }
   this.phaseIndex=phase;
   this.dailyPhase=this.clock.description.phase;
  }
@@ -208,6 +207,14 @@ export class WorldScene extends Phaser.Scene {
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
    this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);
+   // Once a villager has exited an interior through its door, begin the
+   // normal repeating workday without teleporting or cutting across walls.
+   for(const npc of [this.sari,this.tani,this.nia,this.chef,this.rani]){
+    if(npc.finished&&npc.nextJobRoute){
+     const {route,label}=npc.nextJobRoute;
+     npc.nextJobRoute=null;npc.setRoutine(route,label,true);
+    }
+   }
   }
   const id=this.getNearest();
   this.prompt.setVisible(!!id&&!this.game.dialogOpen);
