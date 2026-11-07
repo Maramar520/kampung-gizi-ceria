@@ -12,7 +12,8 @@ export const FURNITURE=[
  {x:289,y:137,w:68,h:93},{x:511,y:153,w:83,h:66},
  {x:423,y:250,w:86,h:53},{x:80,y:259,w:120,h:31},{x:746,y:268,w:116,h:30}
 ];
-export const OBSTACLES=[...WALLS,...FURNITURE];
+export const NEW_WORLD_OBSTACLES=[{x:746,y:87,w:104,h:54},{x:708,y:516,w:152,h:54}];
+export const OBSTACLES=[...WALLS,...FURNITURE,...NEW_WORLD_OBSTACLES];
 export const INTERACTIONS=[
  {id:'bed',x:320,y:188,r:60,label:'Kasur'},
  {id:'stove',x:553,y:190,r:62,label:'Kompor'},
