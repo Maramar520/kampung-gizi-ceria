@@ -88,6 +88,52 @@ async function testDesktop(browser){
  assert.equal(await page.locator('.social-friend').count(),4);
  assert.equal(await page.locator('.social-hearts').count(),4);
  await close(page);
+ // v1.6 — nutrition quiz through actual buttons, including wrong-answer retry.
+ await page.locator('#learningButton').click();
+ await page.locator('#dialog:not(.hidden)').waitFor();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Belajar Gizi/);
+ await page.getByRole('button',{name:/Kuis Gizi/}).click();
+ let firstWrong=true;
+ for(let i=0;i<3;i++){
+  const correct=await page.evaluate(index=>{
+   const learning=window.__kampungQA.scene.getScene('UIScene').learning;
+   return learning.questions()[index].correct;
+  },i);
+  if(firstWrong){
+   await page.locator('#choices button').nth((correct+1)%4).click();
+   assert.match(await page.locator('#dialogTitle').textContent(),/coba lagi/i);
+   await page.getByRole('button',{name:/Coba pilihan lain/}).click();
+   firstWrong=false;
+  }
+  await page.locator('#choices button').nth(correct).click();
+  assert.match(await page.locator('#dialogTitle').textContent(),/Jawaban tepat/);
+  await page.locator('#choices button').first().click();
+ }
+ assert.equal((await gameData()).learning.stars,3);
+ assert.equal((await gameData()).learning.quiz.completed,1);
+ await page.getByRole('button',{name:/Kembali ke menu belajar/}).click();
+ await page.getByRole('button',{name:/Isi Piringku/}).click();
+ const plateChoices=['Nasi','Telur','Kangkung','Pisang'];
+ for(const name of plateChoices){
+  assert.equal(await page.locator('.plate-piece').count(),6);
+  await page.getByRole('button',{name:new RegExp(name)}).click();
+  assert.match(await page.locator('#dialogTitle').textContent(),/Bagus!/);
+  await page.locator('#choices button').first().click();
+ }
+ assert.match(await page.locator('#dialogTitle').textContent(),/Isi Piringku Selesai/);
+ assert.equal((await gameData()).learning.stars,5);
+ assert.equal((await gameData()).learning.plate.completed,1);
+ const coinsAfterLearning=(await gameData()).coins;
+ await page.getByRole('button',{name:/Kembali belajar/}).click();
+ await page.getByRole('button',{name:/Kuis Gizi/}).click();
+ for(let i=0;i<3;i++){
+  const correct=await page.evaluate(index=>window.__kampungQA.scene.getScene('UIScene').learning.questions()[index].correct,i);
+  await page.locator('#choices button').nth(correct).click();
+  await page.locator('#choices button').first().click();
+ }
+ assert.equal((await gameData()).learning.stars,5);
+ assert.equal((await gameData()).coins,coinsAfterLearning);
+ await close(page);
  // v1.4: play actions through actual dialogs, then verify the rendered pose.
  await actionAt(page,320,141,'Kebun');
  await page.getByRole('button',{name:/Tanam Bayam.*Petak 1/}).click();
@@ -212,6 +258,15 @@ async function testMobile(browser){
  assert.ok(questLayout.questHeight<260,'Mobile quest should not stretch into an excessively tall column');
 
  await page.locator('[data-dir="up"]').tap();
+ await page.locator('#learningButton').tap();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Belajar Gizi/);
+ await page.getByRole('button',{name:/Isi Piringku/}).tap();
+ assert.equal(await page.locator('.plate-piece').count(),6);
+ await page.getByRole('button',{name:/Nasi/}).tap();
+ await page.getByRole('button',{name:/Isi bagian berikutnya/}).tap();
+ assert.equal(await page.locator('.plate-piece').count(),6);
+ await page.locator('#close').tap();
+ await page.locator('#dialog').waitFor({state:'hidden'});
  await page.locator('#friendsButton').tap();
  assert.match(await page.locator('#dialogTitle').textContent(),/Buku Pertemanan/);
  assert.equal(await page.locator('.social-friend').count(),4);
