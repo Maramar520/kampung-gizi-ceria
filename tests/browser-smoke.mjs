@@ -317,6 +317,41 @@ async function testDesktop(browser){
  const inventory=await gameData();
  assert.equal(inventory.inventory.telur,2);
  assert.equal(inventory.inventory.ikan,1);
+ // v1.10: Nia leaves library and walks into market at night even without rain.
+ const niaNight=await page.evaluate(()=>{
+  const w=window.__kampungQA.scene.getScene('WorldScene');
+  w.game.state.data.day=1;w.clock.startDay();w.clock.setPhase(3);
+  w.nia.sprite.setPosition(653,208);
+  w.routineKey=null;w.updateRoutines();
+  for(let i=0;i<750;i++)w.nia.update(.05);
+  w.weatherArt.update(w.time.now,true);
+  return {x:w.nia.x,y:w.nia.y,stopped:w.nia.finished,weather:w.clock.weather};
+ });
+ assert.equal(niaNight.weather,'Cerah');
+ assert.ok(niaNight.stopped&&niaNight.x>190&&niaNight.x<243&&niaNight.y>342&&niaNight.y<390,
+  'Nia must enter traditional market at night even if not raining');
+ await page.screenshot({path:'qa-artifacts/desktop-nia-night-market.png',fullPage:true});
+ // v1.10: festival activates in market day three, quiz and reward can be claimed once.
+ await page.evaluate(()=>{
+  const w=window.__kampungQA.scene.getScene('WorldScene');
+  w.game.state.data.day=3;w.clock.startDay();
+  w.updateRoutines();w.festivalArt.update(w.time.now);
+ });
+ await actionAt(page,208,376,'Pasar');
+ await page.getByRole('button',{name:/Ikuti Festival Kampung Sehat/}).click();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Festival Kampung Sehat/);
+ await page.getByRole('button',{name:/Ikut festival/}).click();
+ await page.getByRole('button',{name:/Kuis festival/}).click();
+ const answer=await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').festival.question.correct);
+ await page.locator('#choices button').nth(answer).click();
+ await page.getByRole('button',{name:/Kembali ke festival/}).click();
+ const beforeFestival=(await gameData()).coins;
+ await page.getByRole('button',{name:/Ambil hadiah/}).click();
+ assert.equal((await gameData()).coins,beforeFestival+35);
+ assert.equal((await gameData()).festival.celebratedDays.filter(d=>d===3).length,1);
+ assert.equal(await page.getByRole('button',{name:/Ambil hadiah/}).count(),0);
+ await close(page);
+ await page.screenshot({path:'qa-artifacts/desktop-festival.png',fullPage:true});
  // Rain regression: simulate day two, then advance actual NPC walking logic.
  const rain = await page.evaluate(()=>{
   const w=window.__kampungQA.scene.getScene('WorldScene');
@@ -381,6 +416,10 @@ async function testMobile(browser){
  assert.equal(await page.locator('.decor-slot').count(),3);
  await page.locator('#close').tap();
  await page.locator('#dialog').waitFor({state:'hidden'});
+ await page.locator('#festivalButton').tap();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Festival Kampung Sehat/);
+ await page.locator('#close').tap();
+ await page.locator('#dialog').waitFor({state:'hidden'});
  await page.locator('#learningButton').tap();
  assert.match(await page.locator('#dialogTitle').textContent(),/Pergi ke Perpustakaan Gizi/);
  await page.locator('#close').tap();
@@ -426,6 +465,15 @@ async function testMobile(browser){
   world.updateRoutines();world.scene.get('UIScene').refresh();
  });
  assert.match(await page.locator('#weather').textContent(),/Malam/);
+ const mobileNightNia=await page.evaluate(()=>{
+  const w=window.__kampungQA.scene.getScene('WorldScene');
+  w.nia.sprite.setPosition(653,208);
+  w.routineKey=null;w.updateRoutines();
+  for(let i=0;i<750;i++)w.nia.update(.05);
+  return {x:w.nia.x,y:w.nia.y,stopped:w.nia.finished};
+ });
+ assert.ok(mobileNightNia.stopped&&mobileNightNia.x>190&&mobileNightNia.x<243&&mobileNightNia.y>342,
+  'Nia must reach market at night on mobile too');
  await page.screenshot({path:'qa-artifacts/mobile-night.png',fullPage:true});
  const mobileShelters=await page.evaluate(()=>{
   const w=window.__kampungQA.scene.getScene('WorldScene');
