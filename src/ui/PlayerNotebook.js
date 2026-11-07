@@ -80,12 +80,12 @@ export class PlayerNotebook {
  }
  refresh(){
   if(!this.visible)return;
-  const signature=JSON.stringify({tab:this.active,inventory:this.state.data.inventory,coins:this.state.data.coins,recipeKnown:this.state.data.recipeKnown,cooked:this.state.data.cooked,done:this.state.data.done});
+  const signature=JSON.stringify({tab:this.active,inventory:this.state.data.inventory,coins:this.state.data.coins,garden:this.state.data.garden,recipeKnown:this.state.data.recipeKnown,cooked:this.state.data.cooked,done:this.state.data.done});
   if(signature!==this.lastSignature)this.render();
  }
  render(){
   const data=this.state.data;
-  this.lastSignature=JSON.stringify({tab:this.active,inventory:data.inventory,coins:data.coins,recipeKnown:data.recipeKnown,cooked:data.cooked,done:data.done});
+  this.lastSignature=JSON.stringify({tab:this.active,inventory:data.inventory,coins:data.coins,garden:data.garden,recipeKnown:data.recipeKnown,cooked:data.cooked,done:data.done});
   const names={inventory:'🎒 Tas Bahan',recipes:'📖 Buku Resep',journal:'📋 Jurnal Quest'};
   this.heading.textContent=names[this.active];
   this.tabs.forEach(b=>{
@@ -110,7 +110,16 @@ export class PlayerNotebook {
    card.append(el('small','',item.type+' · '+item.price+' KC'));
    grid.append(card);
   }
+  const seedCard=el('article','item-card owned');
+  seedCard.append(el('div','item-emoji','🌱'));
+  seedCard.append(el('strong','','Bibit Bayam'));
+  seedCard.append(el('span','item-count',(data.garden?.seeds??3)+' bibit'));
+  seedCard.append(el('small','','Tanam di Kebun · 5 KC'));
+  grid.append(seedCard);
   this.content.append(grid);
+  const plots=Array.isArray(data.garden?.plots)?data.garden.plots:[];
+  const growing=plots.filter(p=>p?.crop==='bayam').length;
+  this.content.append(el('p','notebook-note','🌿 Kebun: '+growing+' dari 3 petak terisi. Siram lalu tidur sampai hari berikutnya untuk memanen bayam.'));
   this.content.append(el('p','notebook-tip','🪙 Koin Ceria: '+data.coins+' · 🧺 Belanja di pasar sebelah kiri.'));
  }
  renderRecipe(data){
