@@ -54,5 +54,5 @@ test('original six blocks and non-store interactions remain untouched',()=>{
   [45,500,805,339,339]);
  for(const id of ['bed','stove','market','npc','chef','garden','coop','pond','village','tani','nia','library','rani'])
   assert.ok(INTERACTIONS.some(z=>z.id===id));
- assert.equal(INTERACTIONS.length,14);
+ assert.equal(INTERACTIONS.length,15);
 });
