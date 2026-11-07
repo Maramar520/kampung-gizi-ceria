@@ -5,7 +5,7 @@ import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=480;this.state.data.y=530;this.world.player.sprite.setPosition(480,530);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=480;this.state.data.y=530;this.world.player.sprite.setPosition(480,530);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
 this.keyboardNotebookHandler=event=>{
  if(event.repeat||event.altKey||event.ctrlKey||event.metaKey)return;
  const target=event.target;
@@ -15,7 +15,7 @@ this.keyboardNotebookHandler=event=>{
  if(tab){event.preventDefault();this.openNotebook(tab);}
 };
 window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once('shutdown',()=>window.removeEventListener('keydown',this.keyboardNotebookHandler));$('reset').onclick=()=>{if(confirm('Reset semua progres game?')){this.state.reset();this.world.player.sprite.setPosition(480,530);this.world.keysHeld.clear();this.world.sari.sprite.setPosition(350,476);this.close();this.refresh();this.note('Progres direset!')}};document.querySelectorAll('[data-dir]').forEach(button=>{const dir=button.dataset.dir;button.addEventListener('pointerdown',e=>{e.preventDefault();button.setPointerCapture(e.pointerId);this.world.keysHeld.add(dir)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(ev,()=>this.world.keysHeld.delete(dir))});this.time.addEvent({delay:500,loop:true,callback:()=>this.refresh()})}
- refresh(){const s=this.state.data;for(const id of ['coins','energy','carb','protein','vitamin','day'])$(id).textContent=s[id];$('status').textContent=this.state.status;$('quest').textContent=this.quest.description;this.state.save();this.notebook?.refresh()}
+ refresh(){const s=this.state.data;for(const id of ['coins','energy','carb','protein','vitamin','day'])$(id).textContent=s[id];$('status').textContent=this.state.status;$('quest').textContent=this.quest.description;this.state.save();this.notebook?.refresh();this.world?.gardenArt?.render()}
  note(message){$('toast').textContent=message;this.time.delayedCall(3000,()=>{$('toast').textContent='WASD / panah untuk bergerak • E untuk interaksi'})}
  show(title,message,actions=[],extra=''){this.game.dialogOpen=true;$('dialogTitle').textContent=title;$('message').textContent=message;$('cookVisual').innerHTML=extra;$('choices').replaceChildren();for(const a of actions){const b=document.createElement('button');b.textContent=a.label;b.onclick=a.fn;$('choices').appendChild(b)}$('dialog').classList.remove('hidden')}
  openNotebook(tab){
@@ -25,7 +25,49 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.notebook.open(tab);
  }
  close(){if(this.notebook?.visible){this.notebook.close();return;}this.minigame.stop();this.game.dialogOpen=false;$('dialog').classList.add('hidden');if(this.cookTween){this.cookTween.stop();this.cookTween=null}}
- market(){this.show('🧺 Pasar Tradisional','Pilih bahan segar untuk Nasi Telur Sayur.',INGREDIENTS.map(([id,price])=>({label:`Beli ${id} — ${price} KC`,fn:()=>{const s=this.state.data;if(s.coins<price){this.note('Koin tidak cukup!');return}s.coins-=price;s.inventory[id]=(s.inventory[id]||0)+1;this.refresh();this.market();this.note('Berhasil membeli '+id)}})))}
+ market(){
+  const items=INGREDIENTS.map(([id,price])=>({
+   label:'Beli '+id+' — '+price+' KC',
+   fn:()=>{
+    const s=this.state.data;
+    if(s.coins<price){this.note('Koin tidak cukup!');return;}
+    s.coins-=price;s.inventory[id]=(s.inventory[id]||0)+1;
+    this.refresh();this.market();this.note('Berhasil membeli '+id);
+   }
+  }));
+  items.push({label:'🌱 Beli bibit bayam — 5 KC',fn:()=>{
+   if(!this.garden.buySeeds()){this.note('Koin tidak cukup untuk bibit.');return;}
+   this.refresh();this.market();this.note('Bibit bayam ditambahkan ke tas!');
+  }});
+  this.show('🧺 Pasar Tradisional','Beli bahan atau bibit bayam. Bayam juga bisa dipanen dari kebun!',items);
+ }
+ gardenMenu(){
+  const view=this.garden.view;
+  const names={empty:'Kosong',dry:'Belum disiram',growing:'Sedang tumbuh',ready:'Siap panen'};
+  const emoji={empty:'🟫',dry:'🌱',growing:'🌿',ready:'🥬'};
+  const icons=view.plots.map(p=>'<div class="garden-plot '+p.stage+'"><span>'+emoji[p.stage]+'</span><b>Petak '+(p.index+1)+'</b><small>'+names[p.stage]+'</small></div>').join('');
+  const actions=[];
+  for(const p of view.plots){
+   if(p.stage==='empty'){
+    actions.push({label:'🌱 Tanam di petak '+(p.index+1),fn:()=>{
+     if(!this.garden.plant(p.index)){this.note('Bibit habis! Beli di pasar.');return;}
+     this.world.playInteraction('garden');this.refresh();this.gardenMenu();
+    }});
+   }else if(p.stage==='dry'){
+    actions.push({label:'💧 Siram petak '+(p.index+1),fn:()=>{
+     if(!this.garden.water(p.index))return;
+     this.world.playInteraction('garden');this.refresh();this.gardenMenu();
+    }});
+   }else if(p.stage==='ready'){
+    actions.push({label:'🥬 Panen petak '+(p.index+1)+' (+2 bayam)',fn:()=>{
+     if(!this.garden.harvest(p.index))return;
+     this.world.playInteraction('garden');this.refresh();this.gardenMenu();this.note('Panen berhasil! +2 Bayam, +1 Bibit.');
+    }});
+   }
+  }
+  if(!actions.length)actions.push({label:'🌙 Kembali dan tidur sehari',fn:()=>{this.close();this.note('Tidur di kasur rumah agar bayam siap dipanen besok.');}});
+  this.show('🌿 Kebun Bayam','Bibit: '+view.seeds+' · Hari '+this.state.data.day+'.\nTanam → siram → tidur sampai besok → panen. Panen menghasilkan 2 bayam dan 1 bibit. Bayam bisa dipakai memasak!',actions,'<div class="garden-preview">'+icons+'</div>');
+ }
  cookStep(step=0){
   if(step===STEPS.length){
    if(!this.cooking.finish())return this.show('Dapur','Bahan belum lengkap. Silakan mulai ulang proses memasak.');
@@ -42,5 +84,5 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    this.cookStep(step+1);
   });
  }
- action(){if(this.game.dialogOpen)return;const id=this.world.getNearest();const s=this.state.data;if(id)this.world.playInteraction(id);if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');if(id==='market')return this.market();if(id==='chef')return this.show('👨‍🍳 Chef Bimo','Halo! Menu beragam menggabungkan sumber karbohidrat, protein, dan sayur. Resep Nasi Telur Sayur gratis!',[{label:s.recipeKnown?'Resep sudah dipelajari':'📖 Pelajari resep',fn:()=>{s.recipeKnown=true;this.refresh();this.show('📖 Resep terbuka','1 beras + 1 telur + 1 bayam. Pulang dan gunakan kompor rumah!')}}]);if(id==='stove'){if(!s.recipeKnown)return this.show('🍳 Dapur','Belum punya resep. Temui Chef Bimo.');if(s.cooked)return this.show('🍳 Dapur','Masakan sudah siap. Bawa kepada Bu Sari.');if(this.cooking.missing.length)return this.show('🍳 Dapur','Bahan kurang: '+this.cooking.missing.join(', ')+'. Belanja dahulu.');return this.cookStep()}if(id==='npc'){if(s.done)return this.show('👩‍🌾 Bu Sari','Terima kasih! Kamu sudah membantu menyusun menu beragam.');if(!s.cooked)return this.show('👩‍🌾 Bu Sari','Tolong buatkan Nasi Telur Sayur. Beli beras, telur, bayam di pasar, belajar resep dari Chef Bimo, lalu masak di rumah.');if(this.quest.complete()){this.refresh();return this.show('🏆 Quest selesai!','Terima kasih! Kamu mendapatkan 50 Koin Ceria. Makan beragam membantu tubuh memperoleh berbagai zat gizi.')}}if(id==='bed')return this.show('🛏️ Kasur','Istirahat untuk memulihkan energi dan memulai hari baru.',[{label:'🌙 Tidur hingga pagi',fn:()=>{s.energy=100;s.day++;this.refresh();this.show('☀️ Selamat pagi!','Energi pulih dan hari baru dimulai. Progres quest tetap tersimpan.')}}])}
+ action(){if(this.game.dialogOpen)return;const id=this.world.getNearest();const s=this.state.data;if(id)this.world.playInteraction(id);if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');if(id==='market')return this.market();if(id==='garden')return this.gardenMenu();if(id==='chef')return this.show('👨‍🍳 Chef Bimo','Halo! Menu beragam menggabungkan sumber karbohidrat, protein, dan sayur. Resep Nasi Telur Sayur gratis!',[{label:s.recipeKnown?'Resep sudah dipelajari':'📖 Pelajari resep',fn:()=>{s.recipeKnown=true;this.refresh();this.show('📖 Resep terbuka','1 beras + 1 telur + 1 bayam. Pulang dan gunakan kompor rumah!')}}]);if(id==='stove'){if(!s.recipeKnown)return this.show('🍳 Dapur','Belum punya resep. Temui Chef Bimo.');if(s.cooked)return this.show('🍳 Dapur','Masakan sudah siap. Bawa kepada Bu Sari.');if(this.cooking.missing.length)return this.show('🍳 Dapur','Bahan kurang: '+this.cooking.missing.join(', ')+'. Belanja dahulu.');return this.cookStep()}if(id==='npc'){if(s.done)return this.show('👩‍🌾 Bu Sari','Terima kasih! Kamu sudah membantu menyusun menu beragam.');if(!s.cooked)return this.show('👩‍🌾 Bu Sari','Tolong buatkan Nasi Telur Sayur. Beli beras, telur, bayam di pasar, belajar resep dari Chef Bimo, lalu masak di rumah.');if(this.quest.complete()){this.refresh();return this.show('🏆 Quest selesai!','Terima kasih! Kamu mendapatkan 50 Koin Ceria. Makan beragam membantu tubuh memperoleh berbagai zat gizi.')}}if(id==='bed')return this.show('🛏️ Kasur','Istirahat untuk memulihkan energi dan memulai hari baru.',[{label:'🌙 Tidur hingga pagi',fn:()=>{s.energy=100;s.day++;this.refresh();this.show('☀️ Selamat pagi!','Energi pulih dan hari baru dimulai. Progres quest tetap tersimpan.')}}])}
 }
