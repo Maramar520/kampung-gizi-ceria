@@ -9,6 +9,8 @@ import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js';
+import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
+import {WeatherArt} from '../world/WeatherArt.js';
 
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
@@ -16,11 +18,13 @@ export class WorldScene extends Phaser.Scene {
   createTextures(this);
   const obstacles=buildWorld(this);
   this.garden=new GardenSystem(this.game.state);
+  this.clock=new TimeWeatherSystem(this.game.state,this.garden);
   this.gardenArt=new GardenArt(this,this.garden);
   this.dailyLife=new DailyLifeSystem(this.game.state);
   this.social=new SocialSystem(this.game.state);
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
+  this.weatherArt=new WeatherArt(this,this.clock);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
    Object.assign(this.game.state.data,SPAWN);
@@ -83,8 +87,9 @@ export class WorldScene extends Phaser.Scene {
   return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia})[id]||null;
  }
  updateRoutines(){
-  const phase=Math.floor(this.time.now/30000)%3,day=this.game.state.data.day;
-  const key=day+'-'+phase;
+  const phase=this.clock.phase,day=this.game.state.data.day;
+  const raining=this.clock.weather==='Hujan';
+  const key=day+'-'+phase+'-'+this.clock.weather;
   if(this.routineKey===key)return;
   this.routineKey=key;
   // Semua jalur NPC berada di jalan tengah. Tidak memotong dinding atau kolam.
@@ -99,8 +104,9 @@ export class WorldScene extends Phaser.Scene {
    [{x:618,y:448},{x:660,y:448},{x:660,y:490},{x:618,y:490}]
   ];
   const a=sariPlans[(phase+day%2)%3];
-  this.sari.setRoutine(a.points,'BU SARI');
-  this.chef.setRoutine(chefPlans[phase],'');
+  this.sari.setRoutine(phase===3?[{x:478,y:245},{x:478,y:263},{x:478,y:245}]:raining?
+   [{x:449,y:277},{x:462,y:277},{x:462,y:283}]:a.points,'BU SARI');
+  this.chef.setRoutine(phase===3?[{x:617,y:480},{x:617,y:506},{x:625,y:506}]:chefPlans[phase], '');
   const taniRoutes=[
    [{x:403,y:189},{x:401,y:217},{x:408,y:243},{x:403,y:198}],
    [{x:405,y:226},{x:407,y:249},{x:398,y:248},{x:399,y:208}],
@@ -111,10 +117,12 @@ export class WorldScene extends Phaser.Scene {
    [{x:412,y:280},{x:481,y:280},{x:479,y:252},{x:417,y:280}],
    [{x:405,y:312},{x:419,y:287},{x:483,y:287},{x:470,y:316}]
   ];
-  this.tani.setRoutine(taniRoutes[(phase+day%2)%3],'PAK TANI');
-  this.nia.setRoutine(niaRoutes[phase],'NIA');
+  this.tani.setRoutine(phase===3?[{x:402,y:232},{x:403,y:235},{x:402,y:232}]:raining?
+   [{x:405,y:241},{x:403,y:232},{x:407,y:241}]:taniRoutes[(phase+day%2)%3],'PAK TANI');
+  this.nia.setRoutine(phase===3?[{x:478,y:277},{x:479,y:283},{x:478,y:277}]:raining?
+   [{x:414,y:283},{x:421,y:283},{x:414,y:283}]:niaRoutes[phase%3],'NIA');
   this.phaseIndex=phase;
-  this.dailyPhase=['Pagi','Siang','Sore'][phase];
+  this.dailyPhase=this.clock.description.phase;
  }
  highlightPlace(id){
   const markers={
@@ -161,8 +169,9 @@ export class WorldScene extends Phaser.Scene {
   return {x:193,y:162,label:'Kompor'};
  }
  update(_time,delta){
+  const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
-  this.ambientArt.update(this.time.now);this.updateRoutines();
+  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.updateRoutines();
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
