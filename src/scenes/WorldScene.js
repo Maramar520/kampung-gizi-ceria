@@ -85,7 +85,7 @@ export class WorldScene extends Phaser.Scene {
    [{x:618,y:448},{x:660,y:448},{x:660,y:490},{x:618,y:490}]
   ];
   const a=sariPlans[(phase+day%2)%3];
-  this.sari.setRoutine(a.points,a.label);
+  this.sari.setRoutine(a.points,'BU SARI');
   this.chef.setRoutine(chefPlans[phase],'');
   this.dailyPhase=['Pagi','Siang','Sore'][phase];
  }
@@ -151,8 +151,8 @@ export class WorldScene extends Phaser.Scene {
   if(this.game.dialogOpen||!goal){this.guide.setVisible(false);return;}
   const s=this.game.state.data,dx=goal.x-s.x,dy=goal.y-s.y,d=Math.hypot(dx,dy);
   const arrow=Math.abs(dx)>Math.abs(dy)?(dx<0?'←':'→'):(dy<0?'↑':'↓');
-  this.guide.setVisible(d>105);
-  if(d>105)this.guide.setText(arrow+' '+goal.label).setPosition(
+  this.guide.setVisible(d>105&&!id);
+  if(d>105&&!id)this.guide.setText(arrow+' '+goal.label).setPosition(
    Phaser.Math.Clamp(s.x,75,880),Phaser.Math.Clamp(s.y-61,24,548));
  }
 }
