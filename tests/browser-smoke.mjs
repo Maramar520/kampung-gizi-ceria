@@ -35,7 +35,7 @@ async function actionAt(page,x,y,dialogName){
  await page.locator('#dialog:not(.hidden)').waitFor();
  if(dialogName)assert.match(await page.locator('#dialogTitle').textContent(),new RegExp(dialogName,'i'));
 }
-async function close(page){await page.locator('#close').click();await page.locator('#dialog.hidden').waitFor();}
+async function close(page){await page.locator('#close').click();await page.locator('#dialog').waitFor({state:'hidden'});}
 async function testDesktop(browser){
  const context=await browser.newContext({viewport:{width:1280,height:850},deviceScaleFactor:1});
  const page=await context.newPage();
@@ -49,7 +49,7 @@ async function testDesktop(browser){
  await page.locator('#notebook:not(.hidden)').waitFor();
  assert.match(await page.locator('#notebookTitle').textContent(),/Tas/);
  await page.keyboard.press('Escape');
- await page.locator('#notebook.hidden').waitFor();
+ await page.locator('#notebook').waitFor({state:'hidden'});
 
  // Visit all eight action zones, not just shortcut names.
  for(const z of [
@@ -103,7 +103,7 @@ async function testDesktop(browser){
   await page.getByRole('button',{name:/Lempar kail/}).click();
  }
  await page.getByRole('button',{name:/Selesai/}).click();
- await page.locator('#dialog.hidden').waitFor();
+ await page.locator('#dialog').waitFor({state:'hidden'});
  const inventory=await gameData();
  assert.equal(inventory.inventory.telur,2);
  assert.equal(inventory.inventory.ikan,1);
@@ -129,7 +129,7 @@ async function testMobile(browser){
  await page.locator('[data-open-notebook="journal"]').tap();
  assert.match(await page.locator('#notebookTitle').textContent(),/Jurnal/);
  await page.locator('#notebookClose').tap();
- await page.locator('#notebook.hidden').waitFor();
+ await page.locator('#notebook').waitFor({state:'hidden'});
  await page.screenshot({path:'qa-artifacts/mobile-map.png',fullPage:true});
  await context.close();
 }
