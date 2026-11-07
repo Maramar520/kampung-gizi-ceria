@@ -99,10 +99,30 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.show('👩‍🏫 Kak Rani · Pustakawan',
    greeting+'\nAyo belajar tentang gizi dari buku dan permainan di perpustakaan!',[
     {label:'📚 Pilih kegiatan belajar',fn:()=>this.libraryMenu()},
+    {label:'🧹 Bantu merapikan buku'+(this.missions.progress('help')?' ✓':''),fn:()=>this.helpRani()},
     {label:'🤝 Lihat buku pertemanan',fn:()=>this.socialOverview()},
     {label:'Sampai jumpa',fn:()=>this.close()}
    ]);
   this.refresh();
+ }
+ helpRani(){
+  if(this.missions.progress('help')){
+   return this.show('📚 Buku sudah rapi','Terima kasih! Kamu sudah membantu Kak Rani hari ini. Ayo kembali besok untuk tugas baru.',[
+    {label:'Kembali ke Kak Rani',fn:()=>this.librarianMenu()}
+   ]);
+  }
+  this.show('🧹 Bantu Kak Rani','Kak Rani menemukan buku tentang wortel dan bayam. Buku itu sebaiknya ditaruh di rak mana?',[
+   {label:'🥬 Rak Sayuran',fn:()=>{
+    this.missions.record('help');this.refresh();
+    this.show('✨ Terima kasih, Penolong Buku!','Benar! Wortel dan bayam termasuk sayuran. Misi membantu warga bertambah.',[
+     {label:'📋 Lihat misi harian',fn:()=>this.missionsMenu()},
+     {label:'Kembali ke Kak Rani',fn:()=>this.librarianMenu()}
+    ]);
+   }},
+   {label:'🍳 Rak Peralatan Memasak',fn:()=>this.show('💡 Coba lagi','Wortel dan bayam adalah sayuran, bukan peralatan masak.',[
+    {label:'Coba rak lainnya',fn:()=>this.helpRani()}
+   ])}
+  ]);
  }
  readNutritionBook(){
   this.show('📗 Buku Gizi Ceria',
