@@ -32,7 +32,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     ?'✨ Dekat '+label+' — tekan E atau tombol AKSI untuk berinteraksi!'
     :'🧭 Jelajahi kampung dengan WASD / panah atau tombol arah, lalu dekati lokasi dan tekan AKSI.';
  }
- note(message){$('toast').textContent=message;this.time.delayedCall(3000,()=>{$('toast').textContent='WASD / panah untuk bergerak • E untuk interaksi'})}
+ note(message){const toast=$('toast');toast.textContent=message;toast.classList.add('visible');if(this.toastTimeout)this.toastTimeout.remove(false);this.toastTimeout=this.time.delayedCall(2700,()=>{toast.classList.remove('visible');this.toastTimeout=null;});}
  show(title,message,actions=[],extra=''){this.world.keysHeld.clear();this.game.dialogOpen=true;$('dialogTitle').textContent=title;$('message').textContent=message;$('cookVisual').innerHTML=extra;$('choices').replaceChildren();for(const a of actions){const b=document.createElement('button');b.textContent=a.label;b.onclick=a.fn;$('choices').appendChild(b)}$('dialog').classList.remove('hidden')}
  openNotebook(tab){
   if(this.game.dialogOpen&&!this.notebook.visible)return;
