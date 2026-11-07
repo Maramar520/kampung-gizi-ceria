@@ -85,7 +85,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.refresh();
  }
  socialOverview(){
-  if(this.game.dialogOpen&&!(!$('dialog').classList.contains('hidden')))return;
+  if(this.notebook?.visible)return;
+  if(this.game.dialogOpen&&$('dialog').classList.contains('hidden'))return;
   const cards=this.social.all().map(p=>'<div class="social-friend"><div><strong>'+
    p.emoji+' '+p.name+'</strong><small>'+p.place+'</small></div>'+
    '<span class="social-hearts" aria-label="'+p.hearts+' dari 5 hati">'+p.heartsDisplay+'</span></div>').join('');
