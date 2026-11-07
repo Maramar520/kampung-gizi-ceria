@@ -82,7 +82,7 @@ async function testDesktop(browser){
   [320,141,'Kebun'],[208,374,'Pasar'],[619,465,'Chef'],
   [128,162,'Kasur'],[194,161,'Menu|Masakan'],
   [325,221,'Kandang'],[869,246,'Kolam'],
-  [869,373,'Toko Swalayan'],[607,205,'Perpustakaan'],[650,135,'Perpustakaan']]){
+  [869,373,'Rumah Pak Tani'],[607,205,'Perpustakaan'],[650,135,'Perpustakaan']]){
    await actionAt(page,z[0],z[1],z[2]);
    await close(page);
  }
@@ -288,6 +288,36 @@ async function testDesktop(browser){
  const inventory=await gameData();
  assert.equal(inventory.inventory.telur,2);
  assert.equal(inventory.inventory.ikan,1);
+ // Rain regression: simulate day two, then advance actual NPC walking logic.
+ const rain = await page.evaluate(()=>{
+  const w=window.__kampungQA.scene.getScene('WorldScene');
+  w.game.state.data.day=2;w.clock.startDay();
+  w.sari.sprite.setPosition(448,281);
+  w.tani.sprite.setPosition(403,189);
+  w.nia.sprite.setPosition(405,317);
+  w.routineKey=null;w.lastRaining=false;w.updateRoutines();
+  for(let i=0;i<750;i++){w.sari.update(.05);w.tani.update(.05);w.nia.update(.05);}
+  w.weatherArt.update(w.time.now,true);
+  w.scene.get('UIScene').refresh();
+  return {weather:w.clock.weather,
+    sari:{x:w.sari.x,y:w.sari.y,stopped:w.sari.finished},
+    tani:{x:w.tani.x,y:w.tani.y,stopped:w.tani.finished},
+    nia:{x:w.nia.x,y:w.nia.y,stopped:w.nia.finished}};
+ });
+ assert.equal(rain.weather,'Hujan');
+ assert.ok(rain.sari.stopped&&rain.sari.x>820&&rain.sari.y>344,'Bu Sari must enter family home');
+ assert.ok(rain.tani.stopped&&rain.tani.x>820&&rain.tani.y>344,'Pak Tani must enter family home');
+ assert.ok(rain.nia.stopped&&rain.nia.x<393&&rain.nia.y>339,'Nia must enter traditional market');
+ await page.screenshot({path:'qa-artifacts/desktop-rain-shelters.png',fullPage:true});
+ const dry=await page.evaluate(()=>{
+  const w=window.__kampungQA.scene.getScene('WorldScene');
+  w.game.state.data.day=3;w.clock.startDay();w.updateRoutines();
+  for(let i=0;i<750;i++){w.sari.update(.05);w.tani.update(.05);w.nia.update(.05);}
+  return {sari:{x:w.sari.x,y:w.sari.y},tani:{x:w.tani.x,y:w.tani.y},
+   nia:{x:w.nia.x,y:w.nia.y}};
+ });
+ assert.ok(dry.sari.x<800&&dry.tani.x<800,'Residents must exit house when rain ends');
+ assert.ok(dry.nia.y<339,'Nia must exit market when rain ends');
  await page.screenshot({path:'qa-artifacts/desktop-after-quest.png',fullPage:true});
  await context.close();
 }
@@ -363,6 +393,17 @@ async function testMobile(browser){
  });
  assert.match(await page.locator('#weather').textContent(),/Malam/);
  await page.screenshot({path:'qa-artifacts/mobile-night.png',fullPage:true});
+ const mobileShelters=await page.evaluate(()=>{
+  const w=window.__kampungQA.scene.getScene('WorldScene');
+  w.game.state.data.day=2;w.clock.startDay();
+  w.sari.sprite.setPosition(448,281);w.tani.sprite.setPosition(403,189);w.nia.sprite.setPosition(405,317);
+  w.routineKey=null;w.lastRaining=false;w.updateRoutines();
+  for(let i=0;i<750;i++){w.sari.update(.05);w.tani.update(.05);w.nia.update(.05);}
+  w.weatherArt.update(w.time.now,true);w.scene.get('UIScene').refresh();
+  return {sari:w.sari.x,tani:w.tani.x,nia:w.nia.y};
+ });
+ assert.ok(mobileShelters.sari>820&&mobileShelters.tani>820&&mobileShelters.nia>339);
+ await page.screenshot({path:'qa-artifacts/mobile-rain-shelters.png',fullPage:true});
  await page.screenshot({path:'qa-artifacts/mobile-map.png',fullPage:true});
  await context.close();
 }
