@@ -113,7 +113,7 @@ export class WorldScene extends Phaser.Scene {
   const leavingNiaShelter=this.niaSheltering===true&&!niaSheltering;
   this.niaSheltering=niaSheltering;
   if(this.routineKey===key)return;
-  const justStoppedRaining=this.lastRaining===true&&!raining;
+  const justStoppedRaining=this.lastRaining===true&&!raining&&phase!==3;
   this.lastRaining=raining;
   this.routineKey=key;
   if(raining){
