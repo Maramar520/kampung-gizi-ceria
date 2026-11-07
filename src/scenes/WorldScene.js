@@ -169,7 +169,11 @@ export class WorldScene extends Phaser.Scene {
   for(const [id,npc] of [['sari',this.sari],['tani',this.tani],
    ['nia',this.nia],['chef',this.chef],['rani',this.rani]]){
    if(id==='nia'&&phase===3)continue;
-   const route=workRoute(id,phase);
+   // Festival day: Nia and Bu Sari visit the traditional market to join
+   // the activity, reusing existing workstation routes and doorways.
+   const festivalPhase=this.festival.active&&phase!==3?
+    (id==='nia'?1:id==='sari'?0:phase):phase;
+   const route=workRoute(id,festivalPhase);
    let prefix=[];
    if(id==='nia'&&leavingNiaShelter&&isInsideShelter('nia',npc)){
     prefix=dryReturnRoute('nia',npc);
