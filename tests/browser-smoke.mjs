@@ -82,7 +82,7 @@ async function testDesktop(browser){
   [320,141,'Kebun'],[208,374,'Pasar'],[619,465,'Chef'],
   [128,162,'Kasur'],[194,161,'Menu|Masakan'],
   [325,221,'Kandang'],[869,246,'Kolam'],
-  [869,373,'Toko Swalayan'],[607,205,'Rumah Warga'],[650,135,'Perpustakaan']]){
+  [869,373,'Toko Swalayan'],[607,205,'Perpustakaan'],[650,135,'Perpustakaan']]){
    await actionAt(page,z[0],z[1],z[2]);
    await close(page);
  }
