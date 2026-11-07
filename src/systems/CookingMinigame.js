@@ -62,14 +62,14 @@ export class CookingMinigame {
       count('Tepat 0 / 2 · Coba saat garis masuk hijau');
       this.timer=this.scene.time.addEvent({delay:35,loop:true,callback:()=>{
         if(this.finished)return;
-        ticks++; const pos=(Math.sin(ticks*.065)+1)*50;
+        ticks++; const pos=(Math.sin(ticks*.045)+1)*50;
         const marker=document.getElementById('timingMarker');
         if(marker)marker.style.left=pos+'%';
       }});
       this.bind(button,'click',()=>{
         if(this.finished)return;
-        const pos=(Math.sin(ticks*.065)+1)*50;
-        if(pos>=37&&pos<=63){hits++;progress(hits*50);count('Tepat '+hits+' / 2 ✨');}
+        const pos=(Math.sin(ticks*.045)+1)*50;
+        if(pos>=32&&pos<=68){hits++;progress(hits*50);count('Tepat '+hits+' / 2 ✨');}
         else{miss++;count('Belum pas ('+miss+' kali). Coba lagi saat zona hijau!');}
         if(hits>=2)finish();
       });
