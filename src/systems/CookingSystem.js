@@ -4,6 +4,7 @@ export const RECIPES=Object.freeze({
  'nasi-telur-sayur':{id:'nasi-telur-sayur',name:'Nasi Telur Sayur',emoji:'🍛',ingredients:['beras','telur','bayam'],energy:10,nutrition:{carb:25,protein:20,vitamin:25},description:'Menu utama untuk quest Bu Sari.'},
  'sup-wortel-tomat':{id:'sup-wortel-tomat',name:'Sup Wortel Tomat',emoji:'🥣',ingredients:['wortel','tomat'],energy:6,nutrition:{carb:4,protein:2,vitamin:24},description:'Sup hangat dengan sayur berwarna-warni.'},
  'tumis-kangkung':{id:'tumis-kangkung',name:'Tumis Kangkung',emoji:'🥬',ingredients:['kangkung','telur'],energy:6,nutrition:{carb:3,protein:13,vitamin:18},description:'Kangkung dan telur untuk menu beragam.'},
+ 'ikan-tomat':{id:'ikan-tomat',name:'Ikan Panggang Tomat',emoji:'🐟',ingredients:['ikan','tomat'],energy:7,nutrition:{carb:3,protein:22,vitamin:12},description:'Ikan dari kolam disajikan bersama tomat kebun.'},
  'nasi-sayur-warna':{id:'nasi-sayur-warna',name:'Nasi Sayur Pelangi',emoji:'🍚',ingredients:['beras','wortel','tomat','kangkung'],energy:8,nutrition:{carb:22,protein:4,vitamin:30},description:'Perpaduan nasi dan tiga warna sayuran.'}
 });
 export const RECIPE_IDS=Object.keys(RECIPES);
