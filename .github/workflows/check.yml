@@ -33,3 +33,26 @@ jobs:
           test -f tests/daily-life.test.mjs
       - name: Run system regression tests
         run: node --test tests/*.test.mjs
+
+  browser:
+    name: Desktop and mobile browser smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium test runtime
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run end-to-end smoke tests
+        run: node tests/browser-smoke.mjs
+      - name: Upload desktop and mobile screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-browser-screenshots
+          path: qa-artifacts/
+          if-no-files-found: ignore
