@@ -5,7 +5,7 @@ export class QuestSystem {
   const items=['beras','telur','bayam'].map(id=>id+': '+(s.inventory[id]||0)).join(' · ');
   if(s.done)return '🏆 Quest selesai! Bu Sari sudah menerima hidangan. Hadiah +50 Koin Ceria.';
   if(s.cooked)return '🍽️ Nasi Telur Sayur siap! Cari Bu Sari di jalan kampung dan tekan E untuk menyerahkan.';
-  if(!s.recipeKnown)return '📖 Tujuan: Temui Chef Bimo di restoran kanan untuk belajar resep. Bahan: '+items;
+  if(!s.recipeKnown)return '📖 Tujuan: Temui Chef Bimo di restoran bagian tengah bawah untuk belajar resep. Bahan: '+items;
   const missing=['beras','telur','bayam'].filter(id=>(s.inventory[id]||0)<1);
   if(missing.length)return '🧺 Tujuan: Kumpulkan '+missing.join(', ')+'. Beras dan telur di pasar kiri; bayam bisa dibeli atau ditanam di kebun atas kiri. Bahan: '+items;
   return '🍳 Tujuan: Semua bahan lengkap! Masuk rumah melalui pintu tengah, dekati kompor, tekan E dan masak.';
