@@ -1,9 +1,9 @@
 // Lapisan pertumbuhan di WorldScene. Tidak membuat scene atau world terpisah.
-// Koordinat kebun sesuai WorldArt.js: x24..216, y78..188.
+// Tiga petak di sebelah timur rumah pemain sesuai denah SVG: x258..389, y59..138.
 export const GARDEN_PLOTS=[
- {x:35,y:94,w:47,h:63},
- {x:91,y:94,w:47,h:63},
- {x:147,y:94,w:47,h:63}
+ {x:267,y:74,w:34,h:47},
+ {x:309,y:74,w:34,h:47},
+ {x:351,y:74,w:32,h:47}
 ];
 export class GardenArt {
  constructor(scene,garden){
