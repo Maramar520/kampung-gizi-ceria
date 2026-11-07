@@ -5,6 +5,7 @@ export const MISSION_DEFS=Object.freeze([
  {id:'harvest',emoji:'🥬',title:'Memanen sayuran',target:1,stars:2,coins:10},
  {id:'cook',emoji:'🍳',title:'Memasak satu hidangan',target:1,stars:2,coins:12},
  {id:'friend',emoji:'🤝',title:'Menyapa seorang warga',target:1,stars:1,coins:8},
+ {id:'help',emoji:'📚',title:'Membantu Kak Rani merapikan buku',target:1,stars:2,coins:10},
  {id:'learn',emoji:'📚',title:'Belajar gizi di perpustakaan',target:1,stars:2,coins:10}
 ]);
 export const ACHIEVEMENTS=Object.freeze([
@@ -12,6 +13,7 @@ export const ACHIEVEMENTS=Object.freeze([
  {id:'first-harvest',title:'Panen Ceria',emoji:'🥕',event:'harvest',target:1,stars:3,coins:15},
  {id:'first-dish',title:'Koki Kecil',emoji:'👩‍🍳',event:'cook',target:1,stars:3,coins:15},
  {id:'first-friend',title:'Teman Baik',emoji:'💞',event:'friend',target:1,stars:3,coins:15},
+ {id:'first-help',title:'Penolong Perpustakaan',emoji:'📚',event:'help',target:1,stars:3,coins:15},
  {id:'first-learning',title:'Pembaca Gizi',emoji:'📖',event:'learn',target:1,stars:3,coins:15},
  {id:'daily-hero',title:'Bintang Kampung',emoji:'🏆',event:'claimed',target:5,stars:5,coins:25}
 ]);
