@@ -7,6 +7,7 @@ import {GardenArt} from '../world/GardenArt.js';
 import {FarmArt} from '../world/FarmArt.js';
 import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
+import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
@@ -18,7 +19,7 @@ export class WorldScene extends Phaser.Scene {
   this.dailyLife=new DailyLifeSystem(this.game.state);
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
-  this.player=new Player(this,this.game.state,obstacles);
+  this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
    Object.assign(this.game.state.data,SPAWN);
    this.player.sprite.setPosition(SPAWN.x,SPAWN.y);
@@ -55,6 +56,7 @@ export class WorldScene extends Phaser.Scene {
   this.scene.launch('UIScene');
  }
  playInteraction(kind){
+  if(Object.hasOwn(ACTION_DURATION,kind))return this.activity.play(kind);
   const subject=kind==='npc'?this.sari.sprite:kind==='chef'?this.chef.sprite:this.player.sprite;
   if(!subject?.active)return;
   const x=subject.x,y=subject.y;
@@ -136,7 +138,7 @@ export class WorldScene extends Phaser.Scene {
   this.ambientArt.update(this.time.now);this.updateRoutines();
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
-   this.player.update(dt,this.keysHeld);
+   if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
   }
   const id=this.getNearest();
