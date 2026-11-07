@@ -106,7 +106,8 @@ async function testDesktop(browser){
   return {x:n.x,y:n.y};
  });
  await actionAt(page,farmerNow.x,farmerNow.y,'Pak Tani');
- assert.match(await page.locator('#message').textContent(),/2 hati hari ini/);
+ assert.match(await page.locator('#message').textContent(),/\+1 hati hari ini/);
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').social.profile('tani').hearts),2);
  await close(page);
  await actionAt(page,320,141,'Kebun');
  await page.getByRole('button',{name:/Panen Bayam.*Petak 1/}).click();
