@@ -32,14 +32,14 @@ export function inventoryView(data){
   }));
 }
 export function recipeView(data){
-  const ingredients=inventoryView(data);
+  const ingredients=inventoryView(data).filter(item=>RECIPE.ingredients.includes(item.id));
   const ready=ingredients.every(i=>i.quantity>=1);
   return { ...RECIPE,known:!!data.recipeKnown,ready,cooked:!!data.cooked,
     ingredients:ingredients.map(i=>({...i,need:1,enough:i.quantity>=1})),
     canCook:!!data.recipeKnown&&ready&&!data.cooked};
 }
 export function questView(data){
-  const inv=inventoryView(data);
+  const inv=inventoryView(data).filter(item=>RECIPE.ingredients.includes(item.id));
   const all=inv.every(i=>i.quantity>=1);
   const done=!!data.done;
   return {
