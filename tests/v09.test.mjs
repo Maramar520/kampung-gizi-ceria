@@ -7,11 +7,14 @@ const {CookingSystem,RECIPES,knownRecipe,missingFor}=await load('src/systems/Coo
 const {inventoryView,recipeView,recipeCatalog,questView}=await load('src/ui/PlayerNotebook.js');
 const state=()=>({data:{day:1,coins:300,energy:80,carb:40,protein:30,vitamin:25,recipeKnown:true,cooked:false,inventory:{beras:2,telur:2,bayam:2},garden:{seeds:3,plots:[null,null,null]}},save(){}});
 test('semua tanaman memiliki konfigurasi benih dan durasi panen',()=>{
- assert.deepEqual(Object.keys(CROPS).sort(),['bayam','kangkung','tomat','wortel']);
+ assert.deepEqual(Object.keys(CROPS).sort(),['bayam','brokoli','kangkung','labu','selada','tomat','wortel']);
  assert.equal(CROPS.bayam.days,1);
  assert.equal(CROPS.wortel.days,2);
  assert.equal(CROPS.tomat.days,2);
  assert.equal(CROPS.kangkung.days,1);
+ assert.equal(CROPS.selada.days,1);
+ assert.equal(CROPS.brokoli.days,2);
+ assert.equal(CROPS.labu.days,3);
 });
 test('save kebun v0.8 tetap mempertahankan bibit dan petak bayam',()=>{
  const g=normalizeGarden({seeds:7,plots:[{crop:'bayam',plantedDay:4,watered:true},null,null]});
