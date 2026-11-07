@@ -1,10 +1,11 @@
 // v1.5: persahabatan sederhana. Tidak membuat save key baru dan tidak memengaruhi quest utama.
-export const FRIEND_IDS=Object.freeze(['sari','chef','tani','nia']);
+export const FRIEND_IDS=Object.freeze(['sari','chef','tani','nia','rani']);
 export const FRIENDS=Object.freeze({
  sari:{name:'Bu Sari',emoji:'👩',place:'Jalan kampung dan rumah warga'},
  chef:{name:'Chef Bimo',emoji:'👨‍🍳',place:'Restoran sehat'},
  tani:{name:'Pak Tani',emoji:'👨‍🌾',place:'Kebun dan kandang ayam'},
- nia:{name:'Nia',emoji:'👧',place:'Dekat pasar dan rumah warga'}
+ nia:{name:'Nia',emoji:'👧',place:'Dekat pasar dan rumah warga'},
+ rani:{name:'Kak Rani',emoji:'👩‍🏫',place:'Perpustakaan gizi di Rumah Warga'}
 });
 export const MAX_HEARTS=5;
 export const DIALOGUES=Object.freeze({
@@ -23,6 +24,10 @@ export const DIALOGUES=Object.freeze({
  nia:[
   ['Halo, ayo jelajahi kampung bersama!','Aku suka melihat warna-warni sayuran di pasar.','Sore ini kita bisa menebak manfaat makanan.'],
   ['Selamat pagi! Mau belajar memilih bekal?','Buah dan sayur punya warna yang beragam, ya.','Besok kita bermain lagi, sampai jumpa!']
+ ],
+ rani:[
+  ['Selamat pagi! Buku gizi sedang menunggu.','Kita bisa belajar Isi Piringku bersama.','Bacalah satu hal baru sebelum pulang!'],
+  ['Ayo membaca tentang sayur dan buah.','Coba jawab kuis makanan sehat di rak buku.','Buku gizi bisa dibaca lagi besok.']
  ]
 });
 export function defaultSocial(){
@@ -52,7 +57,8 @@ export function dialogueFor(id,day,phase=0){
   return {sari:'Sudah malam. Besok pagi kita lanjutkan kegiatan sehat, ya!',
    chef:'Dapur sudah tenang. Tidur cukup agar siap memasak besok.',
    tani:'Malam tiba, tanaman beristirahat. Besok kita cek kebun lagi.',
-   nia:'Langit sudah gelap. Selamat malam, sampai besok!'}[id]||'Selamat malam!';
+   nia:'Langit sudah gelap. Selamat malam, sampai besok!',
+   rani:'Perpustakaan mulai sepi. Ayo baca sebentar lalu istirahat!'}[id]||'Selamat malam!';
  }
  return list[(safeDay-1)%list.length][safePhase];
 }
