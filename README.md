@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.3
+# Kampung Gizi Ceria — Phaser v1.4
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -266,3 +266,25 @@ Perubahan utama:
 - Tes `tests/world.test.mjs` memeriksa **urutan blok asli, lima pintu, interior, seluruh 10 titik interaksi, dan jalur menuju lokasi tanpa menerobos dinding/air**. Tes browser `tests/browser-smoke.mjs` diperbarui ke koordinat baru.
 
 **Catatan:** gambar SVG berukuran 360×270 sementara dunia game berukuran 960×600, sehingga denah diproyeksikan dengan skala sumbu berbeda, dengan posisi relatif dan susunan enam blok tetap dipertahankan. Grafik dan interaksi masih berbasis Phaser dan tidak memerlukan instalasi ulang.
+
+
+## v1.4 — Chibi & Character Activity Animation
+
+Versi ini **tidak mengubah** denah v1.3, `WorldGeometry.js`, titik interaksi, jalan, atau collision. Rumah pemain/kebun/ternak kiri atas, rumah warga tengah atas, kolam kanan atas, pasar kiri bawah, restoran tengah bawah, dan swalayan kanan bawah tetap mengikuti `docs/denah-konsep-awal.svg`.
+
+Perubahan visual:
+- Karakter pemain, Bu Sari, dan Chef Bimo digambar ulang sebagai **sprite chibi prosedural 42×48**: kepala besar, wajah lebih ekspresif, bayangan, kerah, tas, celemek, dan detail langkah.
+- Berjalan empat arah (atas, bawah, kiri dan kanan) dengan tiga pose per orientasi; orientasi samping dicerminkan untuk arah kiri/kanan, dengan bob dan debu langkah yang hanya memengaruhi gambar (bukan koordinat collision).
+- Enam set pose kegiatan, masing-masing tiga frame: **tidur, menanam, menyiram, memanen, memasak, dan memancing**. `ActionAnimator` menampilkan pose serta partikel (percikan air, hasil panen, Zzz, panas, dan riak).
+- Pose kegiatan hanya diputar **setelah aksi benar-benar dipilih dan berhasil**, bukan ketika sekadar membuka menu tempat.
+- Animasi kegiatan berlangsung singkat via jam internal Phaser dan tidak mengubah nilai inventori, hari, koin, posisi pemain, data NPC, atau save lama.
+
+Teknis:
+- `src/world/WorldArt.js`: generator tekstur 42×48 untuk karakter dan enam aktivitas.
+- `src/entities/Player.js`: gerak 4 arah, langkah halus dan debu tanpa modifikasi hitbox.
+- `src/systems/ActionAnimator.js`: frame action, durasi, dan efek yang dibersihkan otomatis setelah animasi.
+- `src/scenes/WorldScene.js` dan `src/scenes/UIScene.js`: integrasi animasi pada aksi interaktif.
+- `tests/animation.test.mjs`: tes pose yang dibuat, pemanggilan aktivitas, dan ketetapan koordinat denah.
+- `tests/browser-smoke.mjs`: simulasi tindakan tanam, siram, panen, tidur, masak dan pancing, serta pengecekan pose aktif pada browser.
+
+Batasan: animasi berjalan dan kegiatan diuji dengan Chromium headless pada konfigurasi desktop dan emulasi HP; kualitas visual di perangkat fisik iOS/Android tetap perlu divalidasi secara manual.
