@@ -23,6 +23,28 @@ export class WorldScene extends Phaser.Scene {
   this.tweens.add({targets:puff,y:y-80,alpha:0,duration:650,
     ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
  }
+ updateRoutines(){
+  const day=this.game.state.data.day;
+  const phase=Math.floor(this.time.now/30000)%3;
+  const key=day+'-'+phase;
+  if(this.routineKey===key)return;
+  this.routineKey=key;
+  const sariPlans=[
+   {label:'BU SARI · JALAN',points:[{x:350,y:476},{x:345,y:415},{x:388,y:415},{x:387,y:480}]},
+   {label:'BU SARI · KEBUN',points:[{x:350,y:418},{x:295,y:418},{x:280,y:396},{x:350,y:418}]},
+   {label:'BU SARI · PASAR',points:[{x:352,y:459},{x:261,y:463},{x:260,y:406},{x:351,y:460}]}
+  ];
+  const chefPlans=[
+   {label:'',points:[{x:813,y:330},{x:845,y:330},{x:813,y:330}]},
+   {label:'',points:[{x:785,y:334},{x:852,y:334},{x:785,y:334}]},
+   {label:'',points:[{x:822,y:328},{x:785,y:328},{x:822,y:328}]}
+  ];
+  const shift=day%2;
+  const a=sariPlans[(phase+shift)%3],b=chefPlans[phase];
+  this.sari.setRoutine(a.points,a.label);
+  this.chef.setRoutine(b.points,b.label);
+  this.dailyPhase=['Pagi','Siang','Sore'][phase];
+ }
  getNearest(){
   const s=this.game.state.data;
   return nearestInteraction(s,this.zones.map(z=>z.id==='npc'?{...z,x:this.sari.x,y:this.sari.y}:z))?.id??null;
@@ -49,7 +71,7 @@ export class WorldScene extends Phaser.Scene {
   return {x:553,y:229,label:'Kompor'};
  }
  update(_time,delta){
-  this.gardenArt.render();this.farmArt.update(this.time.now);
+  this.gardenArt.render();this.farmArt.update(this.time.now);this.updateRoutines();
   if(!this.game.dialogOpen){
     const dt=Math.min(delta/1000,.05);
     this.player.update(dt,this.keysHeld);
