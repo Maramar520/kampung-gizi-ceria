@@ -157,6 +157,14 @@ export function buildWorld(scene) {
   outline(ground,0,425,960,65,0xebd8b1,0xc8b58b,1);
   outline(ground,126,351,75,99,0xebd8b1,0xc8b58b,1);
   outline(ground,775,349,75,100,0xebd8b1,0xc8b58b,1);
+  // v1.1: jalan memutar ke kandang. Jalur di sisi kanan restoran tetap dapat dilalui.
+  outline(ground,922,190,23,236,0xf0dabb,0xc5a880,1);
+  outline(ground,851,186,93,22,0xf0dabb,0xc5a880,1);
+  for(let y=217;y<416;y+=29){r(ground,929,y,11,3,0xddc39d);}
+  for(let x=864;x<929;x+=23){r(ground,x,194,13,3,0xdac19c);}
+  // Titian kecil dari jalan desa menuju dermaga kolam.
+  for(let x=749;x<831;x+=18){r(ground,x,491,13,4,0xdfbd8f);}
+
   for(let x=16;x<950;x+=65){r(ground,x,455,22,3,0xd8bd94);pebble(x+27,468);}
   for(let y=369;y<594;y+=44){r(ground,467,y,26,3,0xd8bd94);}
   for(const [x,y] of [[24,387],[225,389],[643,379],[931,402],[116,510],[716,521]])bush(x,y);
