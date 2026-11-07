@@ -138,6 +138,16 @@ async function testMobile(browser){
  }));
  assert.ok(layout.documentWidth<=layout.viewport+2,'Page horizontally overflows viewport');
  assert.ok(layout.canvas<=layout.viewport,'Game canvas exceeds mobile viewport');
+ // Regression for v1.1 screenshot: quest previously had a narrow column.
+ const questLayout=await page.evaluate(()=>{
+  const quest=document.getElementById('quest').getBoundingClientRect();
+  const bottom=document.querySelector('.bottom').getBoundingClientRect();
+  return {questWidth:quest.width,bottomWidth:bottom.width,questHeight:quest.height};
+ });
+ assert.ok(questLayout.questWidth>=questLayout.bottomWidth*.92,
+  'Mobile quest must fill the available row, not squeeze beside action buttons');
+ assert.ok(questLayout.questHeight<260,'Mobile quest should not stretch into an excessively tall column');
+
  await page.locator('[data-dir="up"]').tap();
  await page.locator('[data-open-notebook="journal"]').tap();
  assert.match(await page.locator('#notebookTitle').textContent(),/Jurnal/);
