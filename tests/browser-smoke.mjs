@@ -50,6 +50,21 @@ async function testDesktop(browser){
  assert.ok(yAfter<yBefore-8,'W key must move the player north');
  await mkdir('qa-artifacts',{recursive:true});
  await page.screenshot({path:'qa-artifacts/desktop-map.png',fullPage:true});
+ // v1.7: advance only the in-game clock (QA bridge), render night without moving buildings.
+ await page.evaluate(()=>{
+  const world=window.__kampungQA.scene.getScene('WorldScene');
+  world.clock.setPhase(3);
+  world.weatherArt.update(world.time.now,true);
+  world.updateRoutines();
+  world.scene.get('UIScene').refresh();
+ });
+ assert.match(await page.locator('#weather').textContent(),/Malam/);
+ await page.screenshot({path:'qa-artifacts/desktop-night.png',fullPage:true});
+ await page.evaluate(()=>{
+  const world=window.__kampungQA.scene.getScene('WorldScene');
+  world.clock.setPhase(0);world.weatherArt.update(world.time.now,true);world.updateRoutines();
+ });
+
  await page.locator('[data-open-notebook="inventory"]').click();
  await page.locator('#notebook:not(.hidden)').waitFor();
  assert.match(await page.locator('#notebookTitle').textContent(),/Tas/);
@@ -144,6 +159,9 @@ async function testDesktop(browser){
  await actionAt(page,128,162,'Kasur');
  await page.getByRole('button',{name:/Tidur hingga pagi/}).click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'sleep');
+ assert.match(await page.locator('#weather').textContent(),/Pagi.*Hujan/);
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').clock.weather),'Hujan');
+
  // A new day enables another greeting and the heart survives game saves.
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').social.profile('tani').hearts),1);
  await close(page);
@@ -287,6 +305,14 @@ async function testMobile(browser){
  assert.match(await page.locator('#notebookTitle').textContent(),/Jurnal/);
  await page.locator('#notebookClose').tap();
  await page.locator('#notebook').waitFor({state:'hidden'});
+ assert.match(await page.locator('#weather').textContent(),/Pagi/);
+ await page.evaluate(()=>{
+  const world=window.__kampungQA.scene.getScene('WorldScene');
+  world.clock.setPhase(3);world.weatherArt.update(world.time.now,true);
+  world.updateRoutines();world.scene.get('UIScene').refresh();
+ });
+ assert.match(await page.locator('#weather').textContent(),/Malam/);
+ await page.screenshot({path:'qa-artifacts/mobile-night.png',fullPage:true});
  await page.screenshot({path:'qa-artifacts/mobile-map.png',fullPage:true});
  await context.close();
 }
