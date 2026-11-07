@@ -329,7 +329,7 @@ async function testDesktop(browser){
  });
  assert.equal(niaNight.weather,'Cerah');
  assert.ok(niaNight.stopped&&niaNight.x>190&&niaNight.x<243&&niaNight.y>342&&niaNight.y<390,
-  'Nia must enter traditional market at night even if not raining');
+  'Nia must enter traditional market at night even if not raining: '+JSON.stringify(niaNight));
  await page.screenshot({path:'qa-artifacts/desktop-nia-night-market.png',fullPage:true});
  // v1.10: festival activates in market day three, quiz and reward can be claimed once.
  await page.evaluate(()=>{
