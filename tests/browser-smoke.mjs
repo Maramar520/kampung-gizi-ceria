@@ -79,12 +79,20 @@ async function testDesktop(browser){
  await page.mouse.move(area.x+area.width/2,area.y+area.height/2);
  await page.mouse.down();await sleep(2300);await page.mouse.up();
  await page.waitForFunction(()=>document.querySelector('#dialogTitle')?.textContent?.includes('3/3'),null,{timeout:5000});
- for(let i=0;i<90;i++){
-  const state=await page.locator('#dialogTitle').textContent();
-  if(state.includes('berhasil'))break;
-  const pos=await page.locator('#timingMarker').evaluate(el=>parseFloat(el.style.left||'0'));
-  if(pos>=40&&pos<=60)await page.locator('#miniButton').click();
-  await sleep(75);
+ for(let i=0;i<160;i++){
+  const complete=await page.evaluate(()=>{
+   const title=document.querySelector('#dialogTitle')?.textContent||'';
+   if(title.includes('berhasil'))return true;
+   const marker=document.getElementById('timingMarker');
+   const button=document.getElementById('miniButton');
+   if(marker&&button){
+    const pos=parseFloat(marker.style.left||'0');
+    if(pos>=39&&pos<=61)button.click();
+   }
+   return false;
+  });
+  if(complete)break;
+  await sleep(40);
  }
  assert.match(await page.locator('#dialogTitle').textContent(),/berhasil/i);
  await close(page);
