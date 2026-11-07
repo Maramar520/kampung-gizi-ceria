@@ -48,9 +48,9 @@ test('pintu rumah, perpustakaan, pasar, restoran dan rumah keluarga terhubung de
  for(const pos of [{x:137,y:187},{x:610,y:178},{x:211,y:373},{x:668,y:481},{x:893,y:449}])
   assert.ok(nearby(positions,pos,17),'Interior tak dapat dimasuki dekat '+JSON.stringify(pos));
 });
-test('semua 14 titik interaksi dapat dicapai tanpa menembus dinding dan air',()=>{
+test('semua 15 titik interaksi dapat dicapai tanpa menembus dinding dan air',()=>{
  const walkable=reachableFromSpawn();
- assert.equal(INTERACTIONS.length,14);
+ assert.equal(INTERACTIONS.length,15);
  for(const z of INTERACTIONS){
   assert.ok(nearby(walkable,z,z.r),'Zona '+z.id+' tidak dapat dicapai');
  }
