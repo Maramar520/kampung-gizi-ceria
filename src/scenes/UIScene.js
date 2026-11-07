@@ -6,7 +6,7 @@ import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=480;this.state.data.y=530;this.world.player.sprite.setPosition(480,530);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=480;this.state.data.y=530;this.world.player.sprite.setPosition(480,530);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
 this.keyboardNotebookHandler=event=>{
  if(event.repeat||event.altKey||event.ctrlKey||event.metaKey)return;
  const target=event.target;
@@ -71,6 +71,37 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const seeds=CROP_IDS.map(id=>CROPS[id].emoji+' '+CROPS[id].name+': '+view.seedsByCrop[id]).join(' · ');
   this.show('🌿 Kebun Sayur','Hari '+this.state.data.day+' · '+seeds+'.\nTanam, siram, tidur di rumah, lalu panen! Wortel dan tomat perlu 2 hari.',actions,'<div class="garden-preview">'+icons+'</div>');
  }
+ coopMenu(){
+  const status=this.dailyLife.status;
+  const actions=[];
+  if(!status.fedToday&&!status.eggsCollected)actions.push({label:'🌾 Beri pakan ayam — 3 KC',fn:()=>{
+   if(!this.dailyLife.feed()){this.note('Tidak cukup koin atau sudah diberi pakan.');return;}
+   this.world.playInteraction('coop');this.refresh();this.coopMenu();
+  }});
+  if(status.eggsReady)actions.push({label:'🥚 Kumpulkan 2 telur',fn:()=>{
+   if(!this.dailyLife.collectEggs())return;
+   this.world.playInteraction('coop');this.refresh();this.coopMenu();this.note('Berhasil! +2 telur masuk tas.');
+  }});
+  if(!actions.length)actions.push({label:'🌙 Cek lagi besok',fn:()=>{this.close();this.note('Tidur di rumah agar ayam siap menghasilkan telur lagi.');}});
+  const msg=status.eggsCollected?'Telur hari ini sudah diambil.':
+   status.eggsReady?'Ayam selesai diberi makan. Dua telur siap dikumpulkan!':
+   'Ayam perlu diberi makan 3 KC sebelum menghasilkan telur hari ini.';
+  this.show('🐔 Kandang Ayam','Hari '+status.day+' · '+msg+' Telur dapat digunakan untuk memasak.',actions,
+   '<div class="farm-preview">🐔 🐔 🥚</div>');
+ }
+ pondMenu(){
+  const status=this.dailyLife.status;
+  if(!status.fishReady)return this.show('🎣 Kolam Ikan','Kamu sudah mendapatkan ikan hari ini. Datang lagi setelah tidur di rumah.',[{label:'Tutup',fn:()=>this.close()}],'<div class="farm-preview">🌊 🐟 🌊</div>');
+  const actions=[{label:'🎣 Lempar kail ('+status.casts+'/3)',fn:()=>{
+   const result=this.dailyLife.cast();
+   this.world.playInteraction('pond');this.refresh();
+   if(result.success){
+    this.show('🐟 Ikan tertangkap!','Selamat! +1 ikan masuk ke tas. Kolam bisa dipancing lagi besok.',[{label:'Selesai',fn:()=>this.close()}],'<div class="farm-preview">🎣 🐟 ✨</div>');
+   }else this.pondMenu();
+  }}];
+  this.show('🎣 Kolam Ikan','Tekan Lempar Kail 3 kali untuk mendapatkan seekor ikan. Maksimal satu ikan per hari.',actions,
+   '<div class="farm-preview">🌊 🐟 🌿</div>');
+ }
  chooseRecipe(){
   const s=this.state.data;
   const actions=RECIPE_IDS.map(id=>{
@@ -112,6 +143,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
   if(id==='market')return this.market();
   if(id==='garden')return this.gardenMenu();
+  if(id==='coop')return this.coopMenu();
+  if(id==='pond')return this.pondMenu();
   if(id==='chef')return this.chefMenu();
   if(id==='stove')return this.chooseRecipe();
   if(id==='npc'){
