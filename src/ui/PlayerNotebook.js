@@ -47,7 +47,7 @@ export function questView(data){
   return {
     title:'Bantuan Bu Sari',
     steps:[
-      {id:'learn',label:'Pelajari resep dari Chef Bimo',done:!!data.recipeKnown||done,hint:'Temui Chef Bimo di restoran sebelah kanan.'},
+      {id:'learn',label:'Pelajari resep dari Chef Bimo',done:!!data.recipeKnown||done,hint:'Temui Chef Bimo di restoran bagian tengah bawah.'},
       {id:'shop',label:'Kumpulkan beras, telur, dan bayam',done:all||!!data.cooked||done,hint:'Beli bahan di pasar atau tanam bayam di kebun kiri atas.'},
       {id:'cook',label:'Masak Nasi Telur Sayur',done:!!data.cooked||done,hint:'Pergi ke kompor di dalam rumah.'},
       {id:'deliver',label:'Antarkan masakan kepada Bu Sari',done,hint:'Temui Bu Sari di jalan kampung.'}
