@@ -83,6 +83,21 @@ test('prepared dishes and served status persist safely; new day rejects old dish
  assert.equal(again.serve(),null);
  assert.equal(normalizeRestaurant({day:2,prepared:'wrong',served:false,completed:-1},2).prepared,null);
 });
+test('NPC job paths do not cross walls, tables or the pond',()=>{
+ const isClearSegment=(a,b)=>{
+  const steps=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/4));
+  for(let i=0;i<=steps;i++){
+   const x=a.x+(b.x-a.x)*i/steps,y=a.y+(b.y-a.y)*i/steps;
+   assert.ok(canStand(x,y),`NPC went through collision at ${x.toFixed(1)},${y.toFixed(1)}`);
+  }
+ };
+ for(const [id,phases] of Object.entries(WORK_ROUTES)){
+  for(const route of phases){
+   for(let i=1;i<route.length;i++)isClearSegment(route[i-1],route[i]);
+   if(route!==phases[3])isClearSegment(route.at(-1),route[0]);
+  }
+ }
+});
 test('NPC schedules have four phases, unique workstation pauses and safe endpoints',()=>{
  assert.deepEqual(Object.keys(WORK_ROUTES).sort(),['chef','nia','rani','sari','tani']);
  for(const [id,phases] of Object.entries(WORK_ROUTES)){
