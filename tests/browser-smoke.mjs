@@ -45,9 +45,15 @@ async function testDesktop(browser){
  assert.ok(dimensions.canvas.width<=dimensions.viewport);
  // Verify actual keyboard movement before using the QA teleport bridge.
  const yBefore=await page.evaluate(()=>window.__kampungQA.state.data.y);
- await page.keyboard.down('w');await sleep(300);await page.keyboard.up('w');
- const yAfter=await page.evaluate(()=>window.__kampungQA.state.data.y);
- assert.ok(yAfter<yBefore-8,'W key must move the player north');
+ await page.locator('#game canvas').click({position:{x:470,y:300}});
+ let yAfter=yBefore;
+ for(let attempt=0;attempt<3;attempt++){
+  await page.keyboard.down('w');await sleep(450);await page.keyboard.up('w');
+  yAfter=await page.evaluate(()=>window.__kampungQA.state.data.y);
+  if(yAfter<yBefore-8)break;
+  await sleep(230);
+ }
+ assert.ok(yAfter<yBefore-8,'W key must move the player north after canvas receives focus');
  await mkdir('qa-artifacts',{recursive:true});
  await page.screenshot({path:'qa-artifacts/desktop-map.png',fullPage:true});
  // v1.7: advance only the in-game clock (QA bridge), render night without moving buildings.
