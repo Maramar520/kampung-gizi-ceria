@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v0.5
+# Kampung Gizi Ceria — Phaser v0.6
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -83,3 +83,16 @@ Grafik masih pixel art prosedural sederhana, bukan spritesheet profesional. Proy
 5. Ulangi dengan menutup minigame sebelum selesai: inventori seharusnya tetap utuh.
 
 **Batasan:** Tes logika bukan pengganti verifikasi browser end-to-end. Aset masih prosedural dan Phaser dimuat dari CDN.
+
+
+## v0.6 — Perbaikan navigasi dan alur quest
+
+- Satu sumber data koordinat di `src/world/WorldGeometry.js`, digunakan untuk collision, posisi dan interaksi.
+- Nama objek muncul saat pemain dapat berinteraksi dengan pasar, Chef Bimo, Bu Sari, kompor, atau kasur.
+- Petunjuk arah di atas pemain menunjuk ke lokasi berikutnya sesuai perkembangan quest.
+- Deskripsi quest mengikuti status: pelajari resep → belanja bahan → memasak → serahkan kepada Bu Sari.
+- Tombol **Kembali ke jalan** mengembalikan posisi karakter ke awal tanpa menghapus koin, resep, inventori atau progres quest.
+- Jika penyimpanan lama menempatkan pemain di dinding atau furnitur, karakter dipindahkan ke titik aman.
+- Tes baru `tests/world.test.mjs` menggunakan BFS untuk memeriksa akses pintu rumah dan kelima titik interaksi berdasarkan hitbox aktual.
+
+**Catatan:** perubahan sistem navigasi tidak mengubah struktur Phaser dan rumah tetap memiliki interior yang terlihat langsung. Tes logika otomatis tetap harus dilengkapi pengujian browser manual.
