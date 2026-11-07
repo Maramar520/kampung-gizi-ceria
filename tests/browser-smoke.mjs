@@ -167,6 +167,11 @@ async function testDesktop(browser){
  await page.getByRole('button',{name:/Siram Bayam.*Petak 1/}).click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'water');
  await close(page);
+ // Misi tanam milik hari pertama; klaim sebelum tidur mengganti hari.
+ await page.locator('#missionsButton').click();
+ await page.getByRole('button',{name:/Klaim Menanam satu bibit/}).click();
+ assert.equal((await gameData()).missions.claimed.includes('plant'),true);
+ await close(page);
  await actionAt(page,128,162,'Kasur');
  await page.getByRole('button',{name:/Tidur hingga pagi/}).click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'sleep');
@@ -189,7 +194,6 @@ async function testDesktop(browser){
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'harvest');
  await close(page);
  await page.locator('#missionsButton').click();
- await page.getByRole('button',{name:/Klaim Menanam satu bibit/}).click();
  await page.getByRole('button',{name:/Klaim Memanen sayuran/}).click();
  assert.equal((await gameData()).missions.claimed.includes('harvest'),true);
  await close(page);
