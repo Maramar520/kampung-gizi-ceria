@@ -81,17 +81,17 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     for(const id of CROP_IDS)if(view.seedsByCrop[id]>0){
      actions.push({label:CROPS[id].emoji+' Tanam '+CROPS[id].name+' · Petak '+(p.index+1),fn:()=>{
       if(!this.garden.plant(p.index,id)){this.note('Bibit tidak tersedia.');return;}
-      this.world.playInteraction('garden');this.refresh();this.gardenMenu();
+      this.world.playInteraction('plant');this.refresh();this.gardenMenu();
      }});
     }
    }else if(p.stage==='dry'){
     actions.push({label:'💧 Siram '+p.name+' · Petak '+(p.index+1),fn:()=>{
-     if(this.garden.water(p.index)){this.world.playInteraction('garden');this.refresh();this.gardenMenu();}
+     if(this.garden.water(p.index)){this.world.playInteraction('water');this.refresh();this.gardenMenu();}
     }});
    }else if(p.stage==='ready'){
     actions.push({label:p.emoji+' Panen '+p.name+' · Petak '+(p.index+1),fn:()=>{
      if(this.garden.harvest(p.index)){
-      this.world.playInteraction('garden');this.refresh();this.gardenMenu();
+      this.world.playInteraction('harvest');this.refresh();this.gardenMenu();
       this.note('Panen '+p.name+': +2 hasil, +1 bibit!');
      }
     }});
@@ -124,7 +124,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(!status.fishReady)return this.show('🎣 Kolam Ikan','Kamu sudah mendapatkan ikan hari ini. Datang lagi setelah tidur di rumah.',[{label:'Tutup',fn:()=>this.close()}],'<div class="farm-preview">🌊 🐟 🌊</div>');
   const actions=[{label:'🎣 Lempar kail ('+status.casts+'/3)',fn:()=>{
    const result=this.dailyLife.cast();
-   this.world.playInteraction('pond');this.refresh();
+   this.world.playInteraction('fish');this.refresh();
    if(result.success){
     this.show('🐟 Ikan tertangkap!','Selamat! +1 ikan masuk ke tas. Kolam bisa dipancing lagi besok.',[{label:'Selesai',fn:()=>this.close()}],'<div class="farm-preview">🎣 🐟 ✨</div>');
    }else this.pondMenu();
@@ -156,13 +156,13 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const id=this.activeRecipe||'nasi-telur-sayur',recipe=RECIPES[id];
   if(step===3){
    if(!this.cooking.finishRecipe(id))return this.show('Dapur','Resep atau bahan belum lengkap.');
-   this.refresh();this.world.playInteraction('stove');
+   this.refresh();this.world.playInteraction('cook');
    return this.show('🎉 Masakan berhasil!',recipe.emoji+' '+recipe.name+' selesai! '+(id==='nasi-telur-sayur'?'Antarkan ke Bu Sari.':'Poin gizi bertambah!'),[{label:'Selesai',fn:()=>this.close()}],'<div class="cookstage" style="font-size:48px">'+recipe.emoji+'</div>');
   }
   const title=['Cuci bahan','Masak di dapur','Selesaikan masakan'][step];
   this.show('🍳 '+recipe.name+' · '+(step+1)+'/3',title+' · Selesaikan tantangan memasak.',[],'');
   this.minigame.mount(step,()=>{
-   this.world.playInteraction('stove');this.note('Tahap '+(step+1)+' berhasil!');
+   this.world.playInteraction('cook');this.note('Tahap '+(step+1)+' berhasil!');
    this.cookStep(step+1);
   },recipe);
  }
@@ -185,7 +185,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    if(this.quest.complete()){this.refresh();return this.show('🏆 Quest selesai!','Terima kasih! Hadiah 50 Koin Ceria telah diterima.');}
   }
   if(id==='bed')return this.show('🛏️ Kasur','Tidur untuk mengisi energi dan memajukan pertumbuhan tanaman.',[{label:'🌙 Tidur hingga pagi',fn:()=>{
-   s.energy=100;s.day++;this.refresh();
+   this.world.playInteraction('sleep');s.energy=100;s.day++;this.refresh();
    this.show('☀️ Selamat pagi!','Hari '+s.day+' dimulai. Periksa kebunmu untuk melihat sayuran yang siap dipanen!');
   }}]);
  }
