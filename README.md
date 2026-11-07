@@ -369,3 +369,15 @@ Versi ini mempertahankan **denah enam blok** pada `docs/denah-konsep-awal.svg`: 
 - `src/systems/MissionSystem.js` menyimpan tugas, progres, klaim, total aktivitas, serta lencana di `GameState.data.missions`; `src/systems/SocialSystem.js` menambah teman `rani`. Key `kampung-gizi-pixel-v02` tidak berubah.
 - Save v1.7 dan lebih lama dilengkapi data baru secara aman; inventori, resep, hati lama, waktu dan cuaca, serta quest Bu Sari tetap dipertahankan.
 - `tests/missions.test.mjs` menguji batas klaim, hadiah, perpindahan hari, kompatibilitas save, serta ruang perpustakaan dan rute Kak Rani. Tes browser `tests/browser-smoke.mjs` kini memeriksa pembelajaran dari perpustakaan, menu misi, klaim lencana, dan kontrol HP.
+
+
+## Pembaruan lokasi rumah keluarga & perlindungan saat hujan
+
+Blok **kanan bawah** yang sebelumnya merupakan **Toko Swalayan** sekarang menjadi **Rumah Pak Tani & Bu Sari**. Posisi dan pintu bangunan sama seperti sebelumnya, tetapi bagian dalamnya menjadi rumah cozy dengan tempat tidur, meja, dan tanaman. Fitur jual-beli bahan dan bibit tetap tersedia di **Pasar Tradisional kiri bawah**; progres inventori, koin, misi, relasi NPC, dan key simpan lama tidak berubah.
+
+- **Cuaca hujan:** Pak Tani dan Bu Sari **berjalan melalui jalan kampung dan pintu depan** ke rumah keluarga di kanan bawah; **Nia berjalan ke dalam Pasar Tradisional** untuk berteduh.
+- Setelah mencapai tujuannya, ketiganya **berhenti dan tetap berada di dalam** sampai hujan selesai. Pergantian fase siang/sore/malam saat masih hujan tidak membuat mereka keluar.
+- **Sesudah hujan selesai:** NPC kembali melalui pintu bangunan menuju jalan kampung.
+- Jalur shelter didefinisikan di `src/world/ShelterRoutes.js`, memakai rute non-looping di `src/entities/NPC.js` agar NPC benar-benar mencapai interior.
+- `tests/shelters.test.mjs` menguji jalur yang ditempuh dan collision pintu/interior; `tests/browser-smoke.mjs` menguji kepindahan tiga NPC dan keluarnya setelah hujan, termasuk simulasi HP.
+- **Tidak ada pemasangan ulang atau perubahan denah, jalur luar, atau penyimpanan**; perubahan ini merupakan penggantian fungsi satu blok yang sudah ada.
