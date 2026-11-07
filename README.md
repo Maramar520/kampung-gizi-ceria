@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.5
+# Kampung Gizi Ceria — Phaser v1.6
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -310,3 +310,21 @@ Kampung memiliki **empat warga yang bisa diajak bicara**: Bu Sari, Chef Bimo, Pa
 **Denah:** `docs/denah-konsep-awal.svg`, ukuran, pintu, interior, collision dan seluruh enam blok tetap mengikuti v1.3. Dua NPC baru hanya menggunakan ruang berjalan yang sudah ada; tidak menambah atau memindahkan bangunan.
 
 **Pengujian:** `tests/social.test.mjs` memverifikasi migrasi save lama, batas lima hati, satu peningkatan per hari, variasi dialog, reset, dan posisi rute. `tests/browser-smoke.mjs` menguji dialog dan hati lewat interaksi browser desktop, serta menu Teman di simulasi HP Pixel 7.
+
+
+## v1.6 — Edukasi Gizi Interaktif dan Isi Piringku
+
+Tanpa memindahkan keenam blok peta atau mengganti key penyimpanan, versi ini menambah:
+- **🧠 Kuis Gizi:** tiga pertanyaan pilihan ganda per sesi tentang nasi, lauk berprotein, sayur, kebiasaan sebelum makan, dan makan beragam. Jawaban salah menjelaskan alasannya dan boleh dicoba lagi tanpa penalti. Pertanyaan bergilir menurut hari permainan.
+- **🍽️ Tantangan Isi Piringku:** pilih makanan pokok, lauk, sayur dan buah melalui empat tahap; setiap pilihan langsung divisualisasikan dalam enam bagian piring (2 makanan pokok, 1 lauk, 2 sayur, 1 buah) sesuai penyederhanaan proporsi Kemenkes.
+- **NPC pembimbing:** Bu Sari menawarkan Isi Piringku, Chef Bimo menawarkan kuis kelompok makanan, Pak Tani mengajak mengenal sayur, dan Nia memberi tantangan bekal bergizi. Quest dan kegiatan NPC lama tetap berfungsi.
+- **Hadiah belajar:** kuis selesai memberi **3 ⭐ dan 15 Koin Ceria**, tantangan piring memberi **2 ⭐ dan 10 Koin Ceria**. Setiap jenis hadiah hanya dapat diperoleh **sekali per hari dalam game**. Bermain ulang diperbolehkan tanpa hadiah tambahan; menjawab salah tidak mengurangi uang.
+- **HUD dan menu:** tombol **⭐ Belajar** atau pintasan **G**, tampilan piring responsif untuk HP, dan jumlah bintang di HUD.
+- **Penyimpanan:** `GameState.data.learning` menyimpan bintang dan waktu klaim hadiah. Save lama tetap menggunakan `kampung-gizi-pixel-v02`; reset mengulang progres belajar beserta progres game lainnya.
+
+**Dasar materi gizi:**
+- [Kemenkes RI — Isi Piringku](https://ayosehat.kemkes.go.id/isi-piringku-kebutuhan-gizi-harian-seimbang): 50% sayur dan buah, 50% makanan pokok dan lauk; lebih rinci per kelompok adalah 2/3 setengah piring untuk makanan pokok dan sayur, 1/3 setengah piring untuk lauk dan buah.
+- [Kemendikdasmen — Isi Piringku dengan Menu Gizi Seimbang](https://ditsd.kemendikdasmen.go.id/artikel/detail/isi-piringku-dengan-menu-gizi-seimbang): penjelasan untuk siswa SD tentang pentingnya variasi makanan.
+- Piring enam bagian dalam permainan hanyalah media belajar proporsi, **bukan** takaran individual, nasihat medis, atau alat evaluasi kesehatan.
+
+**Pengujian:** `tests/learning.test.mjs` mencakup kategori makanan, soal, pilihan yang keliru, pembatasan hadiah, penyimpanan lama dan reset. `tests/browser-smoke.mjs` menjalankan kuis, pengulangan soal, konstruksi piring, pemeriksaan reward, lalu mengetes tombol sentuh menu belajar pada emulasi Pixel 7.
