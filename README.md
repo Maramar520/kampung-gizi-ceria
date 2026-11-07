@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.9
+# Kampung Gizi Ceria — Phaser v1.10
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -413,3 +413,29 @@ Seluruh denah enam blok tetap: Rumah Pemain/kebun/kandang, Perpustakaan Gizi, Ko
 - Data lama secara otomatis diberi nilai standar tanpa menghapus quest, koin, tanaman, NPC, lencana, cuaca, resep, dan inventori.
 - `tests/v19.test.mjs` mengecek transaksi, slot, reload, reset, batas hadiah pesanan, pergantian hari, dan titik kegiatan NPC.
 - `tests/browser-smoke.mjs` menambah pengujian dekorasi, tiket pesanan, penyerahan hadiah, dan antarmuka sentuh HP sambil tetap menjalankan alur quest, cuaca, NPC, perpustakaan, pasar, dan minigame memasak.
+
+
+## v1.10 — Festival Kampung Sehat, Kebun Baru & Nia Berteduh pada Malam Hari
+
+Pembaruan ini mempertahankan seluruh enam blok peta, interior terbuka, rute pintu, collision, permainan memasak dan pesanan restoran, dekorasi, pertemanan, perpustakaan, misi/lencana, serta kunci LocalStorage `kampung-gizi-pixel-v02`.
+
+### Festival Kampung Sehat
+- Berlangsung di **Pasar Tradisional yang sudah ada** pada **hari ke-3, 7, 11, ...** permainan. Tidak ada panggung/bangunan baru yang mengubah peta; bendera warna-warni serta lampu festival muncul sementara hanya pada hari acara.
+- Gunakan **🎉 Festival (V)** untuk melihat kapan dan di mana acaranya; **datang ke Pasar Tradisional lalu tekan E/AKSI** untuk mendaftar dan memainkan kuis festival.
+- Kuis tentang sayuran dan makan beragam, memiliki umpan balik untuk jawaban salah serta kesempatan mengulang.
+- Menuntaskan kuis setelah mendaftar menghasilkan **35 Koin Ceria + 4 Bintang**, **sekali per hari festival**. Hari festival berikutnya bisa diikuti kembali; klaim tidak bisa digandakan.
+
+### Tanaman dan kegiatan kebun
+- Tambahan tiga benih: **Selada** (1 hari; panen 2), **Brokoli** (2 hari; panen 3), **Labu** (3 hari; panen 3), masing-masing dengan pixel art pertumbuhan dan hasil panen berbeda.
+- Seluruh bibit/bahan tersedia di **Pasar Tradisional**. Kebun tetap memiliki tiga petak pada koordinat asli dan hujan tetap menyiram tanaman secara otomatis.
+- Setiap hari permainan ada **tanaman pilihan harian yang bergilir**. Panen tanaman pilihan memberi **9 Koin Ceria + 1 Bintang sekali per hari**. Hadiah ini terpisah dari misi harian dan tidak mengurangi hasil panen atau bahan masakan.
+- Save lama tetap memiliki tanaman yang sudah ditanam, inventori, hasil panen, dan bibit lama. Data festival baru otomatis dinormalisasi saat dimainkan.
+
+### Nia saat malam atau hujan
+- **Saat malam, walaupun cuaca cerah, Nia berjalan menuju dan masuk ke dalam Pasar Tradisional**, melalui jalan dan pintu yang sudah ada. Ia berhenti di dalam pasar selama malam.
+- **Saat hujan**, perilaku berlindung di pasar tetap berlaku. Pak Tani dan Bu Sari tetap masuk ke Rumah Pak Tani & Bu Sari.
+- Pada pagi yang cerah, Nia keluar dari pintu pasar untuk melanjutkan rutinitas beraktivitas di kampung dan perpustakaan. Malam/hujan yang berganti fase tidak membuatnya berteleportasi.
+
+### Pengujian
+- `tests/festival.test.mjs`: jadwal festival, hadiah tanpa klaim ganda, tanaman pilihan harian, pertumbuhan selada/brokoli/labu, kompatibilitas save v1.9, collision rute malam Nia.
+- `tests/browser-smoke.mjs`: festival di Pasar Tradisional, kuis serta klaim hadiah, dan pergerakan Nia masuk pasar **malam hari tanpa hujan** dan saat hujan, pada Chromium desktop dan simulasi HP.
