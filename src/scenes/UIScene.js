@@ -96,9 +96,31 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     if(reward)this.note('Hadiah festival! +'+reward.coins+' KC +'+reward.stars+' ⭐');
     this.refresh();this.festivalMenu();
    }});
+  if(info.joined&&!info.communityDone)actions.push({label:'🤝 Bantu warga menghias pasar',fn:()=>{
+   const reward=f.communityHelp();if(reward)this.note('Terima kasih! +12 KC +2 ⭐');
+   this.refresh();this.festivalMenu();
+  }});
+  if(info.joined&&!info.cookingDone)actions.push({label:'🍲 Lomba menu gizi seimbang',fn:()=>this.festivalCookingContest()});
+  if(info.communityDone)message+=' Dekorasi pasar sudah dibantu. ';
+  if(info.cookingDone)message+=' Lomba memasak sudah selesai. ';
   actions.push({label:'🧺 Kembali ke Pasar',fn:()=>this.market()});
   this.show('🎉 Festival Kampung Sehat · Hari '+this.state.data.day,message,actions,
    '<div class="festival-banner">🎈 🥕 🥬 🎉 🍅</div>');
+ }
+ festivalCookingContest(){
+  this.show('🍲 Lomba Menu Sehat','Chef Bimo mengajakmu memilih menu dengan beragam kelompok makanan. Mana yang paling seimbang?',[
+   {label:'A. Nasi saja',fn:()=>this.festivalCookingAnswer(0)},
+   {label:'B. Nasi, ikan, sayur dan buah',fn:()=>this.festivalCookingAnswer(1)},
+   {label:'C. Minuman manis saja',fn:()=>this.festivalCookingAnswer(2)}
+  ]);
+ }
+ festivalCookingAnswer(choice){
+  const reward=this.world.festival.cookingContest(choice);
+  this.refresh();
+  this.show(reward?'🏆 Menu Seimbang!':'🌱 Coba Lagi',
+   reward?'Hebat! Makanan beragam membantu memenuhi kebutuhan gizi. +18 KC +2 ⭐':'Pilih makanan pokok, lauk, sayur, dan buah agar lebih beragam.',[
+    {label:reward?'Kembali ke Festival':'Coba lagi',fn:()=>reward?this.festivalMenu():this.festivalCookingContest()}
+   ]);
  }
  festivalQuiz(){
   const f=this.world.festival,q=f.question;
