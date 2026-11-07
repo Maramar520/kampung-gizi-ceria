@@ -19,7 +19,9 @@ export const INTERACTIONS=[
  {id:'market',x:155,y:323,r:83,label:'Pasar'},
  {id:'npc',x:350,y:476,r:65,label:'Bu Sari'},
  {id:'chef',x:810,y:310,r:78,label:'Chef Bimo'},
- {id:'garden',x:120,y:170,r:88,label:'Kebun Bayam'}
+ {id:'garden',x:120,y:170,r:88,label:'Kebun Sayur'},
+ {id:'coop',x:803,y:174,r:82,label:'Kandang Ayam'},
+ {id:'pond',x:769,y:515,r:85,label:'Kolam Ikan'}
 ];
 export function canStand(x,y,obstacles=OBSTACLES){
  if(!Number.isFinite(x)||!Number.isFinite(y)||x<15||x>945||y<35||y>580)return false;
