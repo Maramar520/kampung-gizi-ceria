@@ -47,7 +47,13 @@ export function heartDisplay(value){
 export function dialogueFor(id,day,phase=0){
  const list=DIALOGUES[id];if(!list)return '';
  const safeDay=Math.max(1,positiveInt(day));
- const safePhase=Math.max(0,Math.min(2,Math.floor(Number(phase)||0)));
+ const safePhase=Math.max(0,Math.min(3,Math.floor(Number(phase)||0)));
+ if(safePhase===3){
+  return {sari:'Sudah malam. Besok pagi kita lanjutkan kegiatan sehat, ya!',
+   chef:'Dapur sudah tenang. Tidur cukup agar siap memasak besok.',
+   tani:'Malam tiba, tanaman beristirahat. Besok kita cek kebun lagi.',
+   nia:'Langit sudah gelap. Selamat malam, sampai besok!'}[id]||'Selamat malam!';
+ }
  return list[(safeDay-1)%list.length][safePhase];
 }
 export class SocialSystem {
