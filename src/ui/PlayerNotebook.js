@@ -3,7 +3,7 @@
 export const ITEM_INFO=Object.freeze({
   beras:{name:'Beras',emoji:'🍚',type:'Karbohidrat',source:'Pasar',price:12},
   telur:{name:'Telur',emoji:'🥚',type:'Protein',source:'Pasar',price:15},
-  bayam:{name:'Bayam',emoji:'🥬',type:'Sayuran',source:'Pasar',price:10}
+  bayam:{name:'Bayam',emoji:'🥬',type:'Sayuran',source:'Pasar atau Kebun',price:10}
 });
 export const RECIPE={id:'nasi-telur-sayur',name:'Nasi Telur Sayur',emoji:'🍛',
   ingredients:['beras','telur','bayam'],teacher:'Chef Bimo di restoran',
@@ -30,7 +30,7 @@ export function questView(data){
     title:'Bantuan Bu Sari',
     steps:[
       {id:'learn',label:'Pelajari resep dari Chef Bimo',done:!!data.recipeKnown||done,hint:'Temui Chef Bimo di restoran sebelah kanan.'},
-      {id:'shop',label:'Kumpulkan beras, telur, dan bayam',done:all||!!data.cooked||done,hint:'Beli bahan di pasar sebelah kiri.'},
+      {id:'shop',label:'Kumpulkan beras, telur, dan bayam',done:all||!!data.cooked||done,hint:'Beli bahan di pasar atau tanam bayam di kebun kiri atas.'},
       {id:'cook',label:'Masak Nasi Telur Sayur',done:!!data.cooked||done,hint:'Pergi ke kompor di dalam rumah.'},
       {id:'deliver',label:'Antarkan masakan kepada Bu Sari',done,hint:'Temui Bu Sari di jalan kampung.'}
     ],
