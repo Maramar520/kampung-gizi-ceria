@@ -17,6 +17,8 @@ import {workRoute} from '../world/NpcWorkRoutes.js';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
 import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
+import {FestivalSystem} from '../systems/FestivalSystem.js';
+import {FestivalArt} from '../world/FestivalArt.js';
 
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
@@ -31,10 +33,12 @@ export class WorldScene extends Phaser.Scene {
   this.missions=new MissionSystem(this.game.state);
   this.decor=new HomeDecorSystem(this.game.state);
   this.restaurantOrders=new RestaurantOrderSystem(this.game.state);
+  this.festival=new FestivalSystem(this.game.state);
   this.decorArt=new HomeDecorArt(this,this.decor);
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
   this.weatherArt=new WeatherArt(this,this.clock);
+  this.festivalArt=new FestivalArt(this,this.festival);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
    Object.assign(this.game.state.data,SPAWN);
@@ -104,7 +108,10 @@ export class WorldScene extends Phaser.Scene {
   this.dailyPhase=this.clock.description.phase;
   // Saat hujan, rute tidak direset ketika jam berubah: NPC harus benar-benar
   // mencapai interior, kemudian berhenti di sana sampai hujan usai.
+  const niaSheltering=raining||phase===3;
   const key=day+'-'+(raining?'rain':phase)+'-'+this.clock.weather;
+  const leavingNiaShelter=this.niaSheltering===true&&!niaSheltering;
+  this.niaSheltering=niaSheltering;
   if(this.routineKey===key)return;
   const justStoppedRaining=this.lastRaining===true&&!raining;
   this.lastRaining=raining;
@@ -142,13 +149,31 @@ export class WorldScene extends Phaser.Scene {
    this.rani.setRoutine([{x:692,y:186},{x:692,y:209}],'KAK RANI');
    return;
   }
+  // Malam tanpa hujan: Nia benar-benar berjalan ke dalam pasar.
+  // Jika ia berada di perpustakaan, keluar melalui pintu sebelum menuju pasar.
+  if(phase===3){
+   const n=this.nia;
+   if(isInsideShelter('nia',n)){
+    n.setRoutine([{x:n.x,y:n.y}],'NIA',false);
+   }else{
+    let prefix=[];
+    if(n.x>500&&n.x<715&&n.y<245)
+     prefix=[{x:608,y:208},{x:608,y:237},{x:608,y:281}];
+    else if(n.x<390&&n.y>340)prefix=[{x:211,y:339},{x:211,y:318}];
+    n.setRoutine([...prefix,...rainyRoute('nia')],'NIA',false);
+   }
+   n.nextJobRoute=null;
+  }
   // v1.9: jalur kerja melewati pintu yang sama dengan pemain dan
   // berhenti di pos kegiatan (kebun, pasar, dapur, perpustakaan).
   for(const [id,npc] of [['sari',this.sari],['tani',this.tani],
    ['nia',this.nia],['chef',this.chef],['rani',this.rani]]){
+   if(id==='nia'&&phase===3)continue;
    const route=workRoute(id,phase);
    let prefix=[];
-   if((id==='sari'||id==='tani')&&npc.x>817&&npc.y>340){
+   if(id==='nia'&&leavingNiaShelter&&isInsideShelter('nia',npc)){
+    prefix=dryReturnRoute('nia',npc);
+   }else if((id==='sari'||id==='tani')&&npc.x>817&&npc.y>340){
     prefix=dryReturnRoute(id,npc);
    }else if((id==='sari'||id==='nia')&&npc.x<392&&npc.y>340){
     prefix=[{x:211,y:339},{x:211,y:318},
@@ -218,7 +243,7 @@ export class WorldScene extends Phaser.Scene {
  update(_time,delta){
   const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
-  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.updateRoutines();
+  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.festivalArt.update(this.time.now);this.updateRoutines();
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
