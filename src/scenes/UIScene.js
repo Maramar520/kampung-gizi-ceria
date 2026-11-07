@@ -7,7 +7,7 @@ import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.learningMenu();document.querySelectorAll('[data-find-place]').forEach(button=>{
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();document.querySelectorAll('[data-find-place]').forEach(button=>{
  button.addEventListener('click',()=>{
   this.world.highlightPlace(button.dataset.findPlace);
   this.note(button.dataset.findPlace==='coop'?'🐔 Kandang ayam berada di sebelah kebun, dekat rumah pemain.':'🎣 Kolam ikan berada di blok kanan atas peta.');
@@ -19,7 +19,8 @@ this.keyboardNotebookHandler=event=>{
  if(target&&(target.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(target.tagName)))return;
  const key=event.key.toLowerCase();
  if(key==='f'){event.preventDefault();this.socialOverview();return;}
- if(key==='g'){event.preventDefault();this.learningMenu();return;}
+ if(key==='g'){event.preventDefault();this.libraryGuide();return;}
+ if(key==='m'){event.preventDefault();this.missionsMenu();return;}
  const tab={i:'inventory',r:'recipes',j:'journal'}[key];
  if(tab){event.preventDefault();this.openNotebook(tab);}
 };
@@ -72,12 +73,82 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  friendsLine(id){
   const p=this.social.greet(id,this.world.phaseIndex??0);
   if(!p)return '';
+  if(p.gained)this.missions.record('friend');
   return p.dialogue+'\n'+p.heartsDisplay+(p.gained?' · +1 hati hari ini!':' · Sudah menyapa hari ini.');
+ }
+ libraryGuide(){
+  if(this.notebook?.visible)return;
+  this.show('📚 Pergi ke Perpustakaan Gizi',
+   'Ruang belajar ada di dalam Rumah Warga, blok tengah atas. Masuk dari jalan tengah, lalu dekati rak buku di kanan atas. Temui Kak Rani untuk belajar bersama.',[
+    {label:'📍 Tunjukkan perpustakaan',fn:()=>{this.close();this.world.highlightPlace('library');}},
+    {label:'Tutup petunjuk',fn:()=>this.close()}
+   ],'<div class="learning-celebrate">🏘️ 📚 👩‍🏫</div>');
+ }
+ libraryMenu(){
+  this.show('📚 Perpustakaan Gizi',
+   'Selamat datang di sudut baca! Pilih kegiatan membaca dan belajar bersama Kak Rani. Jawaban salah boleh dicoba kembali.',[
+    {label:'🧠 Kuis makanan bergizi',fn:()=>this.startQuiz()},
+    {label:'🍽️ Tantangan Isi Piringku',fn:()=>this.startPlate()},
+    {label:'📗 Baca buku tentang kelompok makanan',fn:()=>this.readNutritionBook()},
+    {label:'Tutup perpustakaan',fn:()=>this.close()}
+   ],'<div class="library-banner">📚 📗 🥕 🥚 🍊</div>');
+ }
+ librarianMenu(){
+  const greeting=this.friendsLine('rani');
+  this.show('👩‍🏫 Kak Rani · Pustakawan',
+   greeting+'\nAyo belajar tentang gizi dari buku dan permainan di perpustakaan!',[
+    {label:'📚 Pilih kegiatan belajar',fn:()=>this.libraryMenu()},
+    {label:'🤝 Lihat buku pertemanan',fn:()=>this.socialOverview()},
+    {label:'Sampai jumpa',fn:()=>this.close()}
+   ]);
+  this.refresh();
+ }
+ readNutritionBook(){
+  this.show('📗 Buku Gizi Ceria',
+   'Makanan pokok memberi energi, lauk menjadi sumber protein, dan sayur serta buah menyumbang serat, vitamin, dan mineral. Yuk makan beragam dan minum air putih!',[
+    {label:'🧠 Coba kuis setelah membaca',fn:()=>this.startQuiz()},
+    {label:'Kembali ke rak buku',fn:()=>this.libraryMenu()}
+   ],'<div class="nutrition-tip">🍚 Makanan pokok · 🐟 Lauk · 🥬 Sayur · 🍊 Buah<br><small>Isi Piringku: setengah piring sayur dan buah, setengah lagi makanan pokok dan lauk.</small></div>');
+ }
+ missionsMenu(){
+  if(this.notebook?.visible)return;
+  const items=this.missions.daily();
+  const html='<div class="mission-grid">'+items.map(m=>'<div class="mission-card">'+m.emoji+
+   ' <strong>'+m.title+'</strong><small>'+m.count+'/'+m.target+
+   (m.claimed?' · ✓ Hadiah diambil':' · '+m.stars+' ⭐ +'+m.coins+' KC')+'</small></div>').join('')+'</div>';
+  const available=items.filter(m=>m.count>=m.target&&!m.claimed);
+  this.show('📋 Misi Harian · Hari '+this.state.data.day,
+   'Lakukan kegiatan kampung. Klaim hadiah setelah misi selesai. Misi baru dimulai ketika tidur.',[
+    ...available.map(m=>({label:'🎁 Klaim '+m.title,fn:()=>{
+     const gift=this.missions.claim(m.id);
+     if(gift)this.note('Misi selesai! +'+gift.stars+' ⭐ dan +'+gift.coins+' KC');
+     this.refresh();this.missionsMenu();
+    }})),
+    {label:'🏅 Lihat Lencana Pencapaian',fn:()=>this.achievementMenu()},
+    {label:'Tutup',fn:()=>this.close()}
+   ],html);
+ }
+ achievementMenu(){
+  const list=this.missions.badges();
+  const cards='<div class="mission-grid">'+list.map(a=>'<div class="mission-card">'+
+   a.emoji+' <strong>'+a.title+'</strong><small>'+
+   (a.earned?'🏅 Sudah diperoleh':a.ready?'🎁 Siap diklaim':'🔒 Belum terbuka')+
+   '</small></div>').join('')+'</div>';
+  this.show('🏅 Lencana Kampung Ceria',
+   'Pencapaian hanya bisa diklaim satu kali sepanjang permainan.',[
+    ...list.filter(a=>a.ready&&!a.earned).map(a=>({label:'🎁 Klaim '+a.title,fn:()=>{
+     const prize=this.missions.claimAchievement(a.id);
+     if(prize)this.note('Lencana baru! +'+prize.stars+' ⭐ +'+prize.coins+' KC');
+     this.refresh();this.achievementMenu();
+    }})),
+    {label:'Kembali ke misi harian',fn:()=>this.missionsMenu()},
+    {label:'Tutup',fn:()=>this.close()}
+   ],cards);
  }
  learningMenu(){
   if(this.notebook?.visible)return;
   const day=this.state.data.day;
-  this.show('⭐ Belajar Gizi','Hari '+day+' · Bintang belajar: '+this.learning.stars+
+  this.show('📚 Belajar Gizi di Perpustakaan','Hari '+day+' · Bintang belajar: '+this.learning.stars+
    '\nPilih kuis atau susun piring seimbang. Salah menjawab boleh mencoba lagi, tanpa mengurangi koin.',[
    {label:'🧠 Kuis Gizi (3 pertanyaan)'+(this.learning.canClaim('quiz')?' · hadiah tersedia':' ✓ selesai hari ini'),fn:()=>this.startQuiz()},
    {label:'🍽️ Tantangan Isi Piringku'+(this.learning.canClaim('plate')?' · hadiah tersedia':' ✓ selesai hari ini'),fn:()=>this.startPlate()},
@@ -93,7 +164,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(!p)return this.learningMenu();
   if(p.index>=questions.length){
    const reward=this.learning.quizFinished(p.correct);
-   this.refresh();
+   this.missions.record('learn');this.refresh();
    return this.show('🎉 Kuis Gizi Selesai!',
     reward?'Hebat! +'+reward.stars+' ⭐ dan +'+reward.coins+' Koin Ceria.':
      'Hebat, semua pertanyaan selesai! Hadiah harian sudah pernah kamu ambil. Coba lagi besok.',[
@@ -138,7 +209,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(index>=PLATE_STEPS.length){
    const evaluation=inspectPlate(this.plateSelection);
    const reward=this.learning.plateFinished(this.plateSelection);
-   this.refresh();
+   if(evaluation.complete)this.missions.record('learn');this.refresh();
    return this.show('🍽️ Isi Piringku Selesai!',
     evaluation.complete?(reward?'Keren! +'+reward.stars+' ⭐ dan +'+reward.coins+' Koin Ceria.':
       'Piringmu sudah seimbang! Hadiah hari ini sudah didapat. Bisa belajar lagi besok.'):
@@ -183,7 +254,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const tip=id==='tani'?'Tips: siram tanaman lalu tidur agar tumbuh.':
    'Tips: cek buku resep dan coba beragam sayur setiap hari.';
   this.show(p.emoji+' '+p.name,greeting+'\n'+tip,[
-   {label:id==='tani'?'🌿 Belajar kelompok sayuran':'🎒 Tantangan bekal bergizi',fn:()=>id==='tani'?this.startQuiz():this.startPlate()},
+   {label:id==='tani'?'🌿 Belajar kelompok sayuran':'🎒 Tantangan bekal bergizi',fn:()=>this.libraryGuide()},
    {label:'🤝 Lihat daftar teman',fn:()=>this.socialOverview()},
    {label:'Sampai jumpa!',fn:()=>this.close()}
   ]);
@@ -214,7 +285,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     for(const id of CROP_IDS)if(view.seedsByCrop[id]>0){
      actions.push({label:CROPS[id].emoji+' Tanam '+CROPS[id].name+' · Petak '+(p.index+1),fn:()=>{
       if(!this.garden.plant(p.index,id)){this.note('Bibit tidak tersedia.');return;}
-      this.world.playInteraction('plant');this.refresh();this.gardenMenu();
+      this.missions.record('plant');this.world.playInteraction('plant');this.refresh();this.gardenMenu();
      }});
     }
    }else if(p.stage==='dry'){
@@ -224,7 +295,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    }else if(p.stage==='ready'){
     actions.push({label:p.emoji+' Panen '+p.name+' · Petak '+(p.index+1),fn:()=>{
      if(this.garden.harvest(p.index)){
-      this.world.playInteraction('harvest');this.refresh();this.gardenMenu();
+      this.missions.record('harvest');this.world.playInteraction('harvest');this.refresh();this.gardenMenu();
       this.note('Panen '+p.name+': +2 hasil, +1 bibit!');
      }
     }});
@@ -281,7 +352,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  chefMenu(){
   const greeting=this.friendsLine('chef');
-  const actions=[{label:'🧠 Kuis kelompok makanan',fn:()=>this.startQuiz()},...RECIPE_IDS.map(id=>({
+  const actions=[{label:'📚 Kuis kelompok makanan di perpustakaan',fn:()=>this.libraryGuide()},...RECIPE_IDS.map(id=>({
    label:'📖 Pelajari '+RECIPES[id].name+(knownRecipe(this.state.data,id)?' ✓':''),
    fn:()=>{this.cooking.learn(id);this.refresh();this.chefMenu();this.note('Resep '+RECIPES[id].name+' dipelajari!');}
   }))];
@@ -291,7 +362,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const id=this.activeRecipe||'nasi-telur-sayur',recipe=RECIPES[id];
   if(step===3){
    if(!this.cooking.finishRecipe(id))return this.show('Dapur','Resep atau bahan belum lengkap.');
-   this.refresh();this.world.playInteraction('cook');
+   this.missions.record('cook');this.refresh();this.world.playInteraction('cook');
    return this.show('🎉 Masakan berhasil!',recipe.emoji+' '+recipe.name+' selesai! '+(id==='nasi-telur-sayur'?'Antarkan ke Bu Sari.':'Poin gizi bertambah!'),[{label:'Selesai',fn:()=>this.close()}],'<div class="cookstage" style="font-size:48px">'+recipe.emoji+'</div>');
   }
   const title=['Cuci bahan','Masak di dapur','Selesaikan masakan'][step];
@@ -309,6 +380,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='market')return this.market();
   if(id==='store')return this.storeMenu();
   if(id==='village')return this.villageMenu();
+  if(id==='library')return this.libraryMenu();
+  if(id==='rani')return this.librarianMenu();
   if(id==='garden')return this.gardenMenu();
   if(id==='coop')return this.coopMenu();
   if(id==='pond')return this.pondMenu();
@@ -318,7 +391,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='npc'){
    const greeting=this.friendsLine('sari');
    if(s.done)return this.show('👩‍🌾 Bu Sari',greeting+'\nTerima kasih! Kamu boleh terus berkebun dan mencoba resep lain.',[
-    {label:'🍽️ Latihan Isi Piringku',fn:()=>this.startPlate()},
+    {label:'🍽️ Belajar Isi Piringku di perpustakaan',fn:()=>this.libraryGuide()},
     {label:'Sampai jumpa',fn:()=>this.close()}
    ]);
    
