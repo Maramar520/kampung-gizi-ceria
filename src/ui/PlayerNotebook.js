@@ -6,7 +6,8 @@ export const ITEM_INFO=Object.freeze({
   bayam:{name:'Bayam',emoji:'🥬',type:'Sayuran',source:'Pasar atau Kebun',price:10},
   wortel:{name:'Wortel',emoji:'🥕',type:'Sayuran',source:'Pasar atau Kebun',price:14},
   tomat:{name:'Tomat',emoji:'🍅',type:'Sayuran',source:'Pasar atau Kebun',price:15},
-  kangkung:{name:'Kangkung',emoji:'🥬',type:'Sayuran',source:'Pasar atau Kebun',price:12}
+  kangkung:{name:'Kangkung',emoji:'🥬',type:'Sayuran',source:'Pasar atau Kebun',price:12},
+  ikan:{name:'Ikan',emoji:'🐟',type:'Protein',source:'Kolam Ikan',price:0}
 });
 export const RECIPE={id:'nasi-telur-sayur',name:'Nasi Telur Sayur',emoji:'🍛',
   ingredients:['beras','telur','bayam'],teacher:'Chef Bimo di restoran',
@@ -16,7 +17,8 @@ export const RECIPE={id:'nasi-telur-sayur',name:'Nasi Telur Sayur',emoji:'🍛',
 export const EXTRA_RECIPES=[
  {id:'sup-wortel-tomat',name:'Sup Wortel Tomat',emoji:'🥣',ingredients:['wortel','tomat']},
  {id:'tumis-kangkung',name:'Tumis Kangkung',emoji:'🥬',ingredients:['kangkung','telur']},
- {id:'nasi-sayur-warna',name:'Nasi Sayur Pelangi',emoji:'🍚',ingredients:['beras','wortel','tomat','kangkung']}
+ {id:'nasi-sayur-warna',name:'Nasi Sayur Pelangi',emoji:'🍚',ingredients:['beras','wortel','tomat','kangkung']},
+ {id:'ikan-tomat',name:'Ikan Panggang Tomat',emoji:'🐟',ingredients:['ikan','tomat']}
 ];
 export function recipeCatalog(data){
  const base=recipeView(data);
@@ -96,12 +98,12 @@ export class PlayerNotebook {
  }
  refresh(){
   if(!this.visible)return;
-  const signature=JSON.stringify({tab:this.active,inventory:this.state.data.inventory,coins:this.state.data.coins,garden:this.state.data.garden,recipeKnown:this.state.data.recipeKnown,recipesKnown:this.state.data.recipesKnown,cooked:this.state.data.cooked,done:this.state.data.done});
+  const signature=JSON.stringify({tab:this.active,inventory:this.state.data.inventory,coins:this.state.data.coins,garden:this.state.data.garden,activities:this.state.data.activities,recipeKnown:this.state.data.recipeKnown,recipesKnown:this.state.data.recipesKnown,cooked:this.state.data.cooked,done:this.state.data.done});
   if(signature!==this.lastSignature)this.render();
  }
  render(){
   const data=this.state.data;
-  this.lastSignature=JSON.stringify({tab:this.active,inventory:data.inventory,coins:data.coins,garden:data.garden,recipeKnown:data.recipeKnown,recipesKnown:data.recipesKnown,cooked:data.cooked,done:data.done});
+  this.lastSignature=JSON.stringify({tab:this.active,inventory:data.inventory,coins:data.coins,garden:data.garden,activities:data.activities,recipeKnown:data.recipeKnown,recipesKnown:data.recipesKnown,cooked:data.cooked,done:data.done});
   const names={inventory:'🎒 Tas Bahan',recipes:'📖 Buku Resep',journal:'📋 Jurnal Quest'};
   this.heading.textContent=names[this.active];
   this.tabs.forEach(b=>{
@@ -140,6 +142,8 @@ export class PlayerNotebook {
   const plots=Array.isArray(data.garden?.plots)?data.garden.plots:[];
   const growing=plots.filter(p=>p?.crop).length;
   this.content.append(el('p','notebook-note','🌿 Kebun: '+growing+' dari 3 petak terisi. Siram dan tidur untuk memanen.'));
+  this.content.append(el('p','notebook-note','🐔 Telur dapat dikumpulkan dari kandang ayam setelah memberi pakan. 🐟 Ikan diperoleh dengan memancing di kolam.'));
+
   this.content.append(el('p','notebook-tip','🪙 Koin Ceria: '+data.coins+' · 🧺 Bahan dan bibit ada di pasar.'));
  }
  renderRecipe(data){
