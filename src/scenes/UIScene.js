@@ -21,9 +21,19 @@ this.keyboardNotebookHandler=event=>{
  if(tab){event.preventDefault();this.openNotebook(tab);}
 };
 window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once('shutdown',()=>window.removeEventListener('keydown',this.keyboardNotebookHandler));$('reset').onclick=()=>{if(confirm('Reset semua progres game?')){this.state.reset();this.world.player.sprite.setPosition(480,530);this.world.keysHeld.clear();this.world.sari.sprite.setPosition(350,476);this.close();this.refresh();this.note('Progres direset!')}};document.querySelectorAll('[data-dir]').forEach(button=>{const dir=button.dataset.dir;button.addEventListener('pointerdown',e=>{e.preventDefault();button.setPointerCapture(e.pointerId);this.world.keysHeld.add(dir)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(ev,()=>this.world.keysHeld.delete(dir))});this.time.addEvent({delay:500,loop:true,callback:()=>this.refresh()})}
- refresh(){const s=this.state.data;for(const id of ['coins','energy','carb','protein','vitamin','day'])$(id).textContent=s[id];$('status').textContent=this.state.status;$('phase').textContent=this.world?.dailyPhase||'Pagi';$('quest').textContent=this.quest.description;this.state.save();this.notebook?.refresh();this.world?.gardenArt?.render()}
+ refresh(){const s=this.state.data;for(const id of ['coins','energy','carb','protein','vitamin','day'])$(id).textContent=s[id];$('status').textContent=this.state.status;$('phase').textContent=this.world?.dailyPhase||'Pagi';$('quest').textContent=this.quest.description;this.state.save();this.notebook?.refresh();this.world?.gardenArt?.render();this.updateInteractionHint()}
+ updateInteractionHint(){
+  const element=$('interactionHelp');if(!element||!this.world)return;
+  const id=this.world.getNearest();
+  const zone=this.world.zones.find(z=>z.id===id);
+  const label=zone?.label;
+  element.classList.toggle('near',!!id&&!this.game.dialogOpen);
+  element.textContent=id&&!this.game.dialogOpen
+    ?'✨ Dekat '+label+' — tekan E atau tombol AKSI untuk berinteraksi!'
+    :'🧭 Jelajahi kampung dengan WASD / panah atau tombol arah, lalu dekati lokasi dan tekan AKSI.';
+ }
  note(message){$('toast').textContent=message;this.time.delayedCall(3000,()=>{$('toast').textContent='WASD / panah untuk bergerak • E untuk interaksi'})}
- show(title,message,actions=[],extra=''){this.game.dialogOpen=true;$('dialogTitle').textContent=title;$('message').textContent=message;$('cookVisual').innerHTML=extra;$('choices').replaceChildren();for(const a of actions){const b=document.createElement('button');b.textContent=a.label;b.onclick=a.fn;$('choices').appendChild(b)}$('dialog').classList.remove('hidden')}
+ show(title,message,actions=[],extra=''){this.world.keysHeld.clear();this.game.dialogOpen=true;$('dialogTitle').textContent=title;$('message').textContent=message;$('cookVisual').innerHTML=extra;$('choices').replaceChildren();for(const a of actions){const b=document.createElement('button');b.textContent=a.label;b.onclick=a.fn;$('choices').appendChild(b)}$('dialog').classList.remove('hidden')}
  openNotebook(tab){
   if(this.game.dialogOpen&&!this.notebook.visible)return;
   this.world.keysHeld.clear();
