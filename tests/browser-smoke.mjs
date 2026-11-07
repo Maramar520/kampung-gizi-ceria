@@ -217,6 +217,17 @@ async function testMobile(browser){
  assert.equal(await page.locator('.social-friend').count(),4);
  await page.locator('#close').tap();
  await page.locator('#dialog').waitFor({state:'hidden'});
+ // Mobile: tap the real AKSI button beside Nia and close the full-screen dialog.
+ const niaMobile=await page.evaluate(()=>{
+  const n=window.__kampungQA.scene.getScene('WorldScene').nia;
+  return {x:n.x,y:n.y};
+ });
+ await moveTo(page,niaMobile.x,niaMobile.y);
+ await page.locator('#action').tap();
+ await page.locator('#dialog:not(.hidden)').waitFor();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Nia/);
+ await page.locator('#close').tap();
+ await page.locator('#dialog').waitFor({state:'hidden'});
  await page.locator('[data-open-notebook="journal"]').tap();
  assert.match(await page.locator('#notebookTitle').textContent(),/Jurnal/);
  await page.locator('#notebookClose').tap();
