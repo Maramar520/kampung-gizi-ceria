@@ -4,6 +4,20 @@ import {NPC} from '../entities/NPC.js';
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set()}
  create(){createTextures(this);const walls=buildWorld(this);this.player=new Player(this,this.game.state,walls);this.sari=new NPC(this,{x:350,y:476,name:'BU SARI',texture:'sari',stops:[{x:350,y:476},{x:345,y:415},{x:388,y:415},{x:387,y:480}]});this.chef=new NPC(this,{x:813,y:330,name:'',texture:'chef'});this.zones=[{id:'bed',x:320,y:188,r:60},{id:'stove',x:553,y:190,r:62},{id:'market',x:155,y:323,r:83},{id:'npc',r:65},{id:'chef',x:810,y:310,r:78}];this.prompt=this.add.text(0,0,'E / AKSI',{fontFamily:'monospace',fontSize:'13px',color:'#446047',backgroundColor:'#fff4d5',padding:{x:7,y:4}}).setOrigin(.5).setDepth(1500);this.input.keyboard.on('keydown',e=>{const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',a:'left',s:'down',d:'right'};const key=map[e.key]||map[e.key.toLowerCase()];if(key){e.preventDefault();this.keysHeld.add(key)}if(e.key.toLowerCase()==='e'&&!e.repeat){e.preventDefault();this.game.events.emit('action')}if(e.key==='Escape')this.game.events.emit('close-dialog')});this.input.keyboard.on('keyup',e=>{const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',a:'left',s:'down',d:'right'};const key=map[e.key]||map[e.key.toLowerCase()];if(key)this.keysHeld.delete(key)});window.addEventListener('blur',()=>this.keysHeld.clear());this.cameras.main.setBounds(0,0,960,600);this.cameras.main.startFollow(this.player.sprite,true,.12,.12);this.cameras.main.setZoom(1);this.game.events.emit('world-ready',this);this.scene.launch('UIScene')}
+ playInteraction(kind){
+  const subject=(kind==='npc'?this.sari.sprite:kind==='chef'?this.chef.sprite:this.player.sprite);
+  if(!subject||!subject.active)return;
+  const x=subject.x,y=subject.y;
+  // Animasi kecil saat interaksi, tanpa scene baru atau memindah karakter.
+  this.tweens.killTweensOf(subject);
+  subject.setScale(1);
+  this.tweens.add({targets:subject,scaleX:1.12,scaleY:.88,duration:110,yoyo:true,
+    ease:'Sine.easeOut',onComplete:()=>subject.setScale(1)});
+  const glyph=kind==='stove'?'🍳':kind==='market'?'🧺':kind==='bed'?'💤':kind==='chef'?'📖':'✨';
+  const puff=this.add.text(x,y-48,glyph,{fontSize:'22px'}).setOrigin(.5).setDepth(2200);
+  this.tweens.add({targets:puff,y:y-80,alpha:0,duration:650,
+    ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
+ }
  getNearest(){const s=this.game.state.data;let best=null,d=Infinity;for(const z of this.zones){const x=z.id==='npc'?this.sari.x:z.x,y=z.id==='npc'?this.sari.y:z.y;const dist=Math.hypot(s.x-x,s.y-y);if(dist<z.r&&dist<d){best=z.id;d=dist}}return best}
  update(_time,delta){if(!this.game.dialogOpen){const dt=Math.min(delta/1000,.05);this.player.update(dt,this.keysHeld);this.sari.update(dt);this.chef.update(dt)}const id=this.getNearest();this.prompt.setVisible(!!id);if(id){const z=this.zones.find(q=>q.id===id);this.prompt.setPosition(id==='npc'?this.sari.x:z.x,(id==='npc'?this.sari.y:z.y)-75)}}
 }
