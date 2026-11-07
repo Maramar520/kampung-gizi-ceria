@@ -55,6 +55,7 @@ export class PlayerNotebook {
   this.tabs=[...document.querySelectorAll('[data-tab]')];
   this.active='inventory';
   this.visible=false;
+  this.lastSignature=null;
   this.tabs.forEach(button=>button.addEventListener('click',()=>this.open(button.dataset.tab)));
   document.getElementById('notebookClose').addEventListener('click',()=>this.close());
   this.root.addEventListener('click',event=>{if(event.target===this.root)this.close()});
@@ -62,6 +63,7 @@ export class PlayerNotebook {
  open(tab='inventory'){
   if(!['inventory','recipes','journal'].includes(tab))tab='inventory';
   this.active=tab;
+  this.lastSignature=null;
   this.visible=true;
   this.root.classList.remove('hidden');
   this.root.setAttribute('aria-hidden','false');
@@ -76,9 +78,14 @@ export class PlayerNotebook {
   this.root.setAttribute('aria-hidden','true');
   this.onClose?.();
  }
- refresh(){if(this.visible)this.render();}
+ refresh(){
+  if(!this.visible)return;
+  const signature=JSON.stringify({tab:this.active,inventory:this.state.data.inventory,coins:this.state.data.coins,recipeKnown:this.state.data.recipeKnown,cooked:this.state.data.cooked,done:this.state.data.done});
+  if(signature!==this.lastSignature)this.render();
+ }
  render(){
   const data=this.state.data;
+  this.lastSignature=JSON.stringify({tab:this.active,inventory:data.inventory,coins:data.coins,recipeKnown:data.recipeKnown,cooked:data.cooked,done:data.done});
   const names={inventory:'🎒 Tas Bahan',recipes:'📖 Buku Resep',journal:'📋 Jurnal Quest'};
   this.heading.textContent=names[this.active];
   this.tabs.forEach(b=>{
