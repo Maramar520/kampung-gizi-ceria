@@ -62,6 +62,6 @@ test('coop and pond interaction positions are reachable without stepping onto wa
   }
  }
  assert.deepEqual([...hits].sort(),['coop','pond']);
- assert.equal(canStand(750,545),false);
- assert.equal(canStand(780,495),true);
+ assert.equal(canStand(869,150),false);
+ assert.equal(canStand(869,246),true);
 });
