@@ -61,7 +61,7 @@ export const INTERACTIONS=[
  {id:'coop',x:325,y:217,r:74,label:'Kandang Ayam'},
  {id:'pond',x:871,y:230,r:75,label:'Kolam Ikan'},
  {id:'store',x:869,y:364,r:75,label:'Toko Swalayan'},
- {id:'village',x:606,y:207,r:67,label:'Rumah Warga'},
+ {id:'village',x:606,y:207,r:67,label:'Perpustakaan'},
  {id:'tani',x:403,y:189,r:45,label:'Pak Tani'},
  {id:'nia',x:405,y:317,r:43,label:'Nia'},
  {id:'library',x:651,y:136,r:53,label:'Perpustakaan Gizi'},
