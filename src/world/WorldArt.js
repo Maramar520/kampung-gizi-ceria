@@ -31,7 +31,37 @@ export function createTextures(scene){
      r(12,16,3,3,0x433831);r(22,16,3,3,0x433831);
      r(15,21,7,2,0xc08074);
     }
-    if(chefHat){r(7,1,22,7,0xffffff);r(12,0,13,3,0xffffff);r(10,8,17,3,0xdde7dc)}
+    // Outline wajah, sorot rambut, motif baju dan detail sepatu per karakter.
+    r(8,5,2,14,0x7e5945);
+    if(direction==='down'){
+      r(11,4,11,2,0x876a54);
+      r(12,15,2,2,0xffffff);r(22,15,2,2,0xffffff);
+      r(10,22,4,2,0xe7a493);r(24,22,4,2,0xe7a493);
+    }else if(direction==='up'){
+      r(11,3,15,2,0x8f6d51);r(13,12,12,2,0x49362e);
+    }else{r(12,4,10,2,0x91745b);r(21,15,2,2,0xffffff);}
+    r(7,23,21,3,0xffffff);
+    r(14,26,7,7,0xf4dba5);
+    r(16,27,3,3,name==='sari'?0xd67975:name==='chef'?0x8db7a3:0x82a8cf);
+    r(9+(moving?leg:0),42,7,2,0x393e52);
+    r(19-(moving?leg:0),42,7,2,0x393e52);
+    if(name==='sari'){
+      r(8,27,5,9,0xf0b7a2);r(22,27,5,9,0xf0b7a2);
+      if(direction==='down')r(7,4,2,14,0x654634);
+      r(12,33,13,4,0xbd736c);
+    }
+    if(name==='player'){
+      r(11,24,3,12,0x5b83b6);
+      r(24,24,3,12,0x5b83b6);
+    }
+    if(chefHat){
+      r(8,1,21,5,0xffffff);r(11,0,15,3,0xffffff);
+      r(10,7,17,4,0xdde7dc);
+      r(13,26,11,12,0xfaf6e8);
+      r(13,27,2,12,0xd5dfd4);
+      r(19,29,3,3,0x9fc9a3);
+      r(19,35,3,3,0x9fc9a3);
+    }
     g.generateTexture(name+'-'+direction+'-'+frame,36,48);
    }
   }
@@ -209,6 +239,41 @@ export function buildWorld(scene) {
     r(deco,x-2,y-8,9,5,0xfff4c8);
   }
   sign('BU SARI • MISI',337,397,12);
+  // Detail furnitur tambahan yang tidak mengubah collision atau tata letak.
+  // Rak sepatu, selimut bermotif, ubin dapur, teko, dan pot masak.
+  for(let i=0;i<4;i++){
+    r(deco,302+i*11,184+(i%2)*6,7,3,0xfff7ed);
+    r(deco,525+i*16,139,10,3,0xe9c89a);
+  }
+  r(deco,529,173,21,3,0x768f7e);
+  r(deco,534,168,11,6,0x8ea0a2);
+  r(deco,538,165,3,3,0xe7e9d7);
+  r(deco,556,171,14,6,0xb9b7ae);
+  r(deco,560,168,6,3,0xeee2bf);
+  r(deco,448,253,22,5,0xe8c49b);
+  r(deco,455,258,13,3,0x965f49);
+  r(deco,286,284,2,33,0xfffcdf);
+  r(deco,281,293,15,2,0xfffcdf);
+  // Anyaman keranjang dan tumpukan sayur di pasar.
+  for(let i=0;i<5;i++){
+    const x=86+i*21;
+    r(deco,x,268,17,12,0xb9804f);
+    r(deco,x+2,270,13,7,0xe0ad66);
+    for(let j=0;j<3;j++)r(deco,x+4+j*4,266-(j%2)*4,5,5,i%2?0xe9b56c:0x77ad67);
+    r(deco,x+5,279,11,2,0x8b603f);
+  }
+  // Papan menu dan tempat duduk pada restoran.
+  outline(deco,797,228,70,26,0x5b786b,0x654f44,2);
+  r(deco,804,236,41,2,0xf9e8c5);r(deco,804,242,33,2,0xf9e8c5);
+  r(deco,847,235,10,10,0xe3b66f);
+  r(deco,717,323,23,6,0x986f55);
+  r(deco,719,315,4,9,0xb78e69);
+  r(deco,740,319,5,5,0xb78e69);
+  // Bunga hias di ambang jendela rumah.
+  for(let i=0;i<4;i++) {
+    r(deco,274+i*6,271,3,5,0x76a16b);
+    r(deco,272+i*6,268,6,5,i%2?0xf7cb91:0xf2a7ad);
+  }
   // Collision adalah data stabil dari v0.3, bukan berdasarkan detail dekorasi.
   const walls=[
     {x:258,y:90,w:364,h:13},{x:258,y:90,w:13,h:265},{x:609,y:90,w:13,h:265},
