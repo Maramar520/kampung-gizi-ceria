@@ -9,6 +9,7 @@ import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js';
+import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
 import {WeatherArt} from '../world/WeatherArt.js';
 
@@ -22,6 +23,7 @@ export class WorldScene extends Phaser.Scene {
   this.gardenArt=new GardenArt(this,this.garden);
   this.dailyLife=new DailyLifeSystem(this.game.state);
   this.social=new SocialSystem(this.game.state);
+  this.missions=new MissionSystem(this.game.state);
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
   this.weatherArt=new WeatherArt(this,this.clock);
@@ -44,6 +46,7 @@ export class WorldScene extends Phaser.Scene {
   this.nia=new NPC(this,{x:405,y:317,name:'NIA',texture:'nia',stops:[
    {x:405,y:317},{x:414,y:282},{x:484,y:282},{x:483,y:315}
   ]});
+  this.rani=new NPC(this,{x:692,y:207,name:'KAK RANI',texture:'rani',stops:[{x:692,y:207},{x:692,y:186},{x:692,y:207}]});
   this.zones=INTERACTIONS;
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
@@ -78,13 +81,13 @@ export class WorldScene extends Phaser.Scene {
   this.tweens.add({targets:subject,scaleX:1.12,scaleY:.88,duration:110,yoyo:true,
    ease:'Sine.easeOut',onComplete:()=>subject.setScale(1)});
   const emoji={stove:'🍳',market:'🧺',bed:'💤',chef:'📖',garden:'🌱',
-   coop:'🥚',pond:'🎣',store:'🛒',village:'🏡',npc:'✨',tani:'🌱',nia:'💬'}[kind]||'✨';
+   coop:'🥚',pond:'🎣',store:'🛒',village:'🏡',npc:'✨',tani:'🌱',nia:'💬',library:'📚',rani:'📖'}[kind]||'✨';
   const puff=this.add.text(x,y-47,emoji,{fontSize:'22px'}).setOrigin(.5).setDepth(2200);
   this.tweens.add({targets:puff,y:y-77,alpha:0,duration:650,
    ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
  }
  npcById(id){
-  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia})[id]||null;
+  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia,rani:this.rani})[id]||null;
  }
  updateRoutines(){
   const phase=this.clock.phase,day=this.game.state.data.day;
@@ -121,11 +124,16 @@ export class WorldScene extends Phaser.Scene {
    [{x:405,y:241},{x:403,y:232},{x:407,y:241}]:taniRoutes[(phase+day%2)%3],'PAK TANI');
   this.nia.setRoutine(phase===3?[{x:478,y:277},{x:479,y:283},{x:478,y:277}]:raining?
    [{x:414,y:283},{x:421,y:283},{x:414,y:283}]:niaRoutes[phase%3],'NIA');
+  this.rani.setRoutine(phase===3?
+   [{x:692,y:208},{x:692,y:213}]:
+   raining?[{x:692,y:197},{x:692,y:211}]:
+   [{x:692,y:186},{x:692,y:209},{x:692,y:191}],'KAK RANI');
   this.phaseIndex=phase;
   this.dailyPhase=this.clock.description.phase;
  }
  highlightPlace(id){
   const markers={
+   library:{x:650,y:130,title:'📚 PERPUSTAKAAN GIZI',yLabel:75},
    coop:{x:325,y:194,title:'🐔 TERNAK · SEBELAH RUMAH',yLabel:248},
    pond:{x:869,y:155,title:'🎣 KOLAM · KANAN ATAS',yLabel:263}
   };
@@ -176,7 +184,7 @@ export class WorldScene extends Phaser.Scene {
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
-   this.tani.update(dt);this.nia.update(dt);
+   this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);
   }
   const id=this.getNearest();
   this.prompt.setVisible(!!id&&!this.game.dialogOpen);
