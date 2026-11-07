@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.4
+# Kampung Gizi Ceria — Phaser v1.5
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -288,3 +288,25 @@ Teknis:
 - `tests/browser-smoke.mjs`: simulasi tindakan tanam, siram, panen, tidur, masak dan pancing, serta pengecekan pose aktif pada browser.
 
 Batasan: animasi berjalan dan kegiatan diuji dengan Chromium headless pada konfigurasi desktop dan emulasi HP; kualitas visual di perangkat fisik iOS/Android tetap perlu divalidasi secara manual.
+
+
+## v1.5 — NPC, Dialog Harian dan Pertemanan
+
+Kampung memiliki **empat warga yang bisa diajak bicara**: Bu Sari, Chef Bimo, Pak Tani, dan Nia. Dua karakter tambahan dibuat menggunakan sprite chibi prosedural, tanpa aset eksternal.
+
+- **Pak Tani** berjalan di jalan setapak antara kebun dan kandang ayam. Ia memberi tips tanaman, pengairan, bibit, dan waktu panen.
+- **Nia** berjalan antara area pasar dan sisi rumah warga. Ia bercerita tentang pilihan makanan, sayuran, dan aktivitas kampung.
+- **Bu Sari** tetap memberi quest utama Nasi Telur Sayur. Berbicara dengannya sekarang juga meningkatkan pertemanan.
+- **Chef Bimo** tetap mengajar semua resep; dialog hariannya muncul saat pemain membuka menu belajar resep.
+
+**Dialog berubah** antara pagi, siang, dan sore serta berganti variasi di hari berikutnya.
+
+**Sistem pertemanan:** berbicara dengan satu warga untuk pertama kalinya dalam satu hari menambah **1 hati**, sampai **5 hati** per warga. Sapaan berikutnya pada hari yang sama tidak menambah hati. Tidur di kasur memulai hari berikutnya, sehingga pemain bisa menyapa lagi. Pertemanan tidak memerlukan koin dan tidak menghambat quest atau resep.
+
+**Menu 🤝 Teman (tombol F):** menampilkan empat warga, lokasi rutinitas, dan hati pertemanan. Menu responsif di HP dan tidak membocorkan data pemain.
+
+**Penyimpanan:** sistem `src/systems/SocialSystem.js` menyimpan progres dalam `GameState.data.social`. **Key LocalStorage lama tidak berubah.** Save lama otomatis mendapat profil pertemanan tanpa menghapus koin, resep, kebun, inventori, quest, atau posisi pemain. Reset progres juga mengembalikan seluruh hati ke nol.
+
+**Denah:** `docs/denah-konsep-awal.svg`, ukuran, pintu, interior, collision dan seluruh enam blok tetap mengikuti v1.3. Dua NPC baru hanya menggunakan ruang berjalan yang sudah ada; tidak menambah atau memindahkan bangunan.
+
+**Pengujian:** `tests/social.test.mjs` memverifikasi migrasi save lama, batas lima hati, satu peningkatan per hari, variasi dialog, reset, dan posisi rute. `tests/browser-smoke.mjs` menguji dialog dan hati lewat interaksi browser desktop, serta menu Teman di simulasi HP Pixel 7.
