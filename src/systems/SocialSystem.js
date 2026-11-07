@@ -1,10 +1,10 @@
 // v1.5: persahabatan sederhana. Tidak membuat save key baru dan tidak memengaruhi quest utama.
 export const FRIEND_IDS=Object.freeze(['sari','chef','tani','nia','rani']);
 export const FRIENDS=Object.freeze({
- sari:{name:'Bu Sari',emoji:'👩',place:'Jalan kampung dan rumah warga'},
+ sari:{name:'Bu Sari',emoji:'👩',place:'Jalan kampung; pulang ke rumah kanan bawah saat hujan'},
  chef:{name:'Chef Bimo',emoji:'👨‍🍳',place:'Restoran sehat'},
- tani:{name:'Pak Tani',emoji:'👨‍🌾',place:'Kebun dan kandang ayam'},
- nia:{name:'Nia',emoji:'👧',place:'Dekat pasar dan rumah warga'},
+ tani:{name:'Pak Tani',emoji:'👨‍🌾',place:'Kebun dan kandang; pulang ke rumah kanan bawah saat hujan'},
+ nia:{name:'Nia',emoji:'👧',place:'Jalan kampung; berteduh di pasar saat hujan'},
  rani:{name:'Kak Rani',emoji:'👩‍🏫',place:'Perpustakaan gizi di Rumah Warga'}
 });
 export const MAX_HEARTS=5;
