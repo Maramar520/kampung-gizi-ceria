@@ -11,9 +11,9 @@ const {canStand,LAYOUT,OBSTACLES,INTERACTIONS,SPAWN}=await load('src/world/World
 const db=new Map();
 globalThis.localStorage={getItem:k=>db.get(k)||null,setItem:(k,v)=>db.set(k,String(v)),removeItem:k=>db.delete(k)};
 const fresh=()=>{db.clear();const state=new GameState();return{state,mission:new MissionSystem(state)};};
-test('five different daily tasks and six one-off achievements',()=>{
- assert.deepEqual(MISSION_DEFS.map(x=>x.id),['plant','harvest','cook','friend','learn']);
- assert.equal(ACHIEVEMENTS.length,6);
+test('six different daily tasks and seven one-off achievements',()=>{
+ assert.deepEqual(MISSION_DEFS.map(x=>x.id),['plant','harvest','cook','friend','help','learn']);
+ assert.equal(ACHIEVEMENTS.length,7);
  assert.equal(new Set(ACHIEVEMENTS.map(a=>a.id)).size,6);
 });
 test('mission progress only increments when actual event is recorded; daily claim cannot be farmed',()=>{
@@ -50,13 +50,26 @@ test('new day refreshes mission progress but keeps lifelong achievements',()=>{
 test('achievement once only and cumulative five claimed missions unlock hero badge',()=>{
  const {state,mission}=fresh();
  for(const x of MISSION_DEFS){mission.record(x.id);assert.ok(mission.claim(x.id));}
- assert.equal(mission.data.totals.claimed,5);
+ assert.equal(mission.data.totals.claimed,6);
  assert.equal(mission.badges().find(x=>x.id==='daily-hero').ready,true);
  const before=state.data.learning.stars;
  assert.ok(mission.claimAchievement('daily-hero'));
  assert.equal(state.data.learning.stars,before+5);
  assert.equal(mission.claimAchievement('daily-hero'),null);
  assert.equal(mission.claimAchievement('invalid'),null);
+});
+test('helping Kak Rani has its own mission and once-only badge',()=>{
+ const {state,mission}=fresh();
+ assert.equal(mission.claim('help'),null);
+ assert.equal(mission.record('help'),true);
+ assert.equal(mission.progress('help'),1);
+ assert.ok(mission.claim('help'));
+ assert.equal(mission.claim('help'),null);
+ assert.ok(mission.claimAchievement('first-help'));
+ assert.equal(mission.claimAchievement('first-help'),null);
+ state.data.day++;
+ assert.equal(mission.progress('help'),0);
+ assert.equal(mission.badges().find(a=>a.id==='first-help').earned,true);
 });
 test('existing v1.7 save still loads and gains mission defaults without reset',()=>{
  db.clear();
