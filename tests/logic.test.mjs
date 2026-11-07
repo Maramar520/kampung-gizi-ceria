@@ -69,5 +69,7 @@ test('integrasi minigame masih mempertahankan tiga input pemain berbeda',()=>{
  assert.match(mini,/click/);
  assert.match(source('src/scenes/UIScene.js'),/this\.minigame\.mount/);
  assert.match(source('src/scenes/WorldScene.js'),/playInteraction/);
- assert.match(source('src/world/WorldArt.js'),/Cutaway/);
+ assert.match(source('src/world/WorldArt.js'),/room\('home'/);
+ assert.match(source('src/world/WorldArt.js'),/room\('village'/);
+ assert.match(source('src/world/WorldArt.js'),/room\('store'/);
 });
