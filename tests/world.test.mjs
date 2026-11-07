@@ -19,7 +19,7 @@ function reachableFromSpawn(){
 }
 const nearby=(positions,point,radius=25)=>positions.some(([x,y])=>
  Math.hypot(x-point.x,y-point.y)<radius);
-test('susunan denah SVG: rumah + kebun + ternak / warga / kolam, kemudian pasar / restoran / swalayan',()=>{
+test('susunan denah SVG: rumah + kebun + ternak / warga / kolam, kemudian pasar / restoran / rumah Pak Tani dan Bu Sari',()=>{
  assert.ok(LAYOUT.home.x<LAYOUT.garden.x);
  assert.ok(LAYOUT.garden.x<LAYOUT.village.x);
  assert.ok(LAYOUT.village.x<LAYOUT.pond.x);
@@ -40,7 +40,7 @@ test('spawn, jalan silang, dan furniture merupakan hitbox valid',()=>{
  assert.ok(canStand(DOORS.market.x,DOORS.market.y+9));
  assert.ok(canStand(DOORS.village.x,DOORS.village.y-6));
 });
-test('pintu rumah, rumah warga, pasar, restoran dan swalayan terhubung dengan jalan',()=>{
+test('pintu rumah, perpustakaan, pasar, restoran dan rumah keluarga terhubung dengan jalan',()=>{
  const positions=reachableFromSpawn();
  for(const [id,target] of Object.entries(DOORS))
   assert.ok(nearby(positions,target,18),'Pintu '+id+' tak dapat dicapai dari jalan');
