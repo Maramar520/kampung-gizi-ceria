@@ -3,13 +3,29 @@
 export const ITEM_INFO=Object.freeze({
   beras:{name:'Beras',emoji:'🍚',type:'Karbohidrat',source:'Pasar',price:12},
   telur:{name:'Telur',emoji:'🥚',type:'Protein',source:'Pasar',price:15},
-  bayam:{name:'Bayam',emoji:'🥬',type:'Sayuran',source:'Pasar atau Kebun',price:10}
+  bayam:{name:'Bayam',emoji:'🥬',type:'Sayuran',source:'Pasar atau Kebun',price:10},
+  wortel:{name:'Wortel',emoji:'🥕',type:'Sayuran',source:'Pasar atau Kebun',price:14},
+  tomat:{name:'Tomat',emoji:'🍅',type:'Sayuran',source:'Pasar atau Kebun',price:15},
+  kangkung:{name:'Kangkung',emoji:'🥬',type:'Sayuran',source:'Pasar atau Kebun',price:12}
 });
 export const RECIPE={id:'nasi-telur-sayur',name:'Nasi Telur Sayur',emoji:'🍛',
   ingredients:['beras','telur','bayam'],teacher:'Chef Bimo di restoran',
   benefits:'Dalam game: karbo +25, protein +20, vitamin +25.',
   steps:['Cuci bayam 5 kali','Tahan tombol untuk memasak nasi','Balik telur 2 kali pada zona hijau']
 };
+export const EXTRA_RECIPES=[
+ {id:'sup-wortel-tomat',name:'Sup Wortel Tomat',emoji:'🥣',ingredients:['wortel','tomat']},
+ {id:'tumis-kangkung',name:'Tumis Kangkung',emoji:'🥬',ingredients:['kangkung','telur']},
+ {id:'nasi-sayur-warna',name:'Nasi Sayur Pelangi',emoji:'🍚',ingredients:['beras','wortel','tomat','kangkung']}
+];
+export function recipeCatalog(data){
+ const base=recipeView(data);
+ return [base,...EXTRA_RECIPES.map(r=>{
+  const ingredients=r.ingredients.map(id=>({id,...ITEM_INFO[id],quantity:Math.max(0,Number(data.inventory?.[id])||0),need:1,enough:(data.inventory?.[id]||0)>=1}));
+  const known=!!data.recipesKnown?.[r.id];
+  return {...r,known,ready:ingredients.every(i=>i.enough),ingredients,canCook:known&&ingredients.every(i=>i.enough),steps:RECIPE.steps};
+ })];
+}
 export function inventoryView(data){
   return Object.entries(ITEM_INFO).map(([id,info])=>({
     id,...info,quantity:Math.max(0,Number(data.inventory?.[id])||0)
@@ -80,12 +96,12 @@ export class PlayerNotebook {
  }
  refresh(){
   if(!this.visible)return;
-  const signature=JSON.stringify({tab:this.active,inventory:this.state.data.inventory,coins:this.state.data.coins,garden:this.state.data.garden,recipeKnown:this.state.data.recipeKnown,cooked:this.state.data.cooked,done:this.state.data.done});
+  const signature=JSON.stringify({tab:this.active,inventory:this.state.data.inventory,coins:this.state.data.coins,garden:this.state.data.garden,recipeKnown:this.state.data.recipeKnown,recipesKnown:this.state.data.recipesKnown,cooked:this.state.data.cooked,done:this.state.data.done});
   if(signature!==this.lastSignature)this.render();
  }
  render(){
   const data=this.state.data;
-  this.lastSignature=JSON.stringify({tab:this.active,inventory:data.inventory,coins:data.coins,garden:data.garden,recipeKnown:data.recipeKnown,cooked:data.cooked,done:data.done});
+  this.lastSignature=JSON.stringify({tab:this.active,inventory:data.inventory,coins:data.coins,garden:data.garden,recipeKnown:data.recipeKnown,recipesKnown:data.recipesKnown,cooked:data.cooked,done:data.done});
   const names={inventory:'🎒 Tas Bahan',recipes:'📖 Buku Resep',journal:'📋 Jurnal Quest'};
   this.heading.textContent=names[this.active];
   this.tabs.forEach(b=>{
@@ -110,48 +126,46 @@ export class PlayerNotebook {
    card.append(el('small','',item.type+' · '+item.price+' KC'));
    grid.append(card);
   }
-  const seedCard=el('article','item-card owned');
-  seedCard.append(el('div','item-emoji','🌱'));
-  seedCard.append(el('strong','','Bibit Bayam'));
-  seedCard.append(el('span','item-count',(data.garden?.seeds??3)+' bibit'));
-  seedCard.append(el('small','','Tanam di Kebun · 5 KC'));
-  grid.append(seedCard);
+  const crops=[['bayam','🥬',5],['wortel','🥕',7],['tomat','🍅',8],['kangkung','🥬',6]];
+  for(const [id,emoji,price] of crops){
+   const seedCard=el('article','item-card owned');
+   seedCard.append(el('div','item-emoji','🌱'));
+   seedCard.append(el('strong','','Bibit '+ITEM_INFO[id].name));
+   const count=data.garden?.seedsByCrop?.[id]??(id==='bayam'?(data.garden?.seeds??3):1);
+   seedCard.append(el('span','item-count',count+' bibit'));
+   seedCard.append(el('small','',emoji+' Tanam di kebun · '+price+' KC'));
+   grid.append(seedCard);
+  }
   this.content.append(grid);
   const plots=Array.isArray(data.garden?.plots)?data.garden.plots:[];
-  const growing=plots.filter(p=>p?.crop==='bayam').length;
-  this.content.append(el('p','notebook-note','🌿 Kebun: '+growing+' dari 3 petak terisi. Siram lalu tidur sampai hari berikutnya untuk memanen bayam.'));
-  this.content.append(el('p','notebook-tip','🪙 Koin Ceria: '+data.coins+' · 🧺 Belanja di pasar sebelah kiri.'));
+  const growing=plots.filter(p=>p?.crop).length;
+  this.content.append(el('p','notebook-note','🌿 Kebun: '+growing+' dari 3 petak terisi. Siram dan tidur untuk memanen.'));
+  this.content.append(el('p','notebook-tip','🪙 Koin Ceria: '+data.coins+' · 🧺 Bahan dan bibit ada di pasar.'));
  }
  renderRecipe(data){
-  const recipe=recipeView(data);
-  const cover=el('div','recipe-cover');
-  cover.append(el('span','recipe-emoji',recipe.emoji));
-  const details=el('div','recipe-info');
-  details.append(el('h3','',recipe.name));
-  details.append(el('p','recipe-status',recipe.known?'✅ Resep sudah dipelajari':'🔒 Resep belum dibuka'));
-  cover.append(details);
-  this.content.append(cover);
-  if(!recipe.known){
-   this.content.append(el('p','notebook-tip','👨‍🍳 Temui Chef Bimo di restoran sebelah kanan, lalu pilih “Pelajari resep”.'));
-   return;
+  this.content.append(el('p','notebook-note','Pilih menu yang ingin dipelajari dari Chef Bimo. Hasil kebun bisa menjadi bahan masakan.'));
+  for(const recipe of recipeCatalog(data)){
+   const cover=el('div','recipe-cover');
+   cover.append(el('span','recipe-emoji',recipe.emoji));
+   const details=el('div','recipe-info');
+   details.append(el('h3','',recipe.name));
+   details.append(el('p','recipe-status',recipe.known?(recipe.canCook?'✅ Siap dimasak':'✅ Resep dipelajari'):'🔒 Belum dipelajari'));
+   cover.append(details);this.content.append(cover);
+   if(!recipe.known){
+    this.content.append(el('p','notebook-note','👨‍🍳 Temui Chef Bimo untuk membuka resep ini.'));
+    continue;
+   }
+   const grid=el('div','ingredient-grid');
+   for(const item of recipe.ingredients){
+    const card=el('div','ingredient'+(item.enough?' enough':' missing'));
+    card.append(el('span','',item.emoji+' '+item.name));
+    card.append(el('b','',item.quantity+' / '+item.need+(item.enough?' ✓':' !')));
+    grid.append(card);
+   }
+   this.content.append(grid);
+   this.content.append(el('p','notebook-note',recipe.canCook?'🍳 Semua bahan lengkap. Masak di kompor rumah.':'🧺 Kumpulkan bahan dari pasar atau kebun.'));
   }
-  this.content.append(el('h3','notebook-section','Bahan yang dibutuhkan'));
-  const grid=el('div','ingredient-grid');
-  for(const item of recipe.ingredients){
-   const card=el('div','ingredient'+(item.enough?' enough':' missing'));
-   card.append(el('span','',item.emoji+' '+item.name));
-   card.append(el('b','',item.quantity+' / '+item.need+(item.enough?' ✓':' !')));
-   grid.append(card);
-  }
-  this.content.append(grid);
-  this.content.append(el('h3','notebook-section','Cara memasak'));
-  const list=el('ol','recipe-steps');
-  for(const step of recipe.steps)list.append(el('li','',step));
-  this.content.append(list);
-  this.content.append(el('p','notebook-tip',recipe.cooked?'🍽️ Hidangan siap! Antarkan kepada Bu Sari.':
-    recipe.canCook?'✅ Semua bahan lengkap. Pergi ke kompor rumah dan tekan E.':
-    '🧺 Bahan belum lengkap. Silakan belanja dahulu.'));
-  this.content.append(el('p','notebook-note',recipe.benefits+' Nilai gizi merupakan poin permainan.'));
+  this.content.append(el('p','notebook-tip','Nilai karbohidrat, protein dan vitamin adalah poin dalam permainan.'));
  }
  renderQuest(data){
   const quest=questView(data);
