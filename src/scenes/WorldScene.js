@@ -8,6 +8,7 @@ import {FarmArt} from '../world/FarmArt.js';
 import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
+import {SocialSystem} from '../systems/SocialSystem.js';
 
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
@@ -17,6 +18,7 @@ export class WorldScene extends Phaser.Scene {
   this.garden=new GardenSystem(this.game.state);
   this.gardenArt=new GardenArt(this,this.garden);
   this.dailyLife=new DailyLifeSystem(this.game.state);
+  this.social=new SocialSystem(this.game.state);
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
@@ -30,6 +32,13 @@ export class WorldScene extends Phaser.Scene {
   ]});
   this.chef=new NPC(this,{x:618,y:468,name:'',texture:'chef',stops:[
    {x:618,y:468},{x:668,y:468},{x:668,y:505},{x:616,y:505}
+  ]});
+  // Dua warga baru, hanya berjalan pada jalan setapak yang sudah ada.
+  this.tani=new NPC(this,{x:403,y:189,name:'PAK TANI',texture:'tani',stops:[
+   {x:403,y:189},{x:402,y:230},{x:407,y:247},{x:400,y:201}
+  ]});
+  this.nia=new NPC(this,{x:405,y:317,name:'NIA',texture:'nia',stops:[
+   {x:405,y:317},{x:414,y:282},{x:484,y:282},{x:483,y:315}
   ]});
   this.zones=INTERACTIONS;
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
@@ -57,7 +66,7 @@ export class WorldScene extends Phaser.Scene {
  }
  playInteraction(kind){
   if(Object.hasOwn(ACTION_DURATION,kind))return this.activity.play(kind);
-  const subject=kind==='npc'?this.sari.sprite:kind==='chef'?this.chef.sprite:this.player.sprite;
+  const subject=this.npcById(kind)?.sprite||this.player.sprite;
   if(!subject?.active)return;
   const x=subject.x,y=subject.y;
   this.tweens.killTweensOf(subject);
@@ -65,10 +74,13 @@ export class WorldScene extends Phaser.Scene {
   this.tweens.add({targets:subject,scaleX:1.12,scaleY:.88,duration:110,yoyo:true,
    ease:'Sine.easeOut',onComplete:()=>subject.setScale(1)});
   const emoji={stove:'🍳',market:'🧺',bed:'💤',chef:'📖',garden:'🌱',
-   coop:'🥚',pond:'🎣',store:'🛒',village:'🏡',npc:'✨'}[kind]||'✨';
+   coop:'🥚',pond:'🎣',store:'🛒',village:'🏡',npc:'✨',tani:'🌱',nia:'💬'}[kind]||'✨';
   const puff=this.add.text(x,y-47,emoji,{fontSize:'22px'}).setOrigin(.5).setDepth(2200);
   this.tweens.add({targets:puff,y:y-77,alpha:0,duration:650,
    ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
+ }
+ npcById(id){
+  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia})[id]||null;
  }
  updateRoutines(){
   const phase=Math.floor(this.time.now/30000)%3,day=this.game.state.data.day;
@@ -89,6 +101,19 @@ export class WorldScene extends Phaser.Scene {
   const a=sariPlans[(phase+day%2)%3];
   this.sari.setRoutine(a.points,'BU SARI');
   this.chef.setRoutine(chefPlans[phase],'');
+  const taniRoutes=[
+   [{x:403,y:189},{x:401,y:217},{x:408,y:243},{x:403,y:198}],
+   [{x:405,y:226},{x:407,y:249},{x:398,y:248},{x:399,y:208}],
+   [{x:402,y:204},{x:401,y:238},{x:408,y:248},{x:403,y:193}]
+  ];
+  const niaRoutes=[
+   [{x:405,y:316},{x:412,y:286},{x:482,y:286},{x:479,y:314}],
+   [{x:412,y:280},{x:481,y:280},{x:479,y:252},{x:417,y:280}],
+   [{x:405,y:312},{x:419,y:287},{x:483,y:287},{x:470,y:316}]
+  ];
+  this.tani.setRoutine(taniRoutes[(phase+day%2)%3],'PAK TANI');
+  this.nia.setRoutine(niaRoutes[phase],'NIA');
+  this.phaseIndex=phase;
   this.dailyPhase=['Pagi','Siang','Sore'][phase];
  }
  highlightPlace(id){
@@ -110,8 +135,10 @@ export class WorldScene extends Phaser.Scene {
  }
  getNearest(){
   const d=this.game.state.data;
-  return nearestInteraction(d,this.zones.map(z=>z.id==='npc'?{...z,x:this.sari.x,y:this.sari.y}:
-   z.id==='chef'?{...z,x:this.chef.x,y:this.chef.y}:z))?.id??null;
+  return nearestInteraction(d,this.zones.map(z=>{
+   const npc=this.npcById(z.id);
+   return npc?{...z,x:npc.x,y:npc.y}:z;
+  }))?.id??null;
  }
  getGoal(){
   const s=this.game.state.data;
@@ -140,12 +167,13 @@ export class WorldScene extends Phaser.Scene {
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
+   this.tani.update(dt);this.nia.update(dt);
   }
   const id=this.getNearest();
   this.prompt.setVisible(!!id&&!this.game.dialogOpen);
   if(id){
    const z=this.zones.find(q=>q.id===id);
-   const npc=id==='npc'?this.sari:id==='chef'?this.chef:null;
+   const npc=this.npcById(id);
    this.prompt.setPosition(npc?npc.x:z.x,(npc?npc.y:z.y)-63);
    this.prompt.setText('E / AKSI · '+z.label);
   }
