@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.0
+# Kampung Gizi Ceria — Phaser v1.0.1
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -195,3 +195,13 @@ Peternakan ayam dan kolam ikan kini ditambahkan langsung pada `WorldScene`; ruma
 **Kompatibilitas:** Key LocalStorage lama tidak berubah. Save lama memperoleh nilai awal untuk sistem kegiatan baru; tanaman, koin, quest, dan resep yang sudah diselesaikan tetap dipertahankan. Tombol reset mengulang kegiatan harian juga.
 
 **Catatan pengujian:** GitHub Actions menguji sintaks dan logika Node.js, termasuk akses rute berdasarkan hitbox. Tampilan aktual serta respons sentuhan/kontrol di browser tetap perlu diuji manual. Indikator gizi hanyalah poin di dalam game.
+
+
+## v1.0.1 — Perbaikan visibilitas kandang dan kolam
+
+- Kandang ayam berada di kanan atas; kolam ikan di kanan bawah. Kedua objek sekarang memakai lapisan gambar yang lebih depan, bidang lebih luas, dan label lebih besar.
+- Ada tombol **🐔 Lihat Kandang Ayam** dan **🎣 Lihat Kolam Ikan** di atas game. Klik tombol untuk menampilkan penanda lingkaran besar dan nama lokasi di peta selama beberapa detik.
+- Tombol hanya menunjukkan lokasi; tidak memindahkan pemain atau menghapus progres.
+- Untuk berinteraksi tetap jalan mendekati bangunan dan tekan **E / AKSI**.
+
+Jika browser masih menampilkan tampilan lama, muat ulang dengan **Cmd+Shift+R** (Mac) atau **Ctrl+Shift+R** (Windows). Pemeriksaan sintaks otomatis tidak menggantikan inspeksi visual di browser.
