@@ -1,28 +1,67 @@
-// Koordinat tetap dari v0.5. Digunakan oleh render, navigasi, dan tes.
-export const WORLD_WIDTH=960;
-export const WORLD_HEIGHT=600;
-export const SPAWN={x:480,y:530};
+// Peta v1.3: denah SVG asli (360×270) dipetakan ke world 960×600.
+// Tiga kolom / dua baris dipisahkan jalan x≈448, x≈760, dan y≈282.
+export const WORLD_WIDTH=960, WORLD_HEIGHT=600;
+export const SPAWN={x:446,y:291};
+export const LAYOUT=Object.freeze({
+ home:{x:45,y:49,w:197,h:190},
+ garden:{x:258,y:59,w:131,h:79},
+ coop:{x:264,y:150,w:123,h:88},
+ village:{x:500,y:49,w:214,h:190},
+ pond:{x:805,y:53,w:126,h:183},
+ market:{x:39,y:339,w:354,h:206},
+ restaurant:{x:500,y:339,w:214,h:206},
+ store:{x:806,y:339,w:126,h:206},
+ roads:{crossY:281,leftX:448,rightX:760}
+});
+export const DOORS=Object.freeze({
+ home:{x:140,y:237},
+ village:{x:608,y:237},
+ market:{x:211,y:339},
+ restaurant:{x:607,y:339},
+ store:{x:869,y:339}
+});
+const rectangle=(x,y,w,h)=>({x,y,w,h});
+function houseWalls({x,y,w,h},topEntrance=false){
+ const door=52,left=(w-door)/2;
+ const result=[rectangle(x,y,11,h),rectangle(x+w-11,y,11,h)];
+ if(topEntrance){
+  result.push(rectangle(x,y,left,11),rectangle(x+left+door,y,w-left-door,11));
+  result.push(rectangle(x,y+h-11,w,11));
+ }else{
+  result.push(rectangle(x,y,w,11));
+  result.push(rectangle(x,y+h-11,left,11),rectangle(x+left+door,y+h-11,w-left-door,11));
+ }
+ return result;
+}
 export const WALLS=[
- {x:258,y:90,w:364,h:13},{x:258,y:90,w:13,h:265},{x:609,y:90,w:13,h:265},
- {x:258,y:343,w:156,h:12},{x:466,y:343,w:156,h:12},
- {x:53,y:212,w:213,h:12},{x:53,y:212,w:12,h:130},{x:253,y:212,w:12,h:130},
- {x:703,y:211,w:210,h:12},{x:703,y:211,w:12,h:140},{x:901,y:211,w:12,h:140}
+ ...houseWalls(LAYOUT.home),...houseWalls(LAYOUT.village),
+ ...houseWalls(LAYOUT.market,true),...houseWalls(LAYOUT.restaurant,true),...houseWalls(LAYOUT.store,true)
 ];
 export const FURNITURE=[
- {x:289,y:137,w:68,h:93},{x:511,y:153,w:83,h:66},
- {x:423,y:250,w:86,h:53},{x:80,y:259,w:120,h:31},{x:746,y:268,w:116,h:30}
+ rectangle(68,99,51,81), // kasur
+ rectangle(171,107,47,46), // kompor
+ rectangle(144,174,55,30), // meja rumah
+ rectangle(551,106,54,40), // meja warga
+ rectangle(84,392,204,35), // lapak pasar
+ rectangle(533,395,145,36), // meja restoran
+ rectangle(825,389,84,35)  // rak swalayan
 ];
-export const NEW_WORLD_OBSTACLES=[{x:746,y:87,w:104,h:54},{x:708,y:516,w:152,h:54}];
+export const NEW_WORLD_OBSTACLES=[
+ rectangle(292,168,72,42), // bangunan kandang; halamannya tetap dapat dilalui
+ rectangle(816,82,105,129) // air kolam (dermaga di sisi bawah)
+];
 export const OBSTACLES=[...WALLS,...FURNITURE,...NEW_WORLD_OBSTACLES];
 export const INTERACTIONS=[
- {id:'bed',x:320,y:188,r:60,label:'Kasur'},
- {id:'stove',x:553,y:190,r:62,label:'Kompor'},
- {id:'market',x:155,y:323,r:83,label:'Pasar'},
- {id:'npc',x:350,y:476,r:65,label:'Bu Sari'},
- {id:'chef',x:810,y:310,r:78,label:'Chef Bimo'},
- {id:'garden',x:120,y:170,r:88,label:'Kebun Sayur'},
- {id:'coop',x:803,y:174,r:82,label:'Kandang Ayam'},
- {id:'pond',x:769,y:515,r:85,label:'Kolam Ikan'}
+ {id:'bed',x:99,y:161,r:49,label:'Kasur'},
+ {id:'stove',x:194,y:160,r:55,label:'Kompor'},
+ {id:'market',x:208,y:376,r:81,label:'Pasar'},
+ {id:'npc',x:450,y:283,r:65,label:'Bu Sari'},
+ {id:'chef',x:616,y:456,r:75,label:'Chef Bimo'},
+ {id:'garden',x:320,y:142,r:75,label:'Kebun Sayur'},
+ {id:'coop',x:325,y:217,r:74,label:'Kandang Ayam'},
+ {id:'pond',x:871,y:230,r:75,label:'Kolam Ikan'},
+ {id:'store',x:869,y:364,r:75,label:'Toko Swalayan'},
+ {id:'village',x:606,y:207,r:67,label:'Rumah Warga'}
 ];
 export function canStand(x,y,obstacles=OBSTACLES){
  if(!Number.isFinite(x)||!Number.isFinite(y)||x<15||x>945||y<35||y>580)return false;
