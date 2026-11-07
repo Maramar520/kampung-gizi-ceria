@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v0.8
+# Kampung Gizi Ceria — Phaser v0.9
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -143,3 +143,22 @@ Implementasi modular:
 **Penyimpanan:** tetap menggunakan key LocalStorage yang sama seperti versi sebelumnya. Data kebun ditambahkan dengan nilai default untuk save lama. Jika membuka game setelah update, progres sebelumnya tetap tersedia.
 
 **Catatan:** progres tumbuh baru berubah ketika hari game bertambah melalui kasur. Angka indikator gizi tetap sekadar poin permainan. Pengujian GitHub Actions mencakup sintaks dan logika; interaksi visual end-to-end tetap perlu dicoba pada perangkat.
+
+
+## v0.9 — Empat Tanaman dan Empat Resep
+
+**Tanaman:** Bayam (1 hari), Kangkung (1 hari), Wortel (2 hari), dan Tomat (2 hari). Pemain dapat memilih benih saat menanam di salah satu dari tiga petak kebun, lalu menyiram dan tidur untuk memajukan hari. Setiap panen menghasilkan dua sayuran dan mengembalikan satu bibit dari tanaman yang sama.
+
+Bibit awal pada save baru: 3 bayam, 1 wortel, 1 tomat, 1 kangkung. Bibit tambahan tersedia di pasar dengan harga masing-masing 5, 7, 8, dan 6 KC. Bahan sayur juga bisa dibeli secara langsung.
+
+**Resep:**
+- Nasi Telur Sayur: beras + telur + bayam (quest awal Bu Sari).
+- Sup Wortel Tomat: wortel + tomat.
+- Tumis Kangkung: kangkung + telur.
+- Nasi Sayur Pelangi: beras + wortel + tomat + kangkung.
+
+Temui Chef Bimo untuk mempelajari resep satu per satu. Di kompor rumah, pilih resep yang sudah terbuka dan cukup bahan, lalu selesaikan tiga tahap minigame. Buku resep dan tas sekarang menampilkan seluruh bahan, bibit, dan status empat resep. Memasak menu baru memberikan poin gizi permainan tanpa menyelesaikan quest Bu Sari secara otomatis.
+
+**Kompatibilitas:** save lama tetap memakai key LocalStorage sebelumnya, jumlah bibit bayam dan petak bayam lama dipertahankan. Saat reset, jumlah bibit seluruh tanaman dikembalikan ke awal. Tidak ada scene loading ketika masuk rumah.
+
+**Pengujian:** `tests/v09.test.mjs` mengecek migrasi save lama, fase panen masing-masing tanaman, pemakaian bahan resep, dan konsistensi quest pertama. GitHub Actions menjalankan seluruh pengujian Node.js. Perilaku browser masih perlu dicoba langsung pada perangkat.
