@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.1
+# Kampung Gizi Ceria — Phaser v1.2
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -227,3 +227,20 @@ GitHub Actions sekarang menjalankan dua pekerjaan:
 Tangkapan layar desktop dan HP diunggah sebagai artifact **qa-browser-screenshots** pada halaman Actions, bila run berhasil atau gagal setelah membuat gambar.
 
 **Batas pengujian:** pengecekan Chromium headless tidak menggantikan tes pengguna langsung pada Safari iPhone, browser Android, atau semua ukuran layar. Sebelum rilis publik lebih luas, cobalah navigasi dengan kontrol sentuh di perangkat asli.
+
+## v1.2 — Visual polish berdasarkan screenshot QA
+
+Screenshot pengujian v1.1 pada desktop dan simulasi Pixel 7 menunjukkan beberapa masalah yang dapat diverifikasi secara visual:
+- Panel quest di HP terlalu sempit dan teks menjadi kolom vertikal sangat panjang.
+- Posisi ayam berdekatan dengan tulisan restoran, sehingga hierarki lokasi terlihat kurang jelas.
+- Furnitur rumah masih datar, terutama kasur, meja makan, dan rak dapur.
+
+Perbaikan:
+- Panel quest ditampilkan penuh satu baris pada viewport hingga 700 px; tombol pemulihan dan reset berada di bawahnya.
+- Koordinat ayam dipindah di dalam kandang agar tidak berimpit dengan label restoran.
+- Kasur mendapat motif patchwork, kabinet dapur dilengkapi kendi, meja makan diberi cangkir, dan meja pasar diberi detail rotan.
+- Sprite pemain memiliki tas kecil sebagai aksesori tambahan.
+- Daun beterbangan dan titik kilau bergerak ringan melalui `AmbientArt.js`; air kolam diberi riak animasi.
+- Pengujian browser HP menambahkan asersi lebar panel quest dan tinggi panel sehingga regresi layout mudah terdeteksi.
+
+**Batasan:** screenshot berasal dari Chromium headless desktop dan emulasi Pixel 7. Pengujian sentuhan langsung pada perangkat fisik dan Safari belum dilakukan.
