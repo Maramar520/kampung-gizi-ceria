@@ -43,6 +43,11 @@ async function testDesktop(browser){
  const gameData=()=>page.evaluate(()=>({...window.__kampungQA.state.data}));
  const dimensions=await page.evaluate(()=>({canvas:document.querySelector('#game canvas')?.getBoundingClientRect().toJSON(),viewport:innerWidth}));
  assert.ok(dimensions.canvas.width<=dimensions.viewport);
+ // Verify actual keyboard movement before using the QA teleport bridge.
+ const yBefore=await page.evaluate(()=>window.__kampungQA.state.data.y);
+ await page.keyboard.down('w');await sleep(300);await page.keyboard.up('w');
+ const yAfter=await page.evaluate(()=>window.__kampungQA.state.data.y);
+ assert.ok(yAfter<yBefore-8,'W key must move the player north');
  await mkdir('qa-artifacts',{recursive:true});
  await page.screenshot({path:'qa-artifacts/desktop-map.png',fullPage:true});
  await page.locator('[data-open-notebook="inventory"]').click();
