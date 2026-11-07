@@ -65,6 +65,29 @@ async function testDesktop(browser){
    await actionAt(page,z[0],z[1],z[2]);
    await close(page);
  }
+ // v1.5: two new villagers and one-heart-per-day interactions.
+ for(const [id,title] of [['tani','Pak Tani'],['nia','Nia']]){
+  const position=await page.evaluate(id=>{
+   const n=window.__kampungQA.scene.getScene('WorldScene')[id];
+   return {x:n.x,y:n.y};
+  },id);
+  await actionAt(page,position.x,position.y,title);
+  assert.match(await page.locator('#message').textContent(),/1 hati hari ini/);
+  await close(page);
+  const again=await page.evaluate(id=>{
+   const n=window.__kampungQA.scene.getScene('WorldScene')[id];
+   return {x:n.x,y:n.y};
+  },id);
+  await actionAt(page,again.x,again.y,title);
+  assert.match(await page.locator('#message').textContent(),/Sudah menyapa hari ini/);
+  await close(page);
+ }
+ await page.locator('#friendsButton').click();
+ await page.locator('#dialog:not(.hidden)').waitFor();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Buku Pertemanan/);
+ assert.equal(await page.locator('.social-friend').count(),4);
+ assert.equal(await page.locator('.social-hearts').count(),4);
+ await close(page);
  // v1.4: play actions through actual dialogs, then verify the rendered pose.
  await actionAt(page,320,141,'Kebun');
  await page.getByRole('button',{name:/Tanam Bayam.*Petak 1/}).click();
@@ -75,6 +98,15 @@ async function testDesktop(browser){
  await actionAt(page,128,162,'Kasur');
  await page.getByRole('button',{name:/Tidur hingga pagi/}).click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'sleep');
+ // A new day enables another greeting and the heart survives game saves.
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').social.profile('tani').hearts),1);
+ await close(page);
+ const farmerNow=await page.evaluate(()=>{
+  const n=window.__kampungQA.scene.getScene('WorldScene').tani;
+  return {x:n.x,y:n.y};
+ });
+ await actionAt(page,farmerNow.x,farmerNow.y,'Pak Tani');
+ assert.match(await page.locator('#message').textContent(),/2 hati hari ini/);
  await close(page);
  await actionAt(page,320,141,'Kebun');
  await page.getByRole('button',{name:/Panen Bayam.*Petak 1/}).click();
@@ -179,6 +211,11 @@ async function testMobile(browser){
  assert.ok(questLayout.questHeight<260,'Mobile quest should not stretch into an excessively tall column');
 
  await page.locator('[data-dir="up"]').tap();
+ await page.locator('#friendsButton').tap();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Buku Pertemanan/);
+ assert.equal(await page.locator('.social-friend').count(),4);
+ await page.locator('#close').tap();
+ await page.locator('#dialog').waitFor({state:'hidden'});
  await page.locator('[data-open-notebook="journal"]').tap();
  assert.match(await page.locator('#notebookTitle').textContent(),/Jurnal/);
  await page.locator('#notebookClose').tap();
