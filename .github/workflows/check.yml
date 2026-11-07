@@ -42,6 +42,11 @@ jobs:
           test -f tests/shelters.test.mjs
           test -f src/systems/MissionSystem.js
           test -f tests/missions.test.mjs
+          test -f src/systems/HomeDecorSystem.js
+          test -f src/world/HomeDecorArt.js
+          test -f src/systems/RestaurantOrderSystem.js
+          test -f src/world/NpcWorkRoutes.js
+          test -f tests/v19.test.mjs
       - name: Run system regression tests
         run: node --test tests/*.test.mjs
 
