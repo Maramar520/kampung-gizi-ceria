@@ -52,6 +52,9 @@ export function createTextures(scene){
       r(12,33,13,4,0xbd736c);
     }
     if(name==='player'){
+      // Tas selempang dan garis kantong dari bahan pixel art.
+      if(direction==='up')r(19,24,9,10,0x947257);
+      else {r(9,26,15,3,0xe6bc88);r(20,30,6,7,0xb99168);}
       r(11,24,3,12,0x5b83b6);
       r(24,24,3,12,0x5b83b6);
     }
@@ -247,7 +250,7 @@ export function buildWorld(scene) {
     outline(deco,x-5,y-11,15,13,0xffdf9c,0x946d4f,2);
     r(deco,x-2,y-8,9,5,0xfff4c8);
   }
-  sign('BU SARI • MISI',337,397,12);
+  // Label Bu Sari mengikuti NPC-nya, jangan memasang label statis di atas jalur.
   // Detail furnitur tambahan yang tidak mengubah collision atau tata letak.
   // Rak sepatu, selimut bermotif, ubin dapur, teko, dan pot masak.
   for(let i=0;i<4;i++){
@@ -283,6 +286,33 @@ export function buildWorld(scene) {
     r(deco,274+i*6,271,3,5,0x76a16b);
     r(deco,272+i*6,268,6,5,i%2?0xf7cb91:0xf2a7ad);
   }
+  // v1.2: furnitur cozy yang tetap berada di footprint lama dan bukan collider baru.
+  // Selimut patchwork dan bantal bersulam.
+  for(let row=0;row<3;row++)for(let col=0;col<3;col++){
+    r(deco,303+col*14,179+row*12,12,10,(row+col)%2?0xe6d7bc:0xa8c5ba);
+    r(deco,307+col*14,183+row*12,4,3,0xfff5dc);
+  }
+  r(deco,308,148,25,3,0xe1d8c9);
+  r(deco,342,150,4,8,0xfffcf3);
+  // Dua cangkir teh dan alas makan.
+  for(const [x,y] of [[444,272],[482,272]]){
+    r(deco,x-2,y-1,13,9,0x8e6c51);
+    r(deco,x,y,9,5,0xfff5e2);
+    r(deco,x+3,y+1,3,2,0xd5a16d);
+  }
+  // Rak dapur: kendi, toples bumbu, dan daun.
+  for(const [x,c] of [[523,0xe9ae70],[543,0xa0bc87],[568,0xc9977b]]){
+    r(deco,x,128,13,11,0x896c50);r(deco,x+2,127,9,3,0xf5d5a3);
+    r(deco,x+3,131,7,5,c);
+  }
+  // Lampu rumah di atas meja dan tekstur rotan pasar.
+  r(deco,492,105,5,15,0x98765b);r(deco,481,117,27,7,0xf6d79d);
+  r(deco,487,124,16,3,0xffe7b3);
+  for(let x=85;x<197;x+=19){r(deco,x,289,10,3,0x80573f);r(deco,x+4,285,3,7,0xcf9b63);}
+  // Keranjang dan papan kecil di meja restoran.
+  r(deco,858,301,14,12,0xa87852);r(deco,861,297,9,5,0xe7bb77);
+  r(deco,864,295,3,5,0x659e64);
+  for(let i=0;i<4;i++){r(deco,775+i*20,333,7,3,i%2?0xf5dec0:0xe6b7a3);}
   // Hitbox dan titik interaksi tersentral di WorldGeometry.js.
   return OBSTACLES;
 
