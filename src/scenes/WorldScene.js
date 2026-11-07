@@ -199,7 +199,8 @@ export class WorldScene extends Phaser.Scene {
   const markers={
    library:{x:650,y:130,title:'📚 PERPUSTAKAAN GIZI',yLabel:75},
    coop:{x:325,y:194,title:'🐔 TERNAK · SEBELAH RUMAH',yLabel:248},
-   pond:{x:869,y:155,title:'🎣 KOLAM · KANAN ATAS',yLabel:263}
+   pond:{x:869,y:155,title:'🎣 KOLAM · KANAN ATAS',yLabel:263},
+   festival:{x:210,y:395,title:'🎉 FESTIVAL · PASAR TRADISIONAL',yLabel:310}
   };
   const p=markers[id];if(!p)return;
   this.keysHeld.clear();
