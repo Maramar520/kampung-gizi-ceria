@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.2
+# Kampung Gizi Ceria — Phaser v1.3
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -244,3 +244,25 @@ Perbaikan:
 - Pengujian browser HP menambahkan asersi lebar panel quest dan tinggi panel sehingga regresi layout mudah terdeteksi.
 
 **Batasan:** screenshot berasal dari Chromium headless desktop dan emulasi Pixel 7. Pengujian sentuhan langsung pada perangkat fisik dan Safari belum dilakukan.
+
+## v1.3 — Pemulihan Denah Konsep Awal
+
+**Acuan tunggal:** [`docs/denah-konsep-awal.svg`](docs/denah-konsep-awal.svg). Susunan enam blok mengikuti SVG yang diberikan pengguna, dipetakan dari 360×270 ke kanvas Phaser 960×600.
+
+| | Kiri | Tengah | Kanan |
+|---|---|---|---|
+| **Utara / atas** | Rumah Pemain + Kebun dan Ternak di sebelah rumah | Rumah Warga | Kolam Ikan |
+| **Selatan / bawah** | Pasar Tradisional | Restoran Sehat | Toko Swalayan |
+
+Jalan horizontal melintasi peta pada y sekitar 282. Jalan vertikal membatasi blok pada x sekitar 448 dan 760. Tidak ada bangunan yang memotong jalur. Rumah pemain, rumah warga, pasar, restoran, dan toko swalayan tetap memakai interior potongan/dollhouse yang terlihat dari peta; **tidak perlu scene lain untuk masuk**.
+
+Perubahan utama:
+- Rumah pemain dipindah ke **kiri atas**, kebun dan kandang ditempatkan bersebelahan dengan rumah; kolam ikan dipindah ke **kanan atas**.
+- Rumah warga dan toko swalayan kini benar-benar dirender beserta furnitur. Toko swalayan menyediakan pembelian bahan; rumah warga memiliki dialog.
+- Pasar tradisional **kiri bawah** dan restoran sehat **tengah bawah**.
+- Pintu, dinding, furnitur, titik interaksi, titik awal pemain, penunjuk arah, posisi NPC dan rute jalan dikalibrasi ulang di `WorldGeometry.js` dan `WorldScene.js`.
+- Tombol **Kembali ke jalan**, reset, penanda kandang/kolam, dan instruksi quest merujuk lokasi baru.
+- Save lama tetap menggunakan `kampung-gizi-pixel-v02`: koin, resep, inventori, kebun, peternakan dan quest tidak dibuang; hanya posisi pemain yang dipulihkan bila tersimpan di dinding baru.
+- Tes `tests/world.test.mjs` memeriksa **urutan blok asli, lima pintu, interior, seluruh 10 titik interaksi, dan jalur menuju lokasi tanpa menerobos dinding/air**. Tes browser `tests/browser-smoke.mjs` diperbarui ke koordinat baru.
+
+**Catatan:** gambar SVG berukuran 360×270 sementara dunia game berukuran 960×600, sehingga denah diproyeksikan dengan skala sumbu berbeda, dengan posisi relatif dan susunan enam blok tetap dipertahankan. Grafik dan interaksi masih berbasis Phaser dan tidak memerlukan instalasi ulang.
