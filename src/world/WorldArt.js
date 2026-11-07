@@ -265,14 +265,23 @@ export function buildWorld(scene) {
  frame(deco,630,366,60,21,0x58796b,0x745944,2);
  r(deco,636,373,42,2,0xf5e9c2);r(deco,637,379,34,2,0xf5e9c2);
  flowerBox(505,524,73);
- // TOKO SWALAYAN: blok kanan bawah, interior berbeda dari pasar.
- room('store',0xe7e4cb,0x8aa78b,true);
- label('TOKO SWALAYAN',867,322,12);
- frame(deco,831,389,55,35,0x9cbaa2,0x6d8c7e,2);
- for(let x=836;x<882;x+=12){r(deco,x,395,9,20,[0xe6ae6f,0xa8c0db,0xf0d19d][Math.floor(x/13)%3]);}
- shelf(822,449,94);shelf(824,499,89);
- r(deco,820,363,31,17,0xa7d3d8);r(deco,824,366,22,4,0xe7f5e7);
- frame(deco,882,364,35,17,0xc5a56e,0x887450,2);
- label('MINIMARKET',870,541,11);
+ // RUMAH PAK TANI & BU SARI, blok kanan bawah.
+ // Denah luar dan pintu masuk tidak berubah; interior terbuka seperti rumah pemain.
+ room('store',0xf1dec4,0xa17f67,true);
+ label('RUMAH PAK TANI',869,319,11);
+ label('& BU SARI',869,334,11);
+ // Tempat tidur di kiri, kursi dan tanaman di kanan. Tengah kosong agar NPC bisa masuk.
+ frame(deco,819,393,34,51,0xa7c9bb,0x6e938b,3);
+ r(deco,824,397,24,12,0xf9f1e2);
+ r(deco,825,413,22,25,0xb5d6c4);
+ r(deco,825,438,22,4,0xe5c49b);
+ table(887,390,24,18,0xc39169);
+ r(deco,891,395,14,6,0xf5e4c7);
+ frame(deco,886,489,26,24,0xcdb38d,0x927357,2);
+ r(deco,892,496,14,11,0xe8d8b6);
+ r(deco,824,487,11,24,0x9b734f);
+ r(deco,826,481,8,12,0x6a9f6b);
+ flowerBox(842,521,50);
+ label('RUMAH KELUARGA',869,545,10);
  return OBSTACLES;
 }
