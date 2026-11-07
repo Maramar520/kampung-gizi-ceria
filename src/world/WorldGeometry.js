@@ -44,7 +44,7 @@ export const FURNITURE=[
  rectangle(551,106,54,40), // meja warga
  rectangle(84,392,204,35), // lapak pasar
  rectangle(533,395,102,36), // meja restoran
- rectangle(831,389,55,35)  // rak swalayan
+ rectangle(819,393,34,51)  // kasur rumah Pak Tani dan Bu Sari
 ];
 export const NEW_WORLD_OBSTACLES=[
  rectangle(292,168,72,42), // bangunan kandang; halamannya tetap dapat dilalui
@@ -60,7 +60,7 @@ export const INTERACTIONS=[
  {id:'garden',x:320,y:142,r:75,label:'Kebun Sayur'},
  {id:'coop',x:325,y:217,r:74,label:'Kandang Ayam'},
  {id:'pond',x:871,y:230,r:75,label:'Kolam Ikan'},
- {id:'store',x:869,y:364,r:75,label:'Toko Swalayan'},
+ {id:'store',x:869,y:364,r:65,label:'Rumah Pak Tani & Bu Sari'},
  {id:'village',x:606,y:207,r:67,label:'Perpustakaan'},
  {id:'tani',x:403,y:189,r:45,label:'Pak Tani'},
  {id:'nia',x:405,y:317,r:43,label:'Nia'},
