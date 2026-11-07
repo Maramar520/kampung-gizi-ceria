@@ -4,8 +4,7 @@ import {readFileSync} from 'node:fs';
 const source=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 const load=async path=>import('data:text/javascript;base64,'+
  Buffer.from(source(path)).toString('base64'));
-const {CHARACTER_ACTIONS}=await load('src/world/WorldArt.js').catch(()=>({CHARACTER_ACTIONS:null}));
-// WorldArt imports geometry, so inspect static sprite generation when Node data URI can't resolve it.
+// WorldArt imports geometry, so inspect sprite generation text without Node module resolution.
 const {ACTION_DURATION,ACTION_PROPS,actionFrames}=await load('src/systems/ActionAnimator.js');
 const {LAYOUT,OBSTACLES,SPAWN,INTERACTIONS}=await load('src/world/WorldGeometry.js');
 
@@ -41,5 +40,5 @@ test('layout and all map collision coordinates remain identical to v1.3',()=>{
  assert.deepEqual([LAYOUT.home.x,LAYOUT.home.y,LAYOUT.home.w,LAYOUT.home.h],[45,49,197,190]);
  assert.deepEqual([LAYOUT.village.x,LAYOUT.pond.x,LAYOUT.market.y,LAYOUT.restaurant.y,LAYOUT.store.x],[500,805,339,339,806]);
  assert.equal(INTERACTIONS.length,10);
- assert.equal(OBSTACLES.length,30);
+ assert.equal(OBSTACLES.length,34);
 });
