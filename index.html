@@ -146,6 +146,10 @@ button{touch-action:manipulation}
  .place-shortcuts{gap:6px}
  .place-shortcuts span{font-size:12px}
 }
+
+/* v1.2: do not permanently obscure place signs with a tutorial toast. */
+.toast{visibility:hidden;opacity:0;transition:opacity .15s ease}
+.toast.visible{visibility:visible;opacity:1}
 </style>
 </head>
 <body>
