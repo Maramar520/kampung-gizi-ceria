@@ -38,6 +38,8 @@ jobs:
           test -f src/systems/TimeWeatherSystem.js
           test -f src/world/WeatherArt.js
           test -f tests/time-weather.test.mjs
+          test -f src/systems/MissionSystem.js
+          test -f tests/missions.test.mjs
       - name: Run system regression tests
         run: node --test tests/*.test.mjs
 
