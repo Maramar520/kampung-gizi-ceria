@@ -14,10 +14,10 @@ globalThis.localStorage={
  setItem:(k,v)=>store.set(k,String(v)),
  removeItem:k=>store.delete(k)
 };
-test('four NPCs have unique names and preserved original game save key',()=>{
+test('five NPCs have unique names and preserved original game save key',()=>{
  assert.equal(SAVE_KEY,'kampung-gizi-pixel-v02');
- assert.deepEqual(FRIEND_IDS,['sari','chef','tani','nia']);
- assert.equal(new Set(Object.values(FRIENDS).map(p=>p.name)).size,4);
+ assert.deepEqual(FRIEND_IDS,['sari','chef','tani','nia','rani']);
+ assert.equal(new Set(Object.values(FRIENDS).map(p=>p.name)).size,5);
  assert.equal(defaults().social.friends.nia.hearts,0);
 });
 test('old saves without social data migrate without deleting quest and inventory',()=>{
@@ -28,7 +28,7 @@ test('old saves without social data migrate without deleting quest and inventory
  assert.equal(g.data.coins,34);
  assert.equal(g.data.inventory.telur,2);
  assert.equal(g.data.done,true);
- assert.equal(social.all().length,4);
+ assert.equal(social.all().length,5);
  assert.ok(social.all().every(p=>p.hearts===0));
  const p=social.greet('tani',0);
  assert.equal(p.hearts,1);
