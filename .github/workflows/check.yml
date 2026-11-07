@@ -1,0 +1,26 @@
+name: Check JavaScript
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          find src -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Verify game entry files
+        run: |
+          test -f index.html
+          test -f src/main.js
+          test -f src/scenes/WorldScene.js
+          test -f src/scenes/UIScene.js
+          test -f src/entities/Player.js
+          test -f src/entities/NPC.js
+          test -f src/systems/CookingSystem.js
+          test -f src/systems/QuestSystem.js

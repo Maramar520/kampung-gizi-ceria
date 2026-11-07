@@ -1,9 +1,42 @@
 const C={grass:0x91c881,road:0xe8d1a4,wall:0x986e57};
 export function createTextures(scene){
  const g=scene.make.graphics({x:0,y:0},false);
- const rect=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h)};
- function character(key,shirt,hair,hat=false){g.clear();rect(4,39,24,4,0x5b8e61);rect(8,24,16,14,shirt);rect(7,3,18,22,0xf3c69e);rect(6,0,20,8,hair);rect(11,16,3,3,0x433831);rect(20,16,3,3,0x433831);rect(9,38,6,7,0x5b637b);rect(18,38,6,7,0x5b637b);rect(4,26,4,12,0xf3c69e);rect(25,26,4,12,0xf3c69e);if(hat){rect(5,0,23,5,0xffffff);rect(9,-5,16,8,0xffffff)}g.generateTexture(key,32,48)}
- character('player',0x77a6da,0x554135);character('sari',0xd98e7b,0x654634);character('chef',0xe9e5d6,0x654b36,true);g.destroy();
+ const r=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h)};
+ const characters=[
+  ['player',0x77a6da,0x554135,0xf3c69e,false],
+  ['sari',0xd98e7b,0x654634,0xeabd94,false],
+  ['chef',0xe9e5d6,0x654b36,0xf0c49c,true]
+ ];
+ // Sprites are generated at runtime: 4 directions, two alternating walking poses.
+ for(const [name,shirt,hair,skin,chefHat] of characters){
+  for(const direction of ['down','up','side']){
+   for(const frame of [0,1,2]){
+    g.clear();
+    const moving=frame!==0,leg=frame===1?2:-2;
+    r(4,42,24,3,0x5c8d65); // soft pixel shadow
+    // Boots and legs alternate on each step so NPCs really walk.
+    r(9+(moving?leg:0),35,7,9,0x5c677e);
+    r(19-(moving?leg:0),35,7,9,0x5c677e);
+    r(7,22,21,15,shirt);
+    r(5,24+(frame===1?2:0),5,11,skin);
+    r(27,24+(frame===2?2:0),4,11,skin);
+    r(8,5,20,20,skin);
+    if(direction==='up'){
+     r(7,1,22,15,hair);r(9,13,18,6,hair);
+    }else if(direction==='side'){
+     r(8,1,20,9,hair);r(8,8,5,9,hair);
+     r(22,16,3,3,0x4d3b31);r(27,17,3,3,skin);
+    }else{
+     r(7,1,22,8,hair);r(7,7,4,8,hair);r(25,7,4,8,hair);
+     r(12,16,3,3,0x433831);r(22,16,3,3,0x433831);
+     r(15,21,7,2,0xc08074);
+    }
+    if(chefHat){r(7,1,22,7,0xffffff);r(12,0,13,3,0xffffff);r(10,8,17,3,0xdde7dc)}
+    g.generateTexture(name+'-'+direction+'-'+frame,36,48);
+   }
+  }
+ }
+ g.destroy();
 }
 export function buildWorld(scene){const g=scene.add.graphics().setDepth(-100);const r=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h)};const txt=(s,x,y,size=15,color='#425440')=>scene.add.text(x,y,s,{fontFamily:'monospace',fontSize:size+'px',fontStyle:'bold',color}).setOrigin(.5).setDepth(500);
  const border=(x,y,w,h,c,edge=0x5f7354)=>{r(x-3,y-3,w+6,h+6,edge);r(x,y,w,h,c)};

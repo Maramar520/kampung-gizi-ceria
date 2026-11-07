@@ -1,22 +1,21 @@
-# Kampung Gizi Ceria — Phaser v0.3
+# Kampung Gizi Ceria — Phaser v0.3.1
 
-Vertical slice game edukasi gizi 2D cozy berbasis Phaser 3, JavaScript ES Modules, dan HTML5.
+Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
-**Mainkan:** setelah GitHub Pages diaktifkan, buka https://maramar520.github.io/kampung-gizi-ceria/
+## Jalankan
+- **GitHub Pages:** https://maramar520.github.io/kampung-gizi-ceria/ (setelah Pages diaktifkan).
+- **Lokal:** jalankan `python3 -m http.server 8000`, lalu buka http://localhost:8000.
+- Koneksi internet diperlukan untuk memuat Phaser 3.90.0 dari CDN.
 
-## Fitur
-- Peta kampung dalam satu WorldScene, rumah dengan interior terlihat langsung tanpa loading
-- Pasar tradisional, restoran, Chef Bimo dan NPC Bu Sari yang bergerak
-- Membeli beras, telur, bayam; mempelajari resep; memasak Nasi Telur Sayur dalam tiga tahap
-- Quest Bu Sari, hadiah koin, indikator energi dan gizi, autosave melalui localStorage
-- Gerak WASD/panah, E untuk interaksi, tombol sentuh pada layar kecil
+## Isi vertical slice
+- Kampung kecil dalam satu scene: rumah dengan interior dollhouse terbuka, pasar, restoran dan kebun dekoratif.
+- Kontrol WASD / panah untuk jalan dan E untuk berinteraksi; ada tombol sentuh untuk HP.
+- Bu Sari berpatroli di beberapa titik; Chef Bimo mengajarkan resep.
+- Beli beras (12 KC), telur (15 KC), bayam (10 KC) di pasar.
+- Masak Nasi Telur Sayur dalam tiga animasi pendek, lalu serahkan untuk quest (+50 KC).
+- Koin, energi, indikator gizi, resep, inventori, dan quest tersimpan lewat localStorage.
 
-## Jalankan di komputer
-Jalankan `python3 -m http.server 8000` dari direktori proyek, lalu buka http://localhost:8000.
-Jangan membuka file langsung lewat `file://` karena menggunakan ES Modules.
-Membutuhkan internet untuk Phaser 3.90.0 dari CDN.
-
-## Struktur
+## Modul
 ```
 index.html
 src/
@@ -26,13 +25,18 @@ src/
   entities/Player.js
   entities/NPC.js
   systems/GameState.js
-  systems/QuestSystem.js
   systems/CookingSystem.js
+  systems/QuestSystem.js
   world/WorldArt.js
+.github/workflows/check.yml
 ```
 
-## Aktifkan GitHub Pages
-Buka **Settings → Pages → Build and deployment**, pilih **Deploy from a branch**.
-Pilih `main` dan `/(root)`, kemudian **Save**.
+## GitHub Pages
+Buka **Settings → Pages → Build and deployment → Deploy from a branch → main → /(root) → Save**.
 
-Prototipe modular awal. Aset visual masih prosedural; pengujian browser dan peningkatan animasi masih diperlukan.
+## v0.3.1
+- Karakter dan NPC mendapatkan sprite pose 3 arah dengan dua frame langkah (dibuat langsung lewat kode), bukan sekadar sprite diam yang digeser.
+- GitHub Actions memeriksa sintaks JavaScript dan file utama saat push/PR.
+
+## Batasan saat ini
+Grafik masih pixel art prosedural sederhana, bukan spritesheet profesional. Proyek belum memiliki tes otomatis end-to-end di browser dan perlu diuji secara manual di Pages. Angka indikator gizi adalah poin permainan, bukan rekomendasi asupan nutrisi medis.
