@@ -103,6 +103,19 @@ async function testDesktop(browser){
  assert.equal(await page.locator('.social-friend').count(),5);
  assert.equal(await page.locator('.social-hearts').count(),5);
  await close(page);
+ // v1.8 — help Kak Rani sort vegetable books; wrong shelf can be retried.
+ const raniLocation=await page.evaluate(()=>{
+  const n=window.__kampungQA.scene.getScene('WorldScene').rani;return {x:n.x,y:n.y};
+ });
+ await actionAt(page,raniLocation.x,raniLocation.y,'Kak Rani');
+ await page.getByRole('button',{name:/Bantu merapikan buku/}).click();
+ await page.getByRole('button',{name:/Rak Peralatan Memasak/}).click();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Coba lagi/);
+ await page.getByRole('button',{name:/Coba rak lainnya/}).click();
+ await page.getByRole('button',{name:/Rak Sayuran/}).click();
+ assert.equal((await gameData()).missions.progress.help,1);
+ await page.getByRole('button',{name:/Kembali ke Kak Rani/}).click();
+ await close(page);
  // v1.6 — nutrition quiz through actual buttons, including wrong-answer retry.
  await page.locator('#learningButton').click();
  assert.match(await page.locator('#dialogTitle').textContent(),/Pergi ke Perpustakaan Gizi/);
@@ -156,6 +169,8 @@ async function testDesktop(browser){
  assert.match(await page.locator('#dialogTitle').textContent(),/Misi Harian/);
  await page.getByRole('button',{name:/Klaim Belajar gizi/}).click();
  assert.equal((await gameData()).missions.claimed.includes('learn'),true);
+ await page.getByRole('button',{name:/Klaim Membantu Kak Rani/}).click();
+ assert.equal((await gameData()).missions.claimed.includes('help'),true);
  await page.getByRole('button',{name:/Lencana Pencapaian/}).click();
  await page.getByRole('button',{name:/Klaim Pembaca Gizi/}).click();
  assert.equal((await gameData()).missions.achievements.includes('first-learning'),true);
