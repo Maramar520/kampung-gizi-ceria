@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v0.9
+# Kampung Gizi Ceria — Phaser v1.0
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -162,3 +162,36 @@ Temui Chef Bimo untuk mempelajari resep satu per satu. Di kompor rumah, pilih re
 **Kompatibilitas:** save lama tetap memakai key LocalStorage sebelumnya, jumlah bibit bayam dan petak bayam lama dipertahankan. Saat reset, jumlah bibit seluruh tanaman dikembalikan ke awal. Tidak ada scene loading ketika masuk rumah.
 
 **Pengujian:** `tests/v09.test.mjs` mengecek migrasi save lama, fase panen masing-masing tanaman, pemakaian bahan resep, dan konsistensi quest pertama. GitHub Actions menjalankan seluruh pengujian Node.js. Perilaku browser masih perlu dicoba langsung pada perangkat.
+
+
+## v1.0 — Kampung yang Lebih Hidup
+
+Peternakan ayam dan kolam ikan kini ditambahkan langsung pada `WorldScene`; rumah tetap menampilkan interior dollhouse tanpa transisi.
+
+### Kandang ayam — kanan atas peta
+- Dekati kandang ayam, tekan **E / AKSI**, beri pakan **3 Koin Ceria**.
+- Setelah diberi makan, pilih **Kumpulkan 2 telur**. Maksimal satu kali per hari dalam game.
+- Telur langsung masuk ke tas dan dapat dipakai pada Nasi Telur Sayur atau Tumis Kangkung.
+- Setelah tidur dan memulai hari baru, ayam dapat diberi pakan kembali.
+
+### Kolam ikan — kanan bawah peta
+- Datangi dermaga kolam dan tekan **E / AKSI**.
+- Pilih **Lempar Kail** tiga kali untuk memperoleh **1 ikan**. Maksimal satu kali per hari.
+- Ikan masuk ke inventori dan dapat dimasak menjadi **Ikan Panggang Tomat** (ikan + tomat). Resep dipelajari dari Chef Bimo.
+
+### Rutinitas NPC
+- Bu Sari memiliki beberapa lintasan berjalan: jalan kampung, mengunjungi sisi kebun, dan mendekati area pasar.
+- Chef Bimo bergerak dalam beberapa pola pendek di restoran, sehingga interaksi resep tetap tersedia.
+- Fase **Pagi / Siang / Sore** berganti setiap sekitar 30 detik saat game berjalan, dan pola Bu Sari juga berbeda menurut hari. Ini adalah waktu simulasi, bukan waktu dunia nyata.
+- Label fase ditampilkan dalam HUD.
+
+### Perubahan teknis
+- `src/systems/DailyLifeSystem.js`: pakan, telur, memancing dan pembatasan kegiatan per hari, disimpan dalam `GameState.activities`.
+- `src/world/FarmArt.js`: kandang ayam, ayam bergerak, kolam, ikan bergerak, dan dermaga dari kode prosedural.
+- `src/world/WorldGeometry.js`: dua titik interaksi baru serta hitbox kandang dan air kolam.
+- `tests/daily-life.test.mjs`: tes migrasi save, perhitungan koin, telur, ikan, resep, dan keterjangkauan lokasi.
+- `src/ui/PlayerNotebook.js`: ikan tersedia di inventori dan resep Ikan Panggang Tomat muncul di buku resep.
+
+**Kompatibilitas:** Key LocalStorage lama tidak berubah. Save lama memperoleh nilai awal untuk sistem kegiatan baru; tanaman, koin, quest, dan resep yang sudah diselesaikan tetap dipertahankan. Tombol reset mengulang kegiatan harian juga.
+
+**Catatan pengujian:** GitHub Actions menguji sintaks dan logika Node.js, termasuk akses rute berdasarkan hitbox. Tampilan aktual serta respons sentuhan/kontrol di browser tetap perlu diuji manual. Indikator gizi hanyalah poin di dalam game.
