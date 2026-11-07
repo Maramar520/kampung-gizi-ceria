@@ -38,22 +38,34 @@ export class FarmArt{
   // Papan petunjuk di area jalan dan penanda permanen kedua lokasi.
   frame(875,430,50,18,0xf2daa5,0x8f704a);
   rect(879,435,42,8,0xb68c63);
+  // Ornamen tetap: jerami, jendela kandang, rerumputan tepi kolam.
+  for(let x=739;x<889;x+=31){rect(x,164,18,3,0xe2c68e);rect(x+6,160,9,3,0xf0d59a);}
+  rect(793,110,8,11,0xf4ddb2);rect(797,110,2,11,0x916f55);
+  for(let x=699;x<885;x+=35){rect(x,581,10,4,0x6f9b70);rect(x+3,578,3,6,0x8bb47b);}
+  // Ripples stay decorative and never influence swimming/collision.
   this.graphics=g;
+  this.pondRipples=scene.add.graphics().setDepth(-56);
   this.chickens=[];
-  for(const [x,y] of [[783,160],[833,160],[863,144]]){
+  for(const [x,y] of [[770,150],[824,151],[866,139]]){
    const c=scene.add.text(x,y,'🐔',{fontSize:'30px'}).setOrigin(.5).setDepth(28);
    this.chickens.push(c);
   }
   this.fish=scene.add.text(748,543,'🐟',{fontSize:'29px'}).setOrigin(.5).setDepth(28);
-  this.coopLabel=scene.add.text(808,49,'🐔 KANDANG AYAM',{fontFamily:'monospace',fontSize:'17px',fontStyle:'bold',color:'#5c5640',backgroundColor:'#fff0cf',padding:{x:4,y:2}}).setOrigin(.5).setDepth(500);
+  this.coopLabel=scene.add.text(808,44,'🐔 KANDANG AYAM',{fontFamily:'monospace',fontSize:'17px',fontStyle:'bold',color:'#5c5640',backgroundColor:'#fff0cf',padding:{x:4,y:2}}).setOrigin(.5).setDepth(500);
   this.pondLabel=scene.add.text(784,588,'🎣 KOLAM IKAN',{fontFamily:'monospace',fontSize:'17px',fontStyle:'bold',color:'#496769',backgroundColor:'#fff0cf',padding:{x:4,y:2}}).setOrigin(.5).setDepth(500);
  }
  update(time){
   for(let i=0;i<this.chickens.length;i++){
-   const c=this.chickens[i];c.setY([160,160,144][i]+Math.sin(time/480+i*2)*3);
+   const c=this.chickens[i];c.setY([150,151,139][i]+Math.sin(time/480+i*2)*3);
    c.setFlipX(Math.sin(time/950+i*3)>0);
   }
   this.fish.setX(748+Math.sin(time/780)*36).setFlipX(Math.cos(time/780)<0);
+  const ripples=this.pondRipples;ripples.clear();
+  for(const [x,y,shift] of [[729,538,0],[809,548,1.4]]){
+   const size=8+(time/250+shift*13)%15;
+   ripples.lineStyle(2,0xc5e9de,.5+Math.sin(time/620+shift)*.2);
+   ripples.strokeEllipse(x,y,size*2,Math.max(3,size*.55));
+  }
  }
- destroy(){for(const s of [...this.chickens,this.fish,this.coopLabel,this.pondLabel])s.destroy();this.graphics.destroy();}
+ destroy(){for(const s of [...this.chickens,this.fish,this.coopLabel,this.pondLabel])s.destroy();this.pondRipples.destroy();this.graphics.destroy();}
 }
