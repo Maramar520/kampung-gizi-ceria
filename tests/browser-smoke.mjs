@@ -56,6 +56,17 @@ async function testDesktop(browser){
  assert.ok(yAfter<yBefore-8,'W key must move the player north after canvas receives focus');
  await mkdir('qa-artifacts',{recursive:true});
  await page.screenshot({path:'qa-artifacts/desktop-map.png',fullPage:true});
+ // v1.9: buy a real furniture piece and put it in a safe house slot.
+ await page.locator('#decorButton').click();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Dekorasi Rumah Pemain/);
+ await page.getByRole('button',{name:/Beli Tanaman hias/}).click();
+ assert.ok((await gameData()).decor.owned.includes('plant'));
+ await page.getByRole('button',{name:/Atur Sudut kiri/}).click();
+ await page.getByRole('button',{name:/Tanaman hias/}).click();
+ assert.equal((await gameData()).decor.slots.corner,'plant');
+ await close(page);
+ await page.screenshot({path:'qa-artifacts/desktop-decoration.png',fullPage:true});
+
  // v1.7: advance only the in-game clock (QA bridge), render night without moving buildings.
  await page.evaluate(()=>{
   const world=window.__kampungQA.scene.getScene('WorldScene');
@@ -272,6 +283,24 @@ async function testDesktop(browser){
  await close(page);
  assert.equal((await gameData()).done,true);
 
+ // v1.9: customer ticket, real prepared-dish handoff, exactly once reward.
+ await actionAt(page,619,466,'Chef');
+ await page.getByRole('button',{name:/Lihat pesanan warga/}).click();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Pesanan Restoran Sehat/);
+ const ticket=await page.evaluate(()=>{
+  const w=window.__kampungQA.scene.getScene('WorldScene');
+  const recipe=w.restaurantOrders.order.recipe;
+  return {recipe,prepared:w.restaurantOrders.onCook(recipe)};
+ });
+ assert.equal(ticket.prepared,true);
+ await page.getByRole('button',{name:/Kembali ke Chef Bimo/}).click();
+ await page.getByRole('button',{name:/Lihat pesanan warga/}).click();
+ const beforeServe=(await gameData()).coins;
+ await page.getByRole('button',{name:/Antar pesanan kepada pelanggan/}).click();
+ assert.equal((await gameData()).restaurant.served,true);
+ assert.ok((await gameData()).coins>beforeServe);
+ assert.equal(await page.getByRole('button',{name:/Antar pesanan kepada pelanggan/}).count(),0);
+ await close(page);
  // Visit daily activities as a player.
  await actionAt(page,325,221,'Kandang');
  await page.getByRole('button',{name:/Beri pakan ayam/}).click();
@@ -347,6 +376,11 @@ async function testMobile(browser){
  assert.ok(questLayout.questHeight<260,'Mobile quest should not stretch into an excessively tall column');
 
  await page.locator('[data-dir="up"]').tap();
+ await page.locator('#decorButton').tap();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Dekorasi Rumah Pemain/);
+ assert.equal(await page.locator('.decor-slot').count(),3);
+ await page.locator('#close').tap();
+ await page.locator('#dialog').waitFor({state:'hidden'});
  await page.locator('#learningButton').tap();
  assert.match(await page.locator('#dialogTitle').textContent(),/Pergi ke Perpustakaan Gizi/);
  await page.locator('#close').tap();
