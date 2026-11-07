@@ -164,6 +164,16 @@ button{touch-action:manipulation}
 .social-notice{padding:9px;border-radius:10px;background:#f5e8cc;line-height:1.5}
 @media(max-width:550px){.social-friend{flex-wrap:wrap}.social-hearts{font-size:14px}
  .notebook-shortcuts button{min-width:43%;flex-grow:1}}
+
+/* v1.5: dialog lives outside clipped game canvas to stay tappable on phones */
+#dialog.modal{position:fixed;inset:0;z-index:2500;display:flex;align-items:center;justify-content:center;padding:14px;background:#243f31c7}
+#dialog .panel{width:min(560px,100%);max-height:min(88dvh,720px);overflow-y:auto;overscroll-behavior:contain}
+#dialog .close{min-width:48px;min-height:48px;position:sticky;top:0;z-index:2}
+@media(max-width:600px){
+ #dialog.modal{padding:8px}
+ #dialog .panel{max-height:92dvh;padding:12px}
+ #dialog .choices button{min-height:48px}
+}
 </style>
 </head>
 <body>
@@ -204,11 +214,11 @@ button{touch-action:manipulation}
   <footer class="notebook-footer">Kampung Gizi Ceria • Tekan Esc untuk menutup</footer>
  </div>
 </section>
+</div>
 <div class="modal hidden" id="dialog"><div class="panel">
 <button class="close" id="close">✕</button><h2 id="dialogTitle"></h2>
 <p id="message"></p><div id="cookVisual"></div><div class="choices" id="choices"></div>
 </div></div>
-</div>
 <div class="interaction-strip" id="interactionHelp" aria-live="polite">✨ Bergerak dengan WASD atau tombol arah, lalu tekan E / AKSI saat mendekati tempat.</div>
 <div class="bottom"><div class="quest" id="quest"></div><button id="unstuck" type="button" title="Pindahkan karakter ke jalan, tanpa menghapus progres">↩ Kembali ke jalan</button><button id="reset">↺ Reset progres</button></div>
 <div class="controls"><div class="dpad">
