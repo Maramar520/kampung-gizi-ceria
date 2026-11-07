@@ -407,7 +407,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ]);
  }
  bedMenu(){
-  this.show('🛏️ Rumah Pemain',
+  this.show('🛏️ Kasur & Rumah Pemain',
    'Kamu bisa tidur untuk memulai hari baru atau menghias rumah menggunakan Koin Ceria.',[
     {label:'🏠 Hias rumah',fn:()=>this.decorMenu()},
     {label:'🌙 Tidur hingga pagi',fn:()=>{
