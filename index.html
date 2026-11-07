@@ -125,6 +125,9 @@ button{touch-action:manipulation}
  .toast{font-size:11px;padding:5px 7px;width:max-content;max-width:94%}
  .panel{max-height:85vh}
 }
+.interaction-strip{background:#fff8e5;border:2px solid #b9d09f;border-radius:9px;margin:8px 0;padding:9px 12px;font-weight:700;text-align:center;color:#4e7554;min-height:42px;line-height:1.45}
+.interaction-strip.near{background:#e8f3d8;border-color:#87b286;color:#365e40}
+@media(max-width:600px){.interaction-strip{font-size:13px;padding:10px 7px;min-height:46px}}
 </style>
 </head>
 <body>
@@ -169,6 +172,7 @@ button{touch-action:manipulation}
 <p id="message"></p><div id="cookVisual"></div><div class="choices" id="choices"></div>
 </div></div>
 </div>
+<div class="interaction-strip" id="interactionHelp" aria-live="polite">✨ Bergerak dengan WASD atau tombol arah, lalu tekan E / AKSI saat mendekati tempat.</div>
 <div class="bottom"><div class="quest" id="quest"></div><button id="unstuck" type="button" title="Pindahkan karakter ke jalan, tanpa menghapus progres">↩ Kembali ke jalan</button><button id="reset">↺ Reset progres</button></div>
 <div class="controls"><div class="dpad">
 <button data-dir="up">▲</button><button data-dir="left">◀</button>
