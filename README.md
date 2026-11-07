@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v0.7
+# Kampung Gizi Ceria — Phaser v0.8
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -118,3 +118,28 @@ Grafik masih pixel art prosedural sederhana, bukan spritesheet profesional. Proy
 6. Tutup panel dengan `Esc`, klik X, atau klik area luar panel.
 
 Visual tetap berupa pixel art prosedural; interior rumah tetap terlihat dari luar dan tidak ada loading saat masuk.
+
+## v0.8 — Kebun Bayam Interaktif
+
+Kebun di pojok kiri atas kampung sekarang dapat ditanami dan dipanen. Ada **3 petak**, **3 bibit awal gratis**, dan bibit tambahan seharga **5 Koin Ceria** di pasar.
+
+Cara bermain:
+1. Dekati kebun sayur di kiri atas lalu tekan **E / AKSI**.
+2. Pilih **Tanam** pada petak kosong; satu bibit terpakai.
+3. Pilih **Siram** pada petak yang baru ditanam.
+4. Pergi ke rumah, gunakan **kasur**, dan **tidur** untuk maju ke hari berikutnya. Pertumbuhan berdasarkan hari dalam game, **bukan waktu tunggu nyata**.
+5. Kembali ke kebun dan pilih **Panen**. Setiap petak memberikan **2 bayam + 1 bibit**, masuk ke inventori. Petak dapat ditanami ulang.
+
+Bayam hasil panen bisa digunakan langsung untuk resep **Nasi Telur Sayur**, sehingga pemain tidak wajib membeli bayam di pasar. Resep, quest Bu Sari, minigame memasak, sistem koin, dan interior terbuka tetap digunakan.
+
+Implementasi modular:
+- `src/systems/GardenSystem.js`: validasi, penanaman, penyiraman, pertumbuhan harian, panen dan benih.
+- `src/world/GardenArt.js`: tampilan pixel art tiga petak dengan tahap pertumbuhan.
+- `src/world/WorldGeometry.js`: area interaksi kebun.
+- `src/scenes/WorldScene.js` dan `src/scenes/UIScene.js`: interaksi, tombol, dan petunjuk tujuan.
+- `src/ui/PlayerNotebook.js`: jumlah bibit dan status petak di tas.
+- `tests/garden.test.mjs`: tes regresi benih, tahapan, panen, migrasi save, dan integrasi resep.
+
+**Penyimpanan:** tetap menggunakan key LocalStorage yang sama seperti versi sebelumnya. Data kebun ditambahkan dengan nilai default untuk save lama. Jika membuka game setelah update, progres sebelumnya tetap tersedia.
+
+**Catatan:** progres tumbuh baru berubah ketika hari game bertambah melalui kasur. Angka indikator gizi tetap sekadar poin permainan. Pengujian GitHub Actions mencakup sintaks dan logika; interaksi visual end-to-end tetap perlu dicoba pada perangkat.
