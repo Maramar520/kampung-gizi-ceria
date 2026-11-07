@@ -33,6 +33,8 @@ jobs:
           test -f tests/daily-life.test.mjs
           test -f src/systems/SocialSystem.js
           test -f tests/social.test.mjs
+          test -f src/systems/LearningSystem.js
+          test -f tests/learning.test.mjs
       - name: Run system regression tests
         run: node --test tests/*.test.mjs
 
