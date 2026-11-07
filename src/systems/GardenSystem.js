@@ -4,17 +4,20 @@ export const CROPS=Object.freeze({
  bayam:{name:'Bayam',emoji:'🥬',price:5,days:1,yield:2},
  wortel:{name:'Wortel',emoji:'🥕',price:7,days:2,yield:2},
  tomat:{name:'Tomat',emoji:'🍅',price:8,days:2,yield:2},
- kangkung:{name:'Kangkung',emoji:'🥬',price:6,days:1,yield:2}
+ kangkung:{name:'Kangkung',emoji:'🥬',price:6,days:1,yield:2},
+ selada:{name:'Selada',emoji:'🥬',price:8,days:1,yield:2},
+ brokoli:{name:'Brokoli',emoji:'🥦',price:10,days:2,yield:3},
+ labu:{name:'Labu',emoji:'🎃',price:12,days:3,yield:3}
 });
 export const CROP_IDS=Object.keys(CROPS);
-export function defaultGarden(){return {seeds:STARTER_SEEDS,seedsByCrop:{bayam:STARTER_SEEDS,wortel:1,tomat:1,kangkung:1},plots:Array(PLOT_COUNT).fill(null)};}
+export function defaultGarden(){return {seeds:STARTER_SEEDS,seedsByCrop:{bayam:STARTER_SEEDS,wortel:1,tomat:1,kangkung:1,selada:1,brokoli:1,labu:1},plots:Array(PLOT_COUNT).fill(null)};}
 const qty=(x,fallback=0)=>Number.isFinite(Number(x))?Math.max(0,Math.floor(Number(x))):fallback;
 export function normalizeGarden(raw){
  const base=defaultGarden();
  if(!raw||typeof raw!=='object')return base;
  // Save lama hanya menyimpan garden.seeds dan tiga petak bayam.
  const seeds=qty(raw.seeds,STARTER_SEEDS);
- base.seedsByCrop=Object.fromEntries(CROP_IDS.map(id=>[id,qty(raw.seedsByCrop?.[id],id==='bayam'?seeds:1)]));
+ base.seedsByCrop=Object.fromEntries(CROP_IDS.map(id=>[id,qty(raw.seedsByCrop?.[id],id==='bayam'?seeds:(!raw.seedsByCrop&&['selada','brokoli','labu'].includes(id)?0:1))]));
  base.seeds=base.seedsByCrop.bayam;
  const list=Array.isArray(raw.plots)?raw.plots:[];
  base.plots=Array.from({length:PLOT_COUNT},(_,i)=>{
