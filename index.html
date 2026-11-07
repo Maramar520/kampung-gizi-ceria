@@ -37,8 +37,8 @@ button.mini-button.is-holding{background:#c38459;transform:translateY(2px)}
 .notebook-shortcuts{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .notebook-shortcuts button{background:#faf2db;color:#567452;border:2px solid #b8cda8;border-bottom:4px solid #8fa980;padding:10px 18px;font-size:16px}
 .notebook-shortcuts button small{font-size:11px;opacity:.7;margin-left:6px}
-.notebook-overlay{position:absolute;inset:0;z-index:9;display:flex;align-items:center;justify-content:center;padding:12px;background:#263d31b8}
-.notebook-panel{background:#fff7e7;border:5px solid #9e7e60;border-radius:16px;box-shadow:0 12px 0 #6c523c,0 20px 35px #172b2190;width:min(660px,100%);max-height:92%;display:flex;flex-direction:column;overflow:hidden}
+.notebook-overlay{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:12px;background:#263d31b8}
+.notebook-panel{background:#fff7e7;border:5px solid #9e7e60;border-radius:16px;box-shadow:0 12px 0 #6c523c,0 20px 35px #172b2190;width:min(660px,100%);max-height:min(90vh,740px);display:flex;flex-direction:column;overflow:hidden}
 .notebook-header{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:#e7d4b7}
 .notebook-header h2{font-size:22px;margin:0;color:#6b4d3c}
 #notebookClose{background:#af7568;min-width:46px}
@@ -70,7 +70,7 @@ button.mini-button.is-holding{background:#c38459;transform:translateY(2px)}
 .quest-copy{display:grid;gap:4px}.quest-copy small{line-height:1.4;color:#786b59}
 .notebook-footer{text-align:center;font-size:12px;color:#8d7b66;background:#f0e3ce;padding:8px}
 .notebook-panel button:focus-visible,.notebook-shortcuts button:focus-visible{outline:3px solid #e9ac51;outline-offset:2px}
-@media(max-width:650px){.notebook-overlay{padding:5px}.notebook-header h2{font-size:18px}.notebook-panel{max-height:96%}.inventory-grid{gap:5px}.item-card{padding:10px 3px}.item-emoji{font-size:31px}.item-card strong{font-size:13px}.notebook-tabs button{font-size:12px}.notebook-content{padding:9px}}
+@media(max-width:650px){.notebook-overlay{padding:5px}.notebook-header h2{font-size:18px}.notebook-panel{max-height:96vh}.inventory-grid{gap:5px}.item-card{padding:10px 3px}.item-emoji{font-size:31px}.item-card strong{font-size:13px}.notebook-tabs button{font-size:12px}.notebook-content{padding:9px}}
 </style>
 </head>
 <body>
