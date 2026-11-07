@@ -173,8 +173,8 @@ export function buildWorld(scene) {
  label('RESTORAN SEHAT',607,322,14);
  for(let i=0;i<9;i++)r(deco,504+i*24,335,24,9,i%2?0xf8e6b2:0xc98274);
  shelf(515,360,64);
- table(533,395,145,36,0xb98961);
- for(let x=548;x<671;x+=35){frame(deco,x,383,20,15,0xf5ecdb,0xb2a79b,1);r(deco,x+6,387,8,6,x%2?0x80aa7b:0xe5b073);}
+ table(533,395,102,36,0xb98961);
+ for(let x=543;x<631;x+=30){frame(deco,x,383,20,15,0xf5ecdb,0xb2a79b,1);r(deco,x+6,387,8,6,x%2?0x80aa7b:0xe5b073);}
  table(522,482,49,31,0xd3a881);table(639,481,51,31,0xd3a881);
  frame(deco,630,366,60,21,0x58796b,0x745944,2);
  r(deco,636,373,42,2,0xf5e9c2);r(deco,637,379,34,2,0xf5e9c2);
@@ -182,8 +182,8 @@ export function buildWorld(scene) {
  // TOKO SWALAYAN: blok kanan bawah, interior berbeda dari pasar.
  room('store',0xe7e4cb,0x8aa78b,true);
  label('TOKO SWALAYAN',867,322,12);
- frame(deco,825,389,84,35,0x9cbaa2,0x6d8c7e,2);
- for(let x=831;x<905;x+=13){r(deco,x,395,9,20,[0xe6ae6f,0xa8c0db,0xf0d19d][Math.floor(x/13)%3]);}
+ frame(deco,831,389,55,35,0x9cbaa2,0x6d8c7e,2);
+ for(let x=836;x<882;x+=12){r(deco,x,395,9,20,[0xe6ae6f,0xa8c0db,0xf0d19d][Math.floor(x/13)%3]);}
  shelf(822,449,94);shelf(824,499,89);
  r(deco,820,363,31,17,0xa7d3d8);r(deco,824,366,22,4,0xe7f5e7);
  frame(deco,882,364,35,17,0xc5a56e,0x887450,2);
