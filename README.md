@@ -1,4 +1,4 @@
-# Kampung Gizi Ceria — Phaser v1.8
+# Kampung Gizi Ceria — Phaser v1.9
 
 Game edukasi gizi 2D cozy untuk anak SD, dibuat dengan Phaser 3 dan JavaScript ES Modules.
 
@@ -381,3 +381,35 @@ Blok **kanan bawah** yang sebelumnya merupakan **Toko Swalayan** sekarang menjad
 - Jalur shelter didefinisikan di `src/world/ShelterRoutes.js`, memakai rute non-looping di `src/entities/NPC.js` agar NPC benar-benar mencapai interior.
 - `tests/shelters.test.mjs` menguji jalur yang ditempuh dan collision pintu/interior; `tests/browser-smoke.mjs` menguji kepindahan tiga NPC dan keluarnya setelah hujan, termasuk simulasi HP.
 - **Tidak ada pemasangan ulang atau perubahan denah, jalur luar, atau penyimpanan**; perubahan ini merupakan penggantian fungsi satu blok yang sudah ada.
+
+
+## v1.9 — Dekorasi Rumah, Rutinitas Warga & Pesanan Restoran
+
+Seluruh denah enam blok tetap: Rumah Pemain/kebun/kandang, Perpustakaan Gizi, Kolam Ikan, Pasar Tradisional, Restoran Sehat, dan Rumah Pak Tani & Bu Sari. Tidak ada perubahan posisi bangunan, jalan, pintu, collision, atau save key `kampung-gizi-pixel-v02`.
+
+### Dekorasi rumah
+- **🏡 Dekorasi (H)** atau menu **Kasur → Hias rumah**.
+- Lima pilihan: karpet bunga, tanaman hias, lampu belajar, rak buku kecil, bantal lucu. Setiap item **dibeli satu kali**, kemudian dapat dipindahkan di antara tiga sudut tampilan aman dalam Rumah Pemain.
+- Koin dikurangi hanya ketika membeli; pengaturan ulang furnitur gratis. Tidak boleh mengaktifkan satu benda di lebih dari satu posisi.
+- Grafis dekorasi merupakan layer prosedural `HomeDecorArt` pada interior rumah asli. Tidak menambah collision atau menghalangi pemain.
+
+### Aktivitas NPC berdasarkan waktu dan cuaca
+- **Pak Tani** berjalan ke area kebun atau kandang lalu berhenti untuk kegiatan merawat tanaman/ayam.
+- **Bu Sari** berjalan menuju Pasar Tradisional untuk membeli bahan atau menuju restoran untuk membantu.
+- **Nia** berjalan ke Perpustakaan Gizi untuk membaca atau ke pasar untuk mengenal buah.
+- **Chef Bimo** bergerak di antara dapur, area persiapan, dan tempat menyajikan pesanan.
+- **Kak Rani** berjalan di dalam perpustakaan untuk menata buku dan membantu pembaca.
+- Kegiatan ditandai dengan label pendek saat NPC benar-benar mencapai titik aktivitas, bukan sekadar menggerakkan kaki.
+- **Saat hujan:** Pak Tani dan Bu Sari tetap berjalan masuk ke rumah keluarga di kanan bawah, sedangkan Nia masuk ke dalam pasar. Rute berteduh didahulukan dari pekerjaan harian. Ketika cuaca membaik, NPC kembali lewat pintu menuju kegiatan berikutnya.
+
+### Pesanan restoran
+- Temui Chef Bimo dan pilih **Lihat pesanan warga hari ini**. Ada empat pesanan berbeda yang bergilir setiap hari permainan, menggunakan resep yang sudah tersedia.
+- Pelajari resep dan kumpulkan bahan dari kebun/pasar/kolam, kemudian masak dengan minigame sebelumnya di kompor rumah atau dapur restoran.
+- Masakan cocok baru dapat **diserahkan kepada Chef Bimo setelah selesai dimasak**. Pemain mendapat Koin Ceria dan bintang belajar saat pesanan diserahkan; setiap hari hanya satu hadiah pesanan.
+- Masakan untuk quest Bu Sari tetap terpisah dan tidak dihapus oleh pesanan restoran.
+
+### Penyimpanan & pengujian
+- `GameState.data.decor` untuk kepemilikan dan posisi furnitur; `GameState.data.restaurant` untuk pesanan, masakan siap, hadiah dan total penyelesaian.
+- Data lama secara otomatis diberi nilai standar tanpa menghapus quest, koin, tanaman, NPC, lencana, cuaca, resep, dan inventori.
+- `tests/v19.test.mjs` mengecek transaksi, slot, reload, reset, batas hadiah pesanan, pergantian hari, dan titik kegiatan NPC.
+- `tests/browser-smoke.mjs` menambah pengujian dekorasi, tiket pesanan, penyerahan hadiah, dan antarmuka sentuh HP sambil tetap menjalankan alur quest, cuaca, NPC, perpustakaan, pasar, dan minigame memasak.
