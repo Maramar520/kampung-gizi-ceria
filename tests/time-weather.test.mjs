@@ -71,7 +71,7 @@ test('clock persists phase through reload and reset clears it',()=>{
 test('NPC daily routines and visual layers do not change original map or collisions',()=>{
  assert.deepEqual([LAYOUT.home.x,LAYOUT.village.x,LAYOUT.pond.x,LAYOUT.market.y,LAYOUT.restaurant.y,LAYOUT.store.x],
  [45,500,805,339,339,806]);
- assert.equal(INTERACTIONS.length,12);
+ assert.equal(INTERACTIONS.length,14);
  assert.equal(OBSTACLES.length,34);
  const world=readFileSync(new URL('../src/scenes/WorldScene.js',import.meta.url),'utf8');
  assert.match(world,/this\.clock\.phase/);
