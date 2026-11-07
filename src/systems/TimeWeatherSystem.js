@@ -5,7 +5,7 @@ export const PHASES=Object.freeze(['Pagi','Siang','Sore','Malam']);
 export const PHASE_SECONDS=35;
 export function weatherForDay(day){
  const n=Math.max(1,Number.isSafeInteger(day)?day:1);
- return n%3===2?'Hujan':n%5===0?'Berawan':'Cerah';
+ return n%5===0?'Berawan':n%3===2?'Hujan':'Cerah';
 }
 export function defaultTime(day=1){
  return {phase:0,weather:weatherForDay(day)};
