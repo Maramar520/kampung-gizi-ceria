@@ -25,5 +25,8 @@ jobs:
           test -f src/systems/CookingSystem.js
           test -f src/systems/QuestSystem.js
           test -f src/systems/CookingMinigame.js
+          test -f src/systems/GardenSystem.js
+          test -f src/world/GardenArt.js
+          test -f tests/garden.test.mjs
       - name: Run system regression tests
         run: node --test tests/*.test.mjs
