@@ -9,9 +9,9 @@ export class UIScene extends Phaser.Scene {
  create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();document.querySelectorAll('[data-find-place]').forEach(button=>{
  button.addEventListener('click',()=>{
   this.world.highlightPlace(button.dataset.findPlace);
-  this.note(button.dataset.findPlace==='coop'?'🐔 Kandang ayam di kanan atas peta.':'🎣 Kolam ikan di kanan bawah peta.');
+  this.note(button.dataset.findPlace==='coop'?'🐔 Kandang ayam berada di sebelah kebun, dekat rumah pemain.':'🎣 Kolam ikan berada di blok kanan atas peta.');
  });
-});$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=480;this.state.data.y=530;this.world.player.sprite.setPosition(480,530);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
+});$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=446;this.state.data.y=291;this.world.player.sprite.setPosition(446,291);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
 this.keyboardNotebookHandler=event=>{
  if(event.repeat||event.altKey||event.ctrlKey||event.metaKey)return;
  const target=event.target;
@@ -20,7 +20,7 @@ this.keyboardNotebookHandler=event=>{
  const tab={i:'inventory',r:'recipes',j:'journal'}[key];
  if(tab){event.preventDefault();this.openNotebook(tab);}
 };
-window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once('shutdown',()=>window.removeEventListener('keydown',this.keyboardNotebookHandler));$('reset').onclick=()=>{if(confirm('Reset semua progres game?')){this.state.reset();this.world.player.sprite.setPosition(480,530);this.world.keysHeld.clear();this.world.sari.sprite.setPosition(350,476);this.close();this.refresh();this.note('Progres direset!')}};document.querySelectorAll('[data-dir]').forEach(button=>{const dir=button.dataset.dir;button.addEventListener('pointerdown',e=>{e.preventDefault();button.setPointerCapture(e.pointerId);this.world.keysHeld.add(dir)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(ev,()=>this.world.keysHeld.delete(dir))});this.time.addEvent({delay:500,loop:true,callback:()=>this.refresh()})}
+window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once('shutdown',()=>window.removeEventListener('keydown',this.keyboardNotebookHandler));$('reset').onclick=()=>{if(confirm('Reset semua progres game?')){this.state.reset();this.world.player.sprite.setPosition(446,291);this.world.keysHeld.clear();this.world.sari.sprite.setPosition(448,281);this.close();this.refresh();this.note('Progres direset!')}};document.querySelectorAll('[data-dir]').forEach(button=>{const dir=button.dataset.dir;button.addEventListener('pointerdown',e=>{e.preventDefault();button.setPointerCapture(e.pointerId);this.world.keysHeld.add(dir)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(ev,()=>this.world.keysHeld.delete(dir))});this.time.addEvent({delay:500,loop:true,callback:()=>this.refresh()})}
  refresh(){const s=this.state.data;for(const id of ['coins','energy','carb','protein','vitamin','day'])$(id).textContent=s[id];$('status').textContent=this.state.status;$('phase').textContent=this.world?.dailyPhase||'Pagi';$('quest').textContent=this.quest.description;this.state.save();this.notebook?.refresh();this.world?.gardenArt?.render();this.updateInteractionHint()}
  updateInteractionHint(){
   const element=$('interactionHelp');if(!element||!this.world)return;
@@ -55,6 +55,21 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    }}))
   ];
   this.show('🧺 Pasar Tradisional','Beli bahan masakan atau bibit. Sayuran juga dapat ditanam di kebun!',items);
+ }
+ storeMenu(){
+  const products=[['beras',14,'🍚'],['telur',17,'🥚'],['bayam',12,'🥬'],['tomat',17,'🍅']];
+  const items=products.map(([id,price,icon])=>({label:icon+' '+id+' · '+price+' KC',fn:()=>{
+   if(this.state.data.coins<price){this.note('Koin tidak cukup.');return;}
+   this.state.data.coins-=price;
+   this.state.data.inventory[id]=(this.state.data.inventory[id]||0)+1;
+   this.refresh();this.storeMenu();this.note('Berhasil belanja di swalayan!');
+  }}));
+  this.show('🏪 Toko Swalayan','Toko modern menyediakan bahan kebutuhan. Harga berbeda dengan pasar tradisional.',items);
+ }
+ villageMenu(){
+  this.show('🏘️ Rumah Warga','Selamat datang! Ini rumah tetangga yang bagian dalamnya bisa dilihat tanpa berpindah scene. Bu Sari dapat ditemui di jalan kampung.',[
+   {label:'Kembali berjalan',fn:()=>this.close()}
+  ]);
  }
  gardenMenu(){
   const view=this.garden.view;
@@ -157,6 +172,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id)this.world.playInteraction(id);
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
   if(id==='market')return this.market();
+  if(id==='store')return this.storeMenu();
+  if(id==='village')return this.villageMenu();
   if(id==='garden')return this.gardenMenu();
   if(id==='coop')return this.coopMenu();
   if(id==='pond')return this.pondMenu();
