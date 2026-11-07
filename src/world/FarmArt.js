@@ -2,7 +2,7 @@
 export class FarmArt{
  constructor(scene){
   this.scene=scene;
-  const g=scene.add.graphics().setDepth(12);
+  const g=scene.add.graphics().setDepth(-60);
   const rect=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h);};
   const frame=(x,y,w,h,bg,edge)=>{rect(x-3,y-3,w+6,h+6,edge);rect(x,y,w,h,bg);};
   // Penanda kontras dan pelataran menghadap jalan utama.
@@ -28,6 +28,9 @@ export class FarmArt{
   rect(721,531,35,3,0xa7d9cf);rect(795,549,45,3,0x9dd3d2);
   rect(738,561,17,2,0xbbe9dd);rect(817,526,24,2,0xaedfd7);
   for(const [x,y] of [[706,516],[855,521],[709,565],[851,562]]){rect(x,y,14,7,0xada18c);rect(x+3,y+1,8,3,0xd0c6a5);}
+  // Titik pantul, rumpun teratai, dan tepian kolam memperjelas batas air.
+  for(const [x,y] of [[729,529],[814,554],[744,559]]){rect(x-5,y,17,4,0x4d9287);rect(x,y-4,10,6,0x8ebc74);rect(x+3,y-5,3,3,0xd8dca8);}
+  rect(695,490,41,7,0xd8b98b);rect(700,492,30,2,0xf3dab0);
   // Fishing dock and bucket.
   frame(767,489,42,33,0xc69d6e,0x8c6e52);
   for(let y=493;y<522;y+=8)rect(769,y,38,2,0x956e4d);
