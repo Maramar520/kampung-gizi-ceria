@@ -56,27 +56,34 @@ async function testDesktop(browser){
  await page.keyboard.press('Escape');
  await page.locator('#notebook').waitFor({state:'hidden'});
 
- // Visit all eight action zones, not just shortcut names.
+ // Visit all ten zones of the original SVG layout, using real UI actions.
  for(const z of [
-  [120,203,'Kebun'],[155,335,'Pasar'],[810,330,'Chef'],
-  [320,242,'Kasur'],[553,233,'Dapur|Menu|Masakan'],
-  [350,477,'Bu Sari'],[803,194,'Kandang'],[769,486,'Kolam']]){
+  [320,141,'Kebun'],[208,374,'Pasar'],[619,465,'Chef'],
+  [128,162,'Kasur'],[194,161,'Menu|Masakan'],
+  [325,221,'Kandang'],[869,246,'Kolam'],
+  [869,373,'Toko Swalayan'],[607,205,'Rumah Warga']]){
    await actionAt(page,z[0],z[1],z[2]);
    await close(page);
  }
+ const currentSari=await page.evaluate(()=>{
+  const n=window.__kampungQA.scene.getScene('WorldScene').sari;
+  return {x:n.x,y:n.y};
+ });
+ await actionAt(page,currentSari.x,currentSari.y,'Bu Sari');
+ await close(page);
 
  // Real keyboard interaction: shop and learn recipe.
- await actionAt(page,155,335,'Pasar');
+ await actionAt(page,208,374,'Pasar');
  for(const name of ['beras','telur','bayam'])
   await page.getByRole('button',{name:new RegExp('Beli '+name+' ') }).first().click();
  await close(page);
- await actionAt(page,810,330,'Chef');
+ await actionAt(page,619,466,'Chef');
  await page.getByRole('button',{name:/Pelajari Nasi Telur Sayur/}).click();
  await close(page);
  assert.equal((await gameData()).recipeKnown,true);
 
  // Cooking input requires real click, hold, and timing.
- await actionAt(page,553,233,'Menu');
+ await actionAt(page,194,161,'Menu');
  await page.getByRole('button',{name:/Nasi Telur Sayur.*siap/}).click();
  for(let i=0;i<5;i++)await page.locator('#miniButton').click();
  await page.waitForFunction(()=>document.querySelector('#dialogTitle')?.textContent?.includes('2/3'));
@@ -111,11 +118,11 @@ async function testDesktop(browser){
  assert.equal((await gameData()).done,true);
 
  // Visit daily activities as a player.
- await actionAt(page,803,194,'Kandang');
+ await actionAt(page,325,221,'Kandang');
  await page.getByRole('button',{name:/Beri pakan ayam/}).click();
  await page.getByRole('button',{name:/Kumpulkan 2 telur/}).click();
  await close(page);
- await actionAt(page,769,486,'Kolam');
+ await actionAt(page,869,246,'Kolam');
  for(let i=0;i<3;i++){
   await page.getByRole('button',{name:/Lempar kail/}).click();
  }
