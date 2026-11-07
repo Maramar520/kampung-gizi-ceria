@@ -11,7 +11,7 @@ export class UIScene extends Phaser.Scene {
  button.addEventListener('click',()=>{
   this.world.highlightPlace(button.dataset.findPlace);
   this.note(button.dataset.findPlace==='coop'?'🐔 Kandang ayam berada di sebelah kebun, dekat rumah pemain.':
-   button.dataset.findPlace==='library'?'📚 Perpustakaan ada di sudut Rumah Warga, blok tengah atas.':'🎣 Kolam ikan berada di blok kanan atas peta.');
+   button.dataset.findPlace==='library'?'📚 Perpustakaan berada di blok tengah atas, masuk dari jalan tengah.':'🎣 Kolam ikan berada di blok kanan atas peta.');
  });
 });$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=446;this.state.data.y=291;this.world.player.sprite.setPosition(446,291);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
 this.keyboardNotebookHandler=event=>{
@@ -80,7 +80,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  libraryGuide(){
   if(this.notebook?.visible)return;
   this.show('📚 Pergi ke Perpustakaan Gizi',
-   'Ruang belajar ada di dalam Rumah Warga, blok tengah atas. Masuk dari jalan tengah, lalu dekati rak buku di kanan atas. Temui Kak Rani untuk belajar bersama.',[
+   'Perpustakaan berada di blok tengah atas. Masuk dari jalan tengah, dekati rak buku dan temui Kak Rani untuk belajar bersama.',[
     {label:'📍 Tunjukkan perpustakaan',fn:()=>{this.close();this.world.highlightPlace('library');}},
     {label:'Tutup petunjuk',fn:()=>this.close()}
    ],'<div class="learning-celebrate">🏘️ 📚 👩‍🏫</div>');
@@ -292,7 +292,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ],'<div class="social-overview">'+cards+'</div><p class="social-notice">❤️ Maksimal 5 hati per teman. Tidak memerlukan koin atau data pribadi.</p>');
  }
  villageMenu(){
-  this.show('🏘️ Rumah Warga','Selamat datang! Ini rumah tetangga yang bagian dalamnya bisa dilihat tanpa berpindah scene. Bu Sari dapat ditemui di jalan kampung.',[
+  this.show('📚 Perpustakaan','Selamat datang di perpustakaan! Interior dan ruang baca terlihat langsung dari peta. Temui Kak Rani atau dekati rak buku untuk belajar gizi.',[
    {label:'Kembali berjalan',fn:()=>this.close()}
   ]);
  }
