@@ -24,7 +24,7 @@ async function waitGame(page){
 }
 async function moveTo(page,x,y){
  await page.evaluate(({x,y})=>{
-  const game=window.__kampungQA,world=game.scene.get('WorldScene');
+  const game=window.__kampungQA,world=game.scene.getScene('WorldScene');
   game.state.data.x=x;game.state.data.y=y;
   world.keysHeld.clear();world.player.sprite.setPosition(x,y);
  },{x,y});
