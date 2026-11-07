@@ -63,7 +63,9 @@ export const INTERACTIONS=[
  {id:'store',x:869,y:364,r:75,label:'Toko Swalayan'},
  {id:'village',x:606,y:207,r:67,label:'Rumah Warga'},
  {id:'tani',x:403,y:189,r:45,label:'Pak Tani'},
- {id:'nia',x:405,y:317,r:43,label:'Nia'}
+ {id:'nia',x:405,y:317,r:43,label:'Nia'},
+ {id:'library',x:651,y:136,r:53,label:'Perpustakaan Gizi'},
+ {id:'rani',x:692,y:207,r:39,label:'Kak Rani'}
 ];
 export function canStand(x,y,obstacles=OBSTACLES){
  if(!Number.isFinite(x)||!Number.isFinite(y)||x<15||x>945||y<35||y>580)return false;
