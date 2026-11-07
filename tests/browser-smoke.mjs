@@ -76,7 +76,7 @@ async function testDesktop(browser){
   [320,141,'Kebun'],[208,374,'Pasar'],[619,465,'Chef'],
   [128,162,'Kasur'],[194,161,'Menu|Masakan'],
   [325,221,'Kandang'],[869,246,'Kolam'],
-  [869,373,'Toko Swalayan'],[607,205,'Rumah Warga']]){
+  [869,373,'Toko Swalayan'],[607,205,'Rumah Warga'],[650,135,'Perpustakaan']]){
    await actionAt(page,z[0],z[1],z[2]);
    await close(page);
  }
@@ -100,14 +100,16 @@ async function testDesktop(browser){
  await page.locator('#friendsButton').click();
  await page.locator('#dialog:not(.hidden)').waitFor();
  assert.match(await page.locator('#dialogTitle').textContent(),/Buku Pertemanan/);
- assert.equal(await page.locator('.social-friend').count(),4);
- assert.equal(await page.locator('.social-hearts').count(),4);
+ assert.equal(await page.locator('.social-friend').count(),5);
+ assert.equal(await page.locator('.social-hearts').count(),5);
  await close(page);
  // v1.6 — nutrition quiz through actual buttons, including wrong-answer retry.
  await page.locator('#learningButton').click();
- await page.locator('#dialog:not(.hidden)').waitFor();
- assert.match(await page.locator('#dialogTitle').textContent(),/Belajar Gizi/);
- await page.getByRole('button',{name:/Kuis Gizi/}).click();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Pergi ke Perpustakaan Gizi/);
+ await close(page);
+ // Kuis and Isi Piringku are now accessed inside the open library room.
+ await actionAt(page,650,135,'Perpustakaan Gizi');
+ await page.getByRole('button',{name:/Kuis makanan bergizi/}).click();
  let firstWrong=true;
  for(let i=0;i<3;i++){
   const correct=await page.evaluate(index=>{
@@ -149,6 +151,15 @@ async function testDesktop(browser){
  assert.equal((await gameData()).learning.stars,5);
  assert.equal((await gameData()).coins,coinsAfterLearning);
  await close(page);
+ // v1.8: learning is a daily task, claimed once, with permanent badge.
+ await page.locator('#missionsButton').click();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Misi Harian/);
+ await page.getByRole('button',{name:/Klaim Belajar gizi/}).click();
+ assert.equal((await gameData()).missions.claimed.includes('learn'),true);
+ await page.getByRole('button',{name:/Lencana Pencapaian/}).click();
+ await page.getByRole('button',{name:/Klaim Pembaca Gizi/}).click();
+ assert.equal((await gameData()).missions.achievements.includes('first-learning'),true);
+ await close(page);
  // v1.4: play actions through actual dialogs, then verify the rendered pose.
  await actionAt(page,320,141,'Kebun');
  await page.getByRole('button',{name:/Tanam Bayam.*Petak 1/}).click();
@@ -176,6 +187,11 @@ async function testDesktop(browser){
  await actionAt(page,320,141,'Kebun');
  await page.getByRole('button',{name:/Panen Bayam.*Petak 1/}).click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').activity.active),'harvest');
+ await close(page);
+ await page.locator('#missionsButton').click();
+ await page.getByRole('button',{name:/Klaim Menanam satu bibit/}).click();
+ await page.getByRole('button',{name:/Klaim Memanen sayuran/}).click();
+ assert.equal((await gameData()).missions.claimed.includes('harvest'),true);
  await close(page);
 
  const currentSari=await page.evaluate(()=>{
@@ -277,17 +293,26 @@ async function testMobile(browser){
 
  await page.locator('[data-dir="up"]').tap();
  await page.locator('#learningButton').tap();
- assert.match(await page.locator('#dialogTitle').textContent(),/Belajar Gizi/);
- await page.getByRole('button',{name:/Isi Piringku/}).tap();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Pergi ke Perpustakaan Gizi/);
+ await page.locator('#close').tap();
+ await page.locator('#dialog').waitFor({state:'hidden'});
+ await moveTo(page,650,135);
+ await page.locator('#action').tap();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Perpustakaan Gizi/);
+ await page.getByRole('button',{name:/Tantangan Isi Piringku/}).tap();
  assert.equal(await page.locator('.plate-piece').count(),6);
  await page.getByRole('button',{name:/Nasi/}).tap();
  await page.getByRole('button',{name:/Isi bagian berikutnya/}).tap();
  assert.equal(await page.locator('.plate-piece').count(),6);
  await page.locator('#close').tap();
  await page.locator('#dialog').waitFor({state:'hidden'});
+ await page.locator('#missionsButton').tap();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Misi Harian/);
+ await page.locator('#close').tap();
+ await page.locator('#dialog').waitFor({state:'hidden'});
  await page.locator('#friendsButton').tap();
  assert.match(await page.locator('#dialogTitle').textContent(),/Buku Pertemanan/);
- assert.equal(await page.locator('.social-friend').count(),4);
+ assert.equal(await page.locator('.social-friend').count(),5);
  await page.locator('#close').tap();
  await page.locator('#dialog').waitFor({state:'hidden'});
  // Mobile: tap the real AKSI button beside Nia and close the full-screen dialog.
