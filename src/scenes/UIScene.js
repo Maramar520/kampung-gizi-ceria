@@ -6,7 +6,7 @@ import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();document.querySelectorAll('[data-find-place]').forEach(button=>{
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();document.querySelectorAll('[data-find-place]').forEach(button=>{
  button.addEventListener('click',()=>{
   this.world.highlightPlace(button.dataset.findPlace);
   this.note(button.dataset.findPlace==='coop'?'🐔 Kandang ayam berada di sebelah kebun, dekat rumah pemain.':'🎣 Kolam ikan berada di blok kanan atas peta.');
@@ -17,6 +17,7 @@ this.keyboardNotebookHandler=event=>{
  const target=event.target;
  if(target&&(target.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(target.tagName)))return;
  const key=event.key.toLowerCase();
+ if(key==='f'){event.preventDefault();this.socialOverview();return;}
  const tab={i:'inventory',r:'recipes',j:'journal'}[key];
  if(tab){event.preventDefault();this.openNotebook(tab);}
 };
@@ -65,6 +66,32 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    this.refresh();this.storeMenu();this.note('Berhasil belanja di swalayan!');
   }}));
   this.show('🏪 Toko Swalayan','Toko modern menyediakan bahan kebutuhan. Harga berbeda dengan pasar tradisional.',items);
+ }
+ friendsLine(id){
+  const p=this.social.greet(id,this.world.phaseIndex??0);
+  if(!p)return '';
+  return p.dialogue+'\n'+p.heartsDisplay+(p.gained?' · +1 hati hari ini!':' · Sudah menyapa hari ini.');
+ }
+ friendMenu(id){
+  const p=this.social.profile(id);
+  if(!p)return;
+  const greeting=this.friendsLine(id);
+  const tip=id==='tani'?'Tips: siram tanaman lalu tidur agar tumbuh.':
+   'Tips: cek buku resep dan coba beragam sayur setiap hari.';
+  this.show(p.emoji+' '+p.name,greeting+'\n'+tip,[
+   {label:'🤝 Lihat daftar teman',fn:()=>this.socialOverview()},
+   {label:'Sampai jumpa!',fn:()=>this.close()}
+  ]);
+  this.refresh();
+ }
+ socialOverview(){
+  if(this.game.dialogOpen&&!(!$('dialog').classList.contains('hidden')))return;
+  const cards=this.social.all().map(p=>'<div class="social-friend"><div><strong>'+
+   p.emoji+' '+p.name+'</strong><small>'+p.place+'</small></div>'+
+   '<span class="social-hearts" aria-label="'+p.hearts+' dari 5 hati">'+p.heartsDisplay+'</span></div>').join('');
+  this.show('🤝 Buku Pertemanan','Sapa tiap warga maksimal sekali per hari untuk menambah satu hati. Tidur untuk memulai hari baru.',[
+   {label:'Tutup buku teman',fn:()=>this.close()}
+  ],'<div class="social-overview">'+cards+'</div><p class="social-notice">❤️ Maksimal 5 hati per teman. Tidak memerlukan koin atau data pribadi.</p>');
  }
  villageMenu(){
   this.show('🏘️ Rumah Warga','Selamat datang! Ini rumah tetangga yang bagian dalamnya bisa dilihat tanpa berpindah scene. Bu Sari dapat ditemui di jalan kampung.',[
@@ -146,11 +173,12 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.show('🍳 Pilih Menu Masakan','Pilih resep yang sudah kamu pelajari. Hidangan baru memberi poin gizi di dalam game.',actions);
  }
  chefMenu(){
+  const greeting=this.friendsLine('chef');
   const actions=RECIPE_IDS.map(id=>({
    label:'📖 Pelajari '+RECIPES[id].name+(knownRecipe(this.state.data,id)?' ✓':''),
    fn:()=>{this.cooking.learn(id);this.refresh();this.chefMenu();this.note('Resep '+RECIPES[id].name+' dipelajari!');}
   }));
-  this.show('👨‍🍳 Chef Bimo','Ayo belajar menu dari hasil kebun! Pilih resep untuk dipelajari.',actions);
+  this.show('👨‍🍳 Chef Bimo',greeting+'\nAyo belajar menu dari hasil kebun! Pilih resep untuk dipelajari.',actions);
  }
  cookStep(step=0){
   const id=this.activeRecipe||'nasi-telur-sayur',recipe=RECIPES[id];
@@ -177,12 +205,14 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='garden')return this.gardenMenu();
   if(id==='coop')return this.coopMenu();
   if(id==='pond')return this.pondMenu();
+  if(id==='tani'||id==='nia')return this.friendMenu(id);
   if(id==='chef')return this.chefMenu();
   if(id==='stove')return this.chooseRecipe();
   if(id==='npc'){
-   if(s.done)return this.show('👩‍🌾 Bu Sari','Terima kasih! Kamu boleh terus berkebun dan mencoba resep lain.');
-   if(!s.cooked)return this.show('👩‍🌾 Bu Sari','Tolong buatkan Nasi Telur Sayur. Bahan bisa dibeli atau dipanen dari kebun.');
-   if(this.quest.complete()){this.refresh();return this.show('🏆 Quest selesai!','Terima kasih! Hadiah 50 Koin Ceria telah diterima.');}
+   const greeting=this.friendsLine('sari');
+   if(s.done)return this.show('👩‍🌾 Bu Sari',greeting+'\nTerima kasih! Kamu boleh terus berkebun dan mencoba resep lain.');
+   if(!s.cooked)return this.show('👩‍🌾 Bu Sari',greeting+'\nTolong buatkan Nasi Telur Sayur. Bahan bisa dibeli atau dipanen dari kebun.');
+   if(this.quest.complete()){this.refresh();return this.show('🏆 Quest selesai!',greeting+'\nTerima kasih! Hadiah 50 Koin Ceria telah diterima.');}
   }
   if(id==='bed')return this.show('🛏️ Kasur','Tidur untuk mengisi energi dan memajukan pertumbuhan tanaman.',[{label:'🌙 Tidur hingga pagi',fn:()=>{
    this.world.playInteraction('sleep');s.energy=100;s.day++;this.refresh();
