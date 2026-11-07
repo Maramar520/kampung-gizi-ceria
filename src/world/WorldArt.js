@@ -9,7 +9,9 @@ export function createTextures(scene){
  const palette={
   player:{shirt:0x7caad3,shade:0x4c83b0,hair:0x594536,skin:0xf3c8a5,accent:0xe4c184},
   sari:{shirt:0xe4a18c,shade:0xc67877,hair:0x674637,skin:0xf1cba5,accent:0xf0d5a9},
-  chef:{shirt:0xf0eee4,shade:0xc4d7cd,hair:0x665041,skin:0xf1c6a4,accent:0x8abc9d}
+  chef:{shirt:0xf0eee4,shade:0xc4d7cd,hair:0x665041,skin:0xf1c6a4,accent:0x8abc9d},
+  tani:{shirt:0x8fb47b,shade:0x517c56,hair:0x594633,skin:0xeac39e,accent:0xd6b171},
+  nia:{shirt:0xe6b4c3,shade:0xb67d9f,hair:0x473746,skin:0xf2caa9,accent:0xf5d78f}
  };
  const draw=(name,dir,frame,action=null)=>{
   const p=palette[name],walk=frame!==0&&!action,step=walk?(frame===1?2:-2):0;
@@ -66,6 +68,22 @@ export function createTextures(scene){
    rect(13,30+bounce,3,9,0xd1dcd5);
    rect(22,29+bounce,3,3,p.accent);
    rect(22,35+bounce,3,3,p.accent);
+  }else if(name==='tani'){
+   // Topi jerami dan sepatu bot Pak Tani, unik dari karakter pemain.
+   rect(3,4+bounce,33,5,0xc5a36f);
+   rect(10,-1+bounce,18,8,0xe5c58b);
+   rect(13,1+bounce,12,3,0xf8e0a2);
+   rect(11,28+bounce,16,8,0x6c9772);
+   rect(12,35+bounce,6,5,0x765b46);
+   rect(21,35+bounce,6,5,0x765b46);
+  }else if(name==='nia'){
+   // Kepang pendek, pita dan tas sekolah kecil.
+   if(!back){rect(4,11+bounce,5,17,p.hair);rect(29,12+bounce,5,16,p.hair);}
+   rect(24,5+bounce,8,4,0xf2cb84);
+   rect(26,2+bounce,4,9,0xf5dc9d);
+   rect(10,30+bounce,18,9,0xe2a7ba);
+   rect(24,27+bounce,8,9,0xc9936c);
+   rect(26,29+bounce,4,4,0xf1d5a0);
   }else{
    rect(back?20:9,24+bounce,4,13,0xcaa66f);
    if(!back){rect(22,29+bounce,6,8,0x977252);rect(23,31+bounce,3,3,0xe4ba86);}
