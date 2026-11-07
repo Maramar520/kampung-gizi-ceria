@@ -57,6 +57,7 @@ export const INTERACTIONS=[
  {id:'market',x:208,y:376,r:81,label:'Pasar'},
  {id:'npc',x:450,y:283,r:65,label:'Bu Sari'},
  {id:'chef',x:616,y:456,r:75,label:'Chef Bimo'},
+ {id:'restaurant-kitchen',x:687,y:442,r:33,label:'Dapur Restoran'},
  {id:'garden',x:320,y:142,r:75,label:'Kebun Sayur'},
  {id:'coop',x:325,y:217,r:74,label:'Kandang Ayam'},
  {id:'pond',x:871,y:230,r:75,label:'Kolam Ikan'},
