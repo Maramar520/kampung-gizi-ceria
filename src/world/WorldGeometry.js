@@ -43,8 +43,8 @@ export const FURNITURE=[
  rectangle(144,174,55,30), // meja rumah
  rectangle(551,106,54,40), // meja warga
  rectangle(84,392,204,35), // lapak pasar
- rectangle(533,395,145,36), // meja restoran
- rectangle(825,389,84,35)  // rak swalayan
+ rectangle(533,395,102,36), // meja restoran
+ rectangle(831,389,55,35)  // rak swalayan
 ];
 export const NEW_WORLD_OBSTACLES=[
  rectangle(292,168,72,42), // bangunan kandang; halamannya tetap dapat dilalui
