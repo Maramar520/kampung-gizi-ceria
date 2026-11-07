@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kampung Gizi Ceria — Phaser v1.4</title>
+<title>Kampung Gizi Ceria — Phaser v1.5</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#e9eddc;color:#415644;font:14px system-ui,sans-serif}header{text-align:center;padding:10px}h1{margin:0;color:#4c7958;font-size:24px}header p{margin:3px}.shell{max-width:1060px;margin:auto;padding:8px}.hud{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:8px}.chip{background:#fff9e9;border:2px solid #b7cda8;border-radius:10px;padding:8px;text-align:center;font-weight:700}.chip small{display:block;color:#7b8b75;font-weight:500}.gamewrap{position:relative;border:6px solid #6e9670;border-radius:14px;overflow:hidden}#game canvas{display:block;width:100%;image-rendering:pixelated}.toast{position:absolute;top:9px;left:50%;transform:translateX(-50%);background:#fff8e9;border:2px solid #a6bd87;border-radius:8px;padding:7px 12px;text-align:center;pointer-events:none;max-width:95%;font-weight:bold}.bottom{display:flex;gap:8px;margin:10px 0;align-items:center}.quest{background:#fff8e5;border:2px solid #c6d5b0;padding:10px;border-radius:10px;flex:1}button{background:#64976b;color:white;border:0;border-bottom:3px solid #477a51;border-radius:9px;padding:10px 15px;font-weight:700;cursor:pointer}.controls{display:flex;justify-content:center;gap:14px;align-items:center;margin:8px}.dpad{display:grid;grid-template-columns:repeat(3,45px);grid-template-rows:repeat(2,40px);gap:3px;touch-action:none}.dpad button{padding:0;font-size:20px}.dpad [data-dir=up]{grid-column:2}.dpad [data-dir=left]{grid-column:1;grid-row:2}.dpad [data-dir=down]{grid-column:2;grid-row:2}.dpad [data-dir=right]{grid-column:3;grid-row:2}.modal{position:absolute;inset:0;background:#243f31a8;display:flex;align-items:center;justify-content:center;padding:12px}.hidden{display:none!important}.panel{background:#fff7e8;border:5px solid #b88561;border-radius:14px;padding:17px;width:min(520px,100%);max-height:95%;overflow:auto}.panel h2{margin:0 0 8px;color:#80583c}.panel p{line-height:1.6}.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.choices button{flex:1;min-width:130px}.close{float:right;background:#b17a64}.cookstage{background:#f0e1c8;padding:12px;border-radius:10px;margin:10px 0;text-align:center}.progress{height:12px;background:#d2c3a6;border-radius:8px;overflow:hidden}.progress div{height:100%;background:#79ad7b;transition:width .15s}@media(max-width:700px){.hud{grid-template-columns:repeat(3,1fr)}.chip{font-size:12px}.bottom{flex-wrap:wrap}}
 
@@ -153,10 +153,21 @@ button{touch-action:manipulation}
 /* v1.4 · pergerakan aksesibel tanpa menambah panel di atas peta */
 #game canvas{image-rendering:pixelated;image-rendering:crisp-edges}
 @media(prefers-reduced-motion:reduce){.mini-egg,.mini-pot,.garden-plot.ready span{animation-duration:2s}}
+
+/* v1.5 — Perkenalan warga dan lima hati pertemanan */
+.social-overview{display:grid;gap:8px;margin:12px 0}
+.social-friend{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;
+ border:2px solid #c5d5aa;background:#f1f7e7;border-radius:11px}
+.social-friend strong{font-size:15px}
+.social-friend small{color:#6f796a;display:block;margin-top:3px}
+.social-hearts{font-size:17px;white-space:nowrap;letter-spacing:-2px}
+.social-notice{padding:9px;border-radius:10px;background:#f5e8cc;line-height:1.5}
+@media(max-width:550px){.social-friend{flex-wrap:wrap}.social-hearts{font-size:14px}
+ .notebook-shortcuts button{min-width:43%;flex-grow:1}}
 </style>
 </head>
 <body>
-<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.4</small></h1><p>Cozy pixel art v1.4 · Karakter chibi & animasi aktivitas</p></header>
+<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.5</small></h1><p>Cozy pixel art v1.5 · NPC & pertemanan harian</p></header>
 <main class="shell">
 <section class="hud">
 <div class="chip">🪙 <span id="coins"></span><small>Koin</small></div>
@@ -170,6 +181,7 @@ button{touch-action:manipulation}
 <button type="button" data-open-notebook="inventory" title="Tas bahan (I)">🎒 Tas <small>I</small></button>
 <button type="button" data-open-notebook="recipes" title="Buku resep (R)">📖 Resep <small>R</small></button>
 <button type="button" data-open-notebook="journal" title="Jurnal quest (J)">📋 Misi <small>J</small></button>
+<button type="button" id="friendsButton" title="Lihat pertemanan NPC (F)">🤝 Teman <small>F</small></button>
 </nav>
 <nav class="place-shortcuts" aria-label="Temukan lokasi di peta">
  <span>📍 Cari lokasi:</span>
