@@ -18,7 +18,8 @@ export const INTERACTIONS=[
  {id:'stove',x:553,y:190,r:62,label:'Kompor'},
  {id:'market',x:155,y:323,r:83,label:'Pasar'},
  {id:'npc',x:350,y:476,r:65,label:'Bu Sari'},
- {id:'chef',x:810,y:310,r:78,label:'Chef Bimo'}
+ {id:'chef',x:810,y:310,r:78,label:'Chef Bimo'},
+ {id:'garden',x:120,y:170,r:88,label:'Kebun Bayam'}
 ];
 export function canStand(x,y,obstacles=OBSTACLES){
  if(!Number.isFinite(x)||!Number.isFinite(y)||x<15||x>945||y<35||y>580)return false;
