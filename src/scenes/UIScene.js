@@ -49,8 +49,11 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  close(){if(this.notebook?.visible){this.notebook.close();return;}this.minigame.stop();this.game.dialogOpen=false;$('dialog').classList.add('hidden');if(this.cookTween){this.cookTween.stop();this.cookTween=null}}
  market(){
+  const featured=this.world.festival.status;
   const items=[
-   ...Object.entries({beras:12,telur:15,bayam:10,wortel:14,tomat:15,kangkung:12}).map(([id,price])=>({
+   {label:featured.active?'🎊 Ikuti Festival Kampung Sehat':'🎪 Jadwal Festival Kampung Sehat',
+    fn:()=>this.festivalMenu()},
+   ...Object.entries({beras:12,telur:15,bayam:10,wortel:14,tomat:15,kangkung:12,selada:14,brokoli:19,labu:21}).map(([id,price])=>({
     label:'Beli '+id+' — '+price+' KC',fn:()=>{
      const s=this.state.data;if(s.coins<price){this.note('Koin tidak cukup!');return;}
      s.coins-=price;s.inventory[id]=(s.inventory[id]||0)+1;this.refresh();this.market();
@@ -61,7 +64,54 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     this.refresh();this.market();this.note('Bibit '+CROPS[id].name+' ditambahkan!');
    }}))
   ];
-  this.show('🧺 Pasar Tradisional','Beli bahan masakan atau bibit. Sayuran juga dapat ditanam di kebun!',items);
+  this.show('🧺 Pasar Tradisional','Beli bahan masakan atau bibit. Sayuran juga dapat ditanam di kebun! '+(featured.active?'🎉 Festival sedang berlangsung hari ini!':'Festival berikutnya hari '+featured.next+'.'),items);
+ }
+ festivalGuide(){
+  const status=this.world.festival.status;
+  this.show('🎪 Festival Kampung Sehat',
+   status.active?'Hari ini festival berlangsung di Pasar Tradisional! Datang ke pasar dan tekan E / AKSI.':
+    'Festival berikutnya berlangsung pada hari '+status.next+' di Pasar Tradisional (blok kiri bawah). Tidur untuk berganti hari.',[
+    {label:'📍 Tunjukkan lokasi pasar',fn:()=>{this.close();this.world.highlightPlace('festival');}},
+    {label:'Kembali bermain',fn:()=>this.close()}
+   ],'<div class="festival-banner">🎈 🥕 🥬 🎉 🍅</div>');
+ }
+ festivalMenu(){
+  const f=this.world.festival,info=f.status;
+  if(!info.active)return this.festivalGuide();
+  let message='Selamat datang di Festival Kampung Sehat! Ada permainan mengenal makanan dan hiasan pasar. ';
+  if(info.celebrated)message+='Hadiah festival hari ini sudah kamu ambil. Acara berikutnya hari '+(this.state.data.day+4)+'.';
+  else if(info.quizPassed)message+='Kamu sudah menjawab benar! Ambil hadiah festivalmu.';
+  else if(info.joined)message+='Ayo jawab tantangan gizi untuk memperoleh hadiah.';
+  else message+='Daftar sebagai peserta dan jawab tantangan gizi. Tidak ada biaya.';
+  const actions=[];
+  if(!info.joined)actions.push({label:'🎟️ Ikut festival',fn:()=>{
+   f.join();this.refresh();this.festivalMenu();
+  }});
+  if(info.joined&&!info.quizPassed&&!info.celebrated)
+   actions.push({label:'🧠 Kuis festival',fn:()=>this.festivalQuiz()});
+  if(info.quizPassed&&!info.celebrated)
+   actions.push({label:'🎁 Ambil hadiah 35 KC + 4 ⭐',fn:()=>{
+    const reward=f.celebrate();
+    if(reward)this.note('Hadiah festival! +'+reward.coins+' KC +'+reward.stars+' ⭐');
+    this.refresh();this.festivalMenu();
+   }});
+  actions.push({label:'🧺 Kembali ke Pasar',fn:()=>this.market()});
+  this.show('🎉 Festival Kampung Sehat · Hari '+this.state.data.day,message,actions,
+   '<div class="festival-banner">🎈 🥕 🥬 🎉 🍅</div>');
+ }
+ festivalQuiz(){
+  const f=this.world.festival,q=f.question;
+  this.show('🧠 Kuis Festival Gizi',q.question,q.choices.map((choice,i)=>({
+   label:String.fromCharCode(65+i)+'. '+choice,
+   fn:()=>{
+    const correct=f.quiz(i);
+    this.show(correct?'🌟 Jawaban benar!':'🌱 Ayo mencoba lagi',
+     correct?q.feedback:'Belum tepat. Pilih lagi, ya! Tidak ada penalti.',[
+      {label:correct?'Kembali ke festival':'Coba lagi',
+       fn:()=>correct?this.festivalMenu():this.festivalQuiz()}
+     ]);
+   }
+  })));
  }
  familyHomeMenu(){
   const rain=this.world.clock.weather==='Hujan';
@@ -321,8 +371,11 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    }else if(p.stage==='ready'){
     actions.push({label:p.emoji+' Panen '+p.name+' · Petak '+(p.index+1),fn:()=>{
      if(this.garden.harvest(p.index)){
-      this.missions.record('harvest');this.world.playInteraction('harvest');this.refresh();this.gardenMenu();
-      this.note('Panen '+p.name+': +2 hasil, +1 bibit!');
+      this.missions.record('harvest');
+      const bonus=this.world.festival.harvest(p.crop);
+      this.world.playInteraction('harvest');this.refresh();this.gardenMenu();
+      if(bonus)this.note('Panen pilihan hari ini! +'+bonus.coins+' KC dan +'+bonus.stars+' ⭐');
+      if(!bonus)this.note('Panen '+p.name+': +'+CROPS[p.crop].yield+' hasil, +1 bibit!');
      }
     }});
    }
@@ -330,7 +383,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(!actions.length)actions.push({label:'🌙 Tunggu sampai panen',fn:()=>{this.close();this.note('Gunakan kasur untuk memulai hari berikutnya.');}});
   const seeds=CROP_IDS.map(id=>CROPS[id].emoji+' '+CROPS[id].name+': '+view.seedsByCrop[id]).join(' · ');
   const weatherTip=this.world.clock.weather==='Hujan'?' 🌧️ Hujan menyiram tanaman secara otomatis.':'';
-  this.show('🌿 Kebun Sayur','Hari '+this.state.data.day+' · '+seeds+'.\nTanam, siram, tidur di rumah, lalu panen! Wortel dan tomat perlu 2 hari.'+weatherTip,actions,'<div class="garden-preview">'+icons+'</div>');
+  const featuredCrop=CROPS[this.world.festival.featured];
+  const dayTip=' 🌟 Tanaman pilihan hari ini: '+featuredCrop.name+' (bonus panen sekali/hari).';
+  this.show('🌿 Kebun Sayur','Hari '+this.state.data.day+' · '+seeds+'.\nTanam, siram, tidur di rumah, lalu panen! Setiap sayuran memiliki waktu tumbuh berbeda.'+weatherTip+dayTip,actions,'<div class="garden-preview">'+icons+'</div>');
  }
  coopMenu(){
   const status=this.dailyLife.status;
