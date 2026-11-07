@@ -11,7 +11,8 @@ export function createTextures(scene){
   sari:{shirt:0xe4a18c,shade:0xc67877,hair:0x674637,skin:0xf1cba5,accent:0xf0d5a9},
   chef:{shirt:0xf0eee4,shade:0xc4d7cd,hair:0x665041,skin:0xf1c6a4,accent:0x8abc9d},
   tani:{shirt:0x8fb47b,shade:0x517c56,hair:0x594633,skin:0xeac39e,accent:0xd6b171},
-  nia:{shirt:0xe6b4c3,shade:0xb67d9f,hair:0x473746,skin:0xf2caa9,accent:0xf5d78f}
+  nia:{shirt:0xe6b4c3,shade:0xb67d9f,hair:0x473746,skin:0xf2caa9,accent:0xf5d78f},
+  rani:{shirt:0xa6a9d6,shade:0x747ab3,hair:0x51404c,skin:0xeec7a7,accent:0xf0d595}
  };
  const draw=(name,dir,frame,action=null)=>{
   const p=palette[name],walk=frame!==0&&!action,step=walk?(frame===1?2:-2):0;
@@ -76,6 +77,12 @@ export function createTextures(scene){
    rect(11,28+bounce,16,8,0x6c9772);
    rect(12,35+bounce,6,5,0x765b46);
    rect(21,35+bounce,6,5,0x765b46);
+  }else if(name==='rani'){
+   // Pustakawan dengan kacamata, celemek ungu, dan buku kecil.
+   if(!back){rect(10,14+bounce,8,6,0x655769);rect(21,14+bounce,8,6,0x655769);
+    rect(17,15+bounce,5,2,0xd5d0be);rect(12,16+bounce,4,3,0xe8e2ce);rect(23,16+bounce,4,3,0xe8e2ce);}
+   rect(11,29+bounce,17,9,0x8c8fc2);
+   rect(28,26+bounce,8,12,0x9fb6bc);rect(30,28+bounce,4,7,0xf4eed2);
   }else if(name==='nia'){
    // Kepang pendek, pita dan tas sekolah kecil.
    if(!back){rect(4,11+bounce,5,17,p.hair);rect(29,12+bounce,5,16,p.hair);}
@@ -223,6 +230,14 @@ export function buildWorld(scene) {
  frame(deco,551,106,54,40,0xceb48f,0x947255,3);
  r(deco,557,114,41,11,0xfaf4e6);r(deco,557,130,41,6,0xa9c5b8);
  shelf(626,83,67);table(630,169,50,32,0xc19a73);
+ // v1.8: perpustakaan gizi menjadi sudut baca terbuka dalam rumah warga.
+ // Tidak ada perubahan hitbox atau pintu dari denah enam blok.
+ label('📚 PERPUSTAKAAN',650,62,11);
+ frame(deco,637,142,52,20,0xb1ccaf,0x77958d,2);
+ for(let i=0;i<5;i++){r(deco,642+i*9,148,6,4,[0xe5b882,0xd8a6a0,0x92abc4][i%3]);}
+ for(let i=0;i<4;i++){r(deco,633+i*15,91,9,13,[0xc9a6c6,0xe8bd7d,0x94c2b0,0xacc4e1][i%4]);}
+ r(deco,670,151,12,5,0xf5e4c7);r(deco,672,147,8,5,0x9277a7);
+
  r(deco,648,177,16,12,0xfff0d7);
  flowerBox(509,220,70);
  frame(deco,509,86,27,36,0xa4c6cc,0x9b7861,2);
