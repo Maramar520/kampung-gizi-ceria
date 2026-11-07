@@ -1,9 +1,10 @@
+import {canStand} from '../world/WorldGeometry.js';
 export class Player {
  constructor(scene,state,obstacles){
   this.scene=scene;this.state=state;this.obstacles=obstacles;this.facing='down';this.lastFrame=-1;
   const s=state.data;this.sprite=scene.add.image(s.x,s.y,'player-down-0').setOrigin(.5,.76).setDepth(s.y);
  }
- blocked(x,y){if(x<15||x>945||y<35||y>580)return true;return this.obstacles.some(o=>x+9>o.x&&x-9<o.x+o.w&&y+5>o.y&&y-5<o.y+o.h)}
+ blocked(x,y){return !canStand(x,y,this.obstacles)}
  update(dt,keys){
   const s=this.state.data;
   let dx=Number(keys.has('right'))-Number(keys.has('left')),dy=Number(keys.has('down'))-Number(keys.has('up'));
