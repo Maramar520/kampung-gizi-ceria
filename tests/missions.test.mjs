@@ -14,7 +14,7 @@ const fresh=()=>{db.clear();const state=new GameState();return{state,mission:new
 test('six different daily tasks and seven one-off achievements',()=>{
  assert.deepEqual(MISSION_DEFS.map(x=>x.id),['plant','harvest','cook','friend','help','learn']);
  assert.equal(ACHIEVEMENTS.length,7);
- assert.equal(new Set(ACHIEVEMENTS.map(a=>a.id)).size,6);
+ assert.equal(new Set(ACHIEVEMENTS.map(a=>a.id)).size,7);
 });
 test('mission progress only increments when actual event is recorded; daily claim cannot be farmed',()=>{
  const {state,mission}=fresh(),coins=state.data.coins;
