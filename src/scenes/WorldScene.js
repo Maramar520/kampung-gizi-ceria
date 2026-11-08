@@ -10,7 +10,7 @@ import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
 import {CoastSystem} from '../systems/CoastSystem.js?v=v119-life';
 import {FriendEvents} from '../systems/FriendEvents.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
-import {SocialSystem} from '../systems/SocialSystem.js?v=riko-friend-20261108';
+import {SocialSystem} from '../systems/SocialSystem.js?v=residents-only-20261108';
 import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
 import {WeatherArt} from '../world/WeatherArt.js';
@@ -275,10 +275,6 @@ export class WorldScene extends Phaser.Scene {
  }
  getNearest(){
   const d=this.game.state.data;
-  const rikoHere=this.restaurantOrders.order.customer==='Tamu Riko'&&['arriving','ordering','eating','paying'].includes(this.restaurantCustomer.status);
-  const riko=rikoHere?{id:'riko',x:this.restaurantCustomer.npc.x,y:this.restaurantCustomer.npc.y,r:31,label:'Tamu Riko'}:null;
-  const nearby=riko&&Math.hypot(d.x-riko.x,d.y-riko.y)<riko.r;
-  if(nearby)return 'riko';
   const bayuNear=Math.hypot(d.x-this.fisherman.x,d.y-this.fisherman.y)<34;
   if(bayuNear)return 'bayu';
   return nearestInteraction(d,this.zones.map(z=>{
@@ -343,7 +339,7 @@ export class WorldScene extends Phaser.Scene {
   const id=this.getNearest();
   this.prompt.setVisible(!!id&&!this.game.dialogOpen);
   if(id){
-   const z=this.zones.find(q=>q.id===id)|| (id==='bayu'?{id,label:'Nelayan Bayu',x:this.fisherman.x,y:this.fisherman.y}:{id:'riko',label:'Tamu Riko',x:this.restaurantCustomer.npc.x,y:this.restaurantCustomer.npc.y});
+   const z=this.zones.find(q=>q.id===id)||{id:'bayu',label:'Nelayan Bayu',x:this.fisherman.x,y:this.fisherman.y};
    const npc=id==='bayu'?this.fisherman:this.npcById(id);
    this.prompt.setPosition(npc?npc.x:z.x,(npc?npc.y:z.y)-63);
    this.prompt.setText('E / AKSI · '+z.label);
