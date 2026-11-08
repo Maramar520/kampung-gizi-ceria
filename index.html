@@ -378,6 +378,17 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
  .gamewrap>.cozy-drawer .notebook-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+
+/* v1.62 — HUD menu berada di dalam game, di antara arah dan aksi */
+.gamewrap>.controls{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:end!important;gap:clamp(4px,1vw,12px)!important}
+.gamewrap>.controls .cozy-toolbar{grid-column:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:0 0 4px;max-width:360px;width:100%;align-self:end;pointer-events:auto;z-index:36}
+.gamewrap>.controls .cozy-toolbar button{min-width:0;min-height:43px;padding:3px 1px;font-size:clamp(9px,1.4vw,12px);line-height:1.1;background:#fff4d9ed;box-shadow:0 2px 8px #243b3040}
+.gamewrap>.controls .cozy-toolbar button span{font-size:clamp(15px,2vw,21px)}
+.gamewrap>.controls .dpad{grid-column:1}
+.gamewrap>.controls #action{grid-column:3}
+.gamewrap:has(>.cozy-drawer.is-open)>.controls{visibility:visible}
+.gamewrap:has(>.cozy-drawer.is-open)>.controls .cozy-toolbar{visibility:hidden;pointer-events:none}
+@media(max-width:540px){.gamewrap>.controls{inset:auto 4px 6px 4px!important;gap:3px!important}.gamewrap>.controls .cozy-toolbar{gap:2px}.gamewrap>.controls .cozy-toolbar button{min-height:36px;font-size:9px;border-radius:7px}.gamewrap>.controls .cozy-toolbar button span{font-size:15px}.gamewrap>.controls .dpad{grid-template-columns:repeat(3,clamp(30px,9vw,42px));grid-template-rows:repeat(2,clamp(32px,10vw,40px));gap:2px}.gamewrap>.controls #action{width:clamp(58px,18vw,78px);height:clamp(58px,18vw,78px);font-size:11px}}
 </style>
 </head>
 <body>
@@ -539,7 +550,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(label==='Menu')button.dataset.section='menu';
   button.setAttribute('aria-expanded','false');button.onclick=action;bar.append(button);
  }
- game.insertAdjacentElement('afterend',bar);game.appendChild(drawer);
+ if(controls){controls.insertBefore(bar,controls.querySelector('#action'));}else{game.appendChild(bar);}game.appendChild(drawer);
  // Elemen navigasi dipindah ke panel, bukan dihapus.
  for(const node of [...moved.peta,...moved.menu])parking.append(node);
  close.onclick=hide;
