@@ -253,17 +253,44 @@ export function buildWorld(scene) {
  frame(deco,509,86,27,36,0xa4c6cc,0x9b7861,2);
  r(deco,521,88,3,32,0xfff4d6);r(deco,511,102,23,3,0xfff4d6);
  // KOLAM di kanan atas ditambahkan di FarmArt sesuai pond footprint.
- // PASAR TRADISIONAL: blok kiri bawah dengan meja dan 2 kios berbeda.
- room('market',0xf3ddb4,0xb57c63,true);
+ // PASAR TRADISIONAL BARU: tetap pada blok lama dan pintu utara tetap terbuka.
+ room('market',0xf4ddbd,0xb57c63,true);
  label('PASAR TRADISIONAL',210,322,14);
- for(let i=0;i<13;i++){r(deco,48+i*26,336,26,9,i%2?0xffe7bc:0xe18e83);}
- shelf(72,364,126);shelf(233,367,123);
- table(84,392,204,35,0xb8865a);
- for(let x=95;x<282;x+=22){r(deco,x,386,16,9,0x82aa65);r(deco,x+3,382,10,6,(x%3)?0xeab073:0xa9c57d);}
- for(let x=94;x<283;x+=25){r(deco,x,412,19,10,0xa5784d);r(deco,x+3,406,12,8,0xe3b774);}
- table(94,465,107,26,0xc49c70);table(226,466,103,25,0xc49c70);
- for(const [x,y] of [[114,453],[265,451],[295,445]]){r(deco,x,y,19,13,0xdab47d);r(deco,x+5,y-6,10,8,0x74ad65);}
- flowerBox(59,529,92);
+ // Detail atap/kanopi warna-warni pada sisi atas, tanpa menutup akses.
+ for(let i=0;i<14;i++)r(deco,51+i*24,337,23,9,i%2?0xf5e8cb:0xd98e85);
+ // Rak belakang berisi aneka sayur, buah, dan bumbu.
+ frame(deco,111,358,191,47,0xa57a55,0x87664d,3);
+ for(let j=0;j<2;j++)for(let i=0;i<9;i++){
+  const x=120+i*19,y=365+j*17;
+  r(deco,x,y,15,12,0xb98a5d);
+  r(deco,x+2,y+2,11,8,[0x7fae65,0xe9aa57,0xe6c35d,0xa6bf77,0xd88972][(i+j)%5]);
+ }
+ // Kios kiri dan kanan, tengah tetap kosong sebagai lorong pejalan.
+ for(const [x,awning] of [[58,0xd78380],[286,0x7abac5]]){
+  r(deco,x,404,45,8,0x936a4e);
+  for(let i=0;i<5;i++)r(deco,x+i*9,399,9,9,i%2?0xfff2dc:awning);
+  r(deco,x+3,416,39,33,0xb78c63);
+  for(let row=0;row<2;row++)for(let col=0;col<3;col++){
+   const cx=x+7+col*11,cy=419+row*13;
+   r(deco,cx,cy,9,10,0xcda477);
+   r(deco,cx+2,cy+1,6,7,[0x83ad64,0xf1bc58,0xe08b5f][(row+col)%3]);
+  }
+ }
+ // Meja hasil panen bagian bawah, tanpa menghalangi pintu di tengah sisi utara.
+ for(const [x,w] of [[85,98],[233,94]]){
+  table(x,474,w,29,0xbd9269);
+  for(let i=0;i<4;i++){
+   const bx=x+9+i*21;
+   r(deco,bx,464,17,12,0xa87b4f);
+   r(deco,bx+3,460,11,9,[0x80ae63,0xf2c458,0xe59b6d,0xa5c778][i]);
+  }
+ }
+ // Peti, tanaman dan bunga di sudut pasar; jalur utama tetap lapang.
+ for(const [x,y] of [[62,510],[337,510]]){
+  r(deco,x,y,29,19,0xb48b63);r(deco,x+4,y+4,21,11,0xd8b48a);
+  r(deco,x+8,y-7,13,12,0x80ad70);
+ }
+ flowerBox(113,527,55);flowerBox(270,527,48);
  // RESTORAN SEHAT: blok tengah bawah, interior bebas dimasuki dari jalan.
  room('restaurant',0xf3d6bc,0xb88269,true);
  label('RESTORAN SEHAT',607,322,14);
