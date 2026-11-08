@@ -45,3 +45,11 @@ export const WORK_ROUTES=Object.freeze({
  ]
 });
 export function workRoute(id,phase){return (WORK_ROUTES[id]?.[phase]||[]).map(p=>({...p}));}
+
+// Saat hujan, pekerja tetap di dalam gedungnya, bukan berjalan bolak-balik tanpa tujuan.
+// Rute satu arah berakhir di pos kerja dan tidak diulang sampai cuaca cerah.
+export const RAIN_WORK_ROUTES=Object.freeze({
+ chef:[point(618,468),point(618,443,'🍲 Menyiapkan pesanan di dapur',3)],
+ rani:[point(692,207),point(690,177,'📚 Menata buku di perpustakaan',3)]
+});
+export function rainWorkRoute(id){return (RAIN_WORK_ROUTES[id]||[]).map(p=>({...p}));}
