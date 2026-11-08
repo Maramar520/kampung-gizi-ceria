@@ -20,7 +20,7 @@ export function restaurantPathClear(points){
 }
 export class RestaurantCustomer {
  constructor(scene){
-  this.scene=scene;this.day=0;this.stage='';this.wait=0;
+  this.scene=scene;this.day=0;this.stage='';this.wait=0;this.orderWait=0;
   this.npc=new NPC(scene,{x:607,y:281,name:'PELANGGAN',texture:'nia',stops:[{x:607,y:281}]});
   this.visitors=['Tamu Dita','Tamu Riko','Tamu Maya','Tamu Beni'];
   this.chair=scene.add.text(RESTAURANT_SEAT.x,RESTAURANT_SEAT.y+10,'🪑',{fontSize:'21px'}).setOrigin(.5).setDepth(RESTAURANT_SEAT.y-2);
@@ -38,7 +38,7 @@ export class RestaurantCustomer {
   const {day}=this.scene.game.state.data;
   const served=this.scene.restaurantOrders.status.served;
   if(this.day!==day){
-   this.day=day;this.wait=0;this.stage=served?'done':'arriving';
+   this.day=day;this.wait=0;this.orderWait=0;this.stage=served?'done':'arriving';
    const guest=this.scene.restaurantOrders.order.customer;
    this.npc.texture=({'Tamu Dita':'nia','Tamu Riko':'tani','Tamu Maya':'sari','Tamu Beni':'rani'})[guest]||'nia';
    this.npc.label?.setText(guest.toUpperCase());
@@ -50,6 +50,10 @@ export class RestaurantCustomer {
   if(this.stage==='done')return;
   // Serving while the guest is walking never teleports them through furniture.
   if(this.stage==='arriving'&&this.npc.finished)this.setStage('ordering',null,'🧾 Memesan makanan');
+  if(this.stage==='ordering'&&!served){
+   this.orderWait+=dt;
+   this.npc.activity=this.orderWait>18?'⌛ Menunggu hidangan sehat':'🧾 Menunggu pesanan';
+  }
   if(this.stage==='ordering'&&served){this.wait=5;this.setStage('eating',null,'😋 Menikmati makanan');this.meal.setVisible(true);}
   // A seated guest must stay in their seat while eating and paying.
   // Do not advance the walking route while seated.
