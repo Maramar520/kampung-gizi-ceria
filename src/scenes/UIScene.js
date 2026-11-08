@@ -136,6 +136,45 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    }
   })));
  }
+ plazaMenu(){
+  const active=this.world.festival.active;
+  this.show('🌳 Alun-Alun Kampung',active?
+   'Festival Kampung Sehat sedang berlangsung! Warga berkumpul di dekat air mancur dan panggung kegiatan.':
+   'Selamat datang di alun-alun! Ada air mancur, bangku taman dan tempat warga berkumpul. Festival diadakan setiap empat hari permainan.',[
+    {label:active?'🎪 Ikut Festival Kampung Sehat':'📅 Jadwal festival',fn:()=>this.festivalGuide()},
+    {label:'🤸 Senam dan kegiatan warga',fn:()=>this.plazaActivity()},
+    {label:'Tutup',fn:()=>this.close()}
+   ]);
+ }
+ plazaActivity(){
+  const day=this.state.data.day;
+  this.state.data.plazaActivities??={days:[]};
+  const days=this.state.data.plazaActivities.days;
+  if(days.includes(day))return this.show('🌳 Aktivitas Warga','Kamu sudah ikut kegiatan hari ini. Sampai besok!',[
+   {label:'Kembali',fn:()=>this.plazaMenu()}]);
+  this.show('🤸 Aktivitas Warga','Ikuti gerakan ringan bersama warga, lalu istirahat dan minum air putih.',[
+   {label:'✨ Ikut kegiatan (+8 KC, +1 ⭐)',fn:()=>{
+    days.push(day);this.state.data.plazaActivities.days=days.slice(-120);
+    this.state.data.coins+=8;this.state.data.learning??={stars:0};
+    this.state.data.learning.stars=(this.state.data.learning.stars||0)+1;
+    this.state.save();this.refresh();this.plazaMenu();
+   }},{label:'Kembali',fn:()=>this.plazaMenu()}
+  ]);
+ }
+ townHallMenu(){
+  this.show('🏛️ Balai Kota','Selamat datang di Balai Kota! Ruang pelayanan, meja kerja, dan papan pengumuman terlihat langsung di peta.',[
+   {label:'📋 Pengumuman Festival',fn:()=>this.festivalGuide()},
+   {label:'🌳 Kegiatan Alun-Alun',fn:()=>this.plazaMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ]);
+ }
+ mayorMenu(){
+  this.show('🏛️ Kepala Desa','Halo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
+   {label:'📅 Lihat festival',fn:()=>this.festivalGuide()},
+   {label:'🌳 Kegiatan warga',fn:()=>this.plazaMenu()},
+   {label:'Sampai jumpa',fn:()=>this.close()}
+  ]);
+ }
  familyHomeMenu(){
   const rain=this.world.clock.weather==='Hujan';
   this.show('🏡 Rumah Pak Tani & Bu Sari',
@@ -563,6 +602,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const id=this.world.getNearest(),s=this.state.data;
   if(id)this.world.playInteraction(id);
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
+  if(id==='plaza')return this.plazaMenu();
+  if(id==='townHall')return this.townHallMenu();
+  if(id==='mayor')return this.mayorMenu();
   if(id==='market')return this.market();
   if(id==='store')return this.familyHomeMenu();
   if(id==='village')return this.villageMenu();
