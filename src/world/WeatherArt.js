@@ -15,6 +15,7 @@ export class WeatherArt{
   this.details=scene.add.graphics().setDepth(1160);
   this.last=-Infinity;this.lastSignature='';
   this.previousPhase=this.timeWeather.phase;
+  this.phaseFade=null;
   this.dawnStart=null;
   this.dawnVeil=scene.add.graphics().setDepth(1190);
   this.update(0,true);
@@ -26,7 +27,10 @@ export class WeatherArt{
   const signature=phase+'-'+weather;
   const g=this.atmosphere;
   if(force||this.lastSignature!==signature){
-   if(this.previousPhase===3&&phase===0)this.dawnStart=ms;
+   if(this.previousPhase!==phase){
+    if(this.previousPhase===3&&phase===0)this.dawnStart=ms;
+    else this.phaseFade={from:this.previousPhase,start:ms};
+   }
    this.previousPhase=phase;
    this.lastSignature=signature;g.clear();
    const tint=TINTS[phase]||TINTS[0];
@@ -35,6 +39,14 @@ export class WeatherArt{
    if(weather==='Hujan')g.fillStyle(0x42668e,.19).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
   }
   const veil=this.dawnVeil;veil.clear();
+  if(this.phaseFade){
+   const t=Math.min(1,Math.max(0,(ms-this.phaseFade.start)/1800));
+   if(t>=1)this.phaseFade=null;
+   else{
+    const old=TINTS[this.phaseFade.from]||TINTS[0];
+    veil.fillStyle(old.color,old.alpha*(1-t)).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+   }
+  }
   if(this.dawnStart!==null){
    const progress=Math.min(1,Math.max(0,(ms-this.dawnStart)/2500));
    if(progress<1){
