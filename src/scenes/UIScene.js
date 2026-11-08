@@ -15,7 +15,7 @@ export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
  create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.clinic=new HealthClinicSystem(this.state);this.school=new SchoolSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});const destination=$('mapDestination');for(const place of MAP_PLACES){const option=document.createElement('option');option.value=place.id;option.textContent=place.label;destination.appendChild(option);}
 const navigate=place=>{if(!place)return;destination.value=place.id;this.world.highlightPlace?.(place.id);const cam=this.world.cameras.main;cam.stopFollow();cam.centerOn(place.x,place.y);this.note('📍 '+place.label+' ditandai di peta. Bergerak untuk melanjutkan perjalanan.');this.time.delayedCall(2400,()=>cam.startFollow(this.world.player.sprite,true,.12,.12));};
-this.miniMapCleanup=createVillageMiniMap($('villageMiniMap'),this.world,navigate);$('mapNavigate').onclick=()=>navigate(MAP_PLACES.find(p=>p.id===destination.value));this.events.once('shutdown',()=>this.miniMapCleanup?.());this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();$('calendarButton').onclick=()=>this.calendarMenu();$('calendarHud').onclick=()=>this.calendarMenu();$('timeSpeedButton').onclick=()=>{const speeds=[1,2,4];const current=this.world.clock.speed;this.world.clock.setSpeed(speeds[(speeds.indexOf(current)+1)%speeds.length]);this.refresh();this.note('Kecepatan waktu '+this.world.clock.speed+'×');};
+this.miniMapCleanup=createVillageMiniMap($('villageMiniMap'),this.world,navigate);$('mapNavigate').onclick=()=>navigate(MAP_PLACES.find(p=>p.id===destination.value));this.events.once('shutdown',()=>this.miniMapCleanup?.());this.installCharacterEditor();this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();$('calendarButton').onclick=()=>this.calendarMenu();$('calendarHud').onclick=()=>this.calendarMenu();$('timeSpeedButton').onclick=()=>{const speeds=[1,2,4];const current=this.world.clock.speed;this.world.clock.setSpeed(speeds[(speeds.indexOf(current)+1)%speeds.length]);this.refresh();this.note('Kecepatan waktu '+this.world.clock.speed+'×');};
 $('townOverview').onclick=()=>{const cam=this.world.cameras.main;const overview=cam.zoom>=.95;if(overview){cam.stopFollow();cam.setZoom(.68);cam.centerOn(670,300);}else{cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);} $('townOverview').textContent=overview?'🔎 Kembali ke Karakter':'🗺️ Lihat Seluruh Peta';this.note(overview?'Mode peta penuh aktif. Tekan kembali untuk mengikuti karakter.':'Kamera kembali mengikuti karakter.');};
 const travel=(x,y,label)=>{this.close();this.world.keysHeld.clear();this.state.data.x=x;this.state.data.y=y;this.world.player.sprite.setPosition(x,y);const cam=this.world.cameras.main;cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);cam.centerOn(x,y);$('townOverview').textContent='🗺️ Lihat Seluruh Peta';this.refresh();this.note(label);};
 $('goEast').onclick=()=>travel(1155,281,'🏛️ Balai Kota di utara, alun-alun di selatan. Ikuti jalan!');
@@ -241,6 +241,53 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     this.state.save();this.refresh();this.plazaMenu();
    }},{label:'Kembali',fn:()=>this.plazaMenu()}
   ]);
+ }
+ installCharacterEditor(){
+  const button=document.createElement('button');
+  button.textContent='👕 Kustomisasi Karakter';
+  button.id='characterCustomizeButton';
+  button.style.cssText='margin:6px;min-height:42px';
+  const parent=document.querySelector('.bottom')||document.querySelector('.shell')||document.body;
+  parent.appendChild(button);
+  const overlay=document.createElement('div');
+  overlay.id='characterCustomizeOverlay';
+  overlay.style.cssText='display:none;position:fixed;inset:0;background:#243f31bd;z-index:9999;align-items:center;justify-content:center;padding:15px';
+  overlay.innerHTML=`<form id="characterCustomizeForm" style="background:#fff7e8;border:4px solid #b88561;border-radius:15px;padding:20px;width:min(420px,100%);display:grid;gap:12px;color:#415644">
+   <h2 style="margin:0">🧑 Kustomisasi Karakter</h2>
+   <label>Nama karakter <input name="name" maxlength="20" required style="width:100%;padding:9px;border-radius:7px;border:1px solid #aaa"></label>
+   <label>Jenis kelamin <select name="gender" style="width:100%;padding:9px"><option value="laki-laki">Laki-laki</option><option value="perempuan">Perempuan</option></select></label>
+   <label>Warna baju <select name="shirt" style="width:100%;padding:9px"><option value="biru">Biru</option><option value="merah">Merah muda</option><option value="hijau">Hijau</option><option value="ungu">Ungu</option><option value="kuning">Kuning</option></select></label>
+   <p style="margin:0;font-size:12px">Perubahan karakter tersimpan otomatis tanpa menghapus progres permainan.</p>
+   <div style="display:flex;gap:8px"><button type="submit">💾 Simpan</button><button type="button" id="characterCustomizeCancel">Batal</button></div>
+  </form>`;
+  document.body.appendChild(overlay);
+  const form=overlay.querySelector('form');
+  const open=()=>{
+   const c=this.state.data.character||{};
+   form.elements.name.value=c.name||'Pemain';
+   form.elements.gender.value=c.gender||'laki-laki';
+   form.elements.shirt.value=c.shirt||'biru';
+   overlay.style.display='flex';this.game.dialogOpen=true;this.world.keysHeld.clear();
+  };
+  const close=()=>{overlay.style.display='none';this.game.dialogOpen=false;this.world.keysHeld.clear();};
+  button.onclick=open;
+  overlay.querySelector('#characterCustomizeCancel').onclick=close;
+  form.onsubmit=e=>{
+   e.preventDefault();
+   const name=form.elements.name.value.trim().slice(0,20);
+   if(!name)return;
+   this.state.data.character={name,gender:form.elements.gender.value,shirt:form.elements.shirt.value};
+   this.state.save();
+   // Regenerasi tekstur pemain dan aksi tanpa mengubah tekstur NPC.
+   for(const key of this.game.textures.list?Object.keys(this.game.textures.list):[]){
+    if(key.startsWith('player-'))this.game.textures.remove(key);
+   }
+   this.world.createPlayerTextures?.();
+   this.world.player.lastFrame=-1;this.world.player.lastFacing=null;
+   this.world.player.sprite.setTexture('player-down-0');
+   close();this.note('👕 Karakter '+name+' berhasil diperbarui!');
+  };
+  this.events.once('shutdown',()=>{button.remove();overlay.remove();});
  }
  schoolMenu(){
   const d=this.school.data;
