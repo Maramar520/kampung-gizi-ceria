@@ -59,6 +59,7 @@ export class WorldScene extends Phaser.Scene {
   this.villageWeatherDetails=new VillageWeatherDetails(this);
   this.townArt=new TownExpansionArt(this,this.festival);
   this.southCoastArt=new SouthCoastArt(this);
+  this.eastHomesArt=new EastHomesArt(this);
   this.marineWildlifeArt=new MarineWildlifeArt(this);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
@@ -111,7 +112,7 @@ export class WorldScene extends Phaser.Scene {
    if(key)this.keysHeld.delete(key);
   });
   window.addEventListener('blur',()=>this.keysHeld.clear());
-  this.cameras.main.setBounds(0,0,1340,850);
+  this.cameras.main.setBounds(0,0,1720,850);
   this.cameras.main.startFollow(this.player.sprite,true,.12,.12);
   this.cameras.main.setZoom(1);
   this.game.events.emit('world-ready',this);
