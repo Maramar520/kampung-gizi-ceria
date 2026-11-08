@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kampung Gizi Ceria — Phaser v1.16</title>
+<title>Kampung Gizi Ceria — Cozy v1.50</title>
 <style>
 .v127-map{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:9px;padding:8px;margin:8px 0;border:2px solid #b7cda8;border-radius:12px;background:#fff9e9}.v127-map strong,.v127-map small{display:block}.v127-map small{font-size:11px;color:#607d64}.v127-map canvas{width:min(344px,100%);height:auto;touch-action:manipulation;border:2px solid #89aa8c;border-radius:7px;image-rendering:pixelated}.v127-map select{min-height:38px;max-width:200px;padding:6px;border-radius:8px}@media(max-width:700px){.v127-map{display:grid;grid-template-columns:1fr 1fr}.v127-map>div,.v127-map canvas{grid-column:1/-1}.v127-map canvas{width:100%;max-height:165px}}
 
@@ -291,10 +291,55 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
+
+/* === v1.50 Harvest-style clean game interface === */
+body{background:#dce9d3}
+.shell{max-width:1180px}
+header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:none}
+.hud{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-bottom:7px}
+.hud>.chip{flex:0 1 auto;min-width:90px;padding:5px 9px;font-size:12px;border-radius:10px}
+.hud>.chip small{font-size:10px}
+.hud>.chip:nth-child(4),.hud>.chip:nth-child(5),.hud>.chip:nth-child(6){display:none}
+.hud>.chip.weather-chip{min-width:135px}
+.cozy-toolbar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin:9px auto;max-width:660px}
+.cozy-toolbar button{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;min-height:56px;background:#fff4d9;color:#557153;border:2px solid #bca67d;border-bottom:4px solid #a58b63;border-radius:13px;font-size:13px;padding:5px}
+.cozy-toolbar button span{font-size:21px}
+.cozy-toolbar button:hover{background:#f2e6c5}
+.cozy-drawer{display:none;position:relative;max-width:850px;margin:8px auto;padding:13px;background:#fff7e8;border:3px solid #b69b70;border-radius:15px;box-shadow:0 7px 20px #2b493322}
+.cozy-drawer.is-open{display:block}
+.cozy-drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cozy-drawer-head h2{font-size:17px;margin:0}
+.cozy-drawer-head button{min-height:40px}
+.cozy-drawer .notebook-shortcuts,.cozy-drawer .place-shortcuts{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px;margin:7px 0}
+.cozy-drawer .notebook-shortcuts button,.cozy-drawer .place-shortcuts button{display:inline-flex;min-height:43px;padding:8px 12px;font-size:13px}
+.cozy-drawer .v127-map{margin:8px 0}
+.cozy-drawer .bottom{display:flex;flex-wrap:wrap}
+.cozy-drawer .bottom .quest{flex-basis:100%}
+.cozy-drawer #gameZoomControls{margin:8px 0!important}
+.cozy-drawer .interaction-strip{margin:8px 0}
+.cozy-drawer .notebook-shortcuts button small{display:none}
+.gamewrap{box-shadow:0 10px 28px #375b3a30}
+.controls{max-width:480px;margin:8px auto}
+@media(max-width:700px){
+ .shell{padding:5px}
+ .hud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .hud>.chip{min-width:0;padding:4px;font-size:11px}
+ .hud>.chip.weather-chip{min-width:0}
+ .cozy-toolbar{grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;position:relative;z-index:5}
+ .cozy-toolbar button{font-size:10px;min-height:51px;padding:3px 1px;border-radius:9px}
+ .cozy-toolbar button span{font-size:18px}
+ .cozy-drawer{padding:9px}
+ .cozy-drawer .v127-map{grid-template-columns:1fr 1fr}
+ .cozy-drawer .v127-map>div,.cozy-drawer .v127-map canvas{grid-column:1/-1}
+ .controls{position:sticky;bottom:0;z-index:40;margin:7px -5px 0;padding:7px 12px max(7px,env(safe-area-inset-bottom));background:#fff8e9f2;border-top:2px solid #b7cda8;box-shadow:0 -5px 20px #294e3230;justify-content:space-between}
+ .dpad{grid-template-columns:repeat(3,min(14vw,54px));grid-template-rows:repeat(2,48px)}
+ #action{min-height:95px;min-width:110px}
+}
+
 </style>
 </head>
 <body>
-<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.16</small></h1><p>Cozy pixel art v1.16 · Balai Kota & Festival</p></header>
+<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.16</small></h1><p>Game edukasi kampung yang nyaman dimainkan</p></header>
 <main class="shell">
 <section class="hud">
 <div class="chip">🪙 <span id="coins"></span><small>Koin</small></div>
@@ -356,14 +401,14 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 <button id="action">✨ AKSI / E</button></div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script type="module" src="./src/main.js?v=1.50-responsive"></script>
+<script type="module" src="./src/main.js?v=1.50-cozy-menu"></script>
 <script>
 // v1.13 release diagnostic: visible version, without modifying saved progress.
 document.documentElement.dataset.build='1.29';
 window.addEventListener('DOMContentLoaded',()=>{
  const marker=document.createElement('small');
  marker.id='releaseVersion';
- marker.textContent='Versi terpasang: v1.50 · UI Nyaman';
+ marker.textContent='Versi terpasang: v1.50 · Cozy Menu';
  marker.style.cssText='display:block;text-align:center;color:#476c51;font-weight:700;padding:3px 8px';
  const header=document.querySelector('header');
  if(header)header.appendChild(marker);
@@ -394,6 +439,76 @@ window.addEventListener('DOMContentLoaded',()=>{
  document.getElementById('calendarClose').addEventListener('click',close);
  overlay.addEventListener('click',event=>{if(event.target===overlay)close();});
  window.addEventListener('keydown',event=>{if(event.key==='Escape'&&!overlay.classList.contains('hidden')){event.stopImmediatePropagation();close();}},true);
+});
+</script>
+
+<script>
+/* Menu ala farming game: seluruh fitur lama tetap ada, hanya dikelompokkan. */
+window.addEventListener('DOMContentLoaded',()=>{
+ const shell=document.querySelector('.shell');
+ const game=document.querySelector('.gamewrap');
+ const controls=document.querySelector('.controls');
+ if(!shell||!game)return;
+ const bar=document.createElement('nav');
+ bar.className='cozy-toolbar';bar.setAttribute('aria-label','Menu utama permainan');
+ const drawer=document.createElement('section');drawer.className='cozy-drawer';drawer.id='cozyDrawer';
+ drawer.setAttribute('aria-label','Panel menu permainan');
+ const heading=document.createElement('div');heading.className='cozy-drawer-head';
+ const title=document.createElement('h2');title.textContent='Menu';
+ const close=document.createElement('button');close.type='button';close.textContent='✕ Tutup';close.setAttribute('aria-label','Tutup menu');
+ heading.append(title,close);drawer.append(heading);
+ const menu=document.createElement('div');menu.id='cozyMenuContent';drawer.append(menu);
+ const sections={
+  peta:['.place-shortcuts','.v127-map'],
+  menu:['.notebook-shortcuts','.bottom','.interaction-strip','#gameZoomControls']
+ };
+ const parking=document.createElement('div');parking.hidden=true;parking.id='cozyParking';shell.append(parking);
+ const moved={};
+ for(const [key,selectors] of Object.entries(sections)){
+  moved[key]=selectors.map(selector=>document.querySelector(selector)).filter(Boolean);
+ }
+ // Tombol yang dibuat oleh scene setelah DOM siap (kustomisasi, zoom).
+ const extra=()=>[document.querySelector('#characterCustomizeButton'),document.querySelector('#gameZoomControls')].filter(Boolean);
+ const place=(key)=>{
+  menu.replaceChildren();
+  const nodes=key==='menu'?[...moved.menu,...extra()]:moved[key]||[];
+  for(const node of [...new Set(nodes)])menu.append(node);
+ };
+ const hide=()=>{drawer.classList.remove('is-open');bar.querySelectorAll('button').forEach(b=>b.setAttribute('aria-expanded','false'));};
+ const show=(key,label)=>{
+  if(drawer.classList.contains('is-open')&&drawer.dataset.section===key){hide();return;}
+  drawer.dataset.section=key;title.textContent=label;place(key);drawer.classList.add('is-open');
+  bar.querySelectorAll('button').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.section===key)));
+ };
+ const entries=[
+  ['🎒','Tas',()=>document.querySelector('[data-open-notebook="inventory"]')?.click()],
+  ['📖','Resep',()=>document.querySelector('[data-open-notebook="recipes"]')?.click()],
+  ['🗺️','Peta',()=>show('peta','🗺️ Peta Kampung')],
+  ['📋','Misi',()=>document.querySelector('[data-open-notebook="journal"]')?.click()],
+  ['🤝','Teman',()=>document.querySelector('#friendsButton')?.click()],
+  ['⚙️','Menu',()=>show('menu','⚙️ Menu & Pengaturan')]
+ ];
+ for(const [emoji,label,action] of entries){
+  const button=document.createElement('button');button.type='button';
+  button.innerHTML='<span aria-hidden="true">'+emoji+'</span>'+label;
+  button.setAttribute('aria-label','Buka '+label);
+  if(label==='Peta')button.dataset.section='peta';
+  if(label==='Menu')button.dataset.section='menu';
+  button.setAttribute('aria-expanded','false');button.onclick=action;bar.append(button);
+ }
+ game.insertAdjacentElement('afterend',bar);bar.insertAdjacentElement('afterend',drawer);
+ // Elemen navigasi dipindah ke panel, bukan dihapus.
+ for(const node of [...moved.peta,...moved.menu])parking.append(node);
+ close.onclick=hide;
+ window.addEventListener('keydown',e=>{if(e.key==='Escape'&&drawer.classList.contains('is-open'))hide();});
+ const observer=new MutationObserver(()=>{
+  if(drawer.classList.contains('is-open')&&drawer.dataset.section==='menu')place('menu');
+  else for(const node of extra())if(!menu.contains(node)&&!parking.contains(node))parking.append(node);
+ });
+ // Pantau hanya elemen yang ditambahkan pada shell, hindari rekursi pada panel.
+ observer.observe(shell,{childList:true});
+ // Kontrol gerak tetap berada di bawah permainan pada HP dan laptop.
+ if(controls)bar.insertAdjacentElement('afterend',controls);
 });
 </script>
 </body>
