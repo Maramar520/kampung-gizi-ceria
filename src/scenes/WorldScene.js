@@ -22,7 +22,7 @@ import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js?v=guest
 import {RestaurantCustomer} from '../systems/RestaurantCustomer.js?v=v120-service';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
-import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-v118';
+import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-road-connected-20261108';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
 export class WorldScene extends Phaser.Scene {
