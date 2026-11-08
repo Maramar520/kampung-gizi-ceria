@@ -89,6 +89,13 @@ export class EastHomesArt{
    rect(gardens,x+75,241,23,6,0xa67a52);
    flower(gardens,x+12,239,color);
    flower(gardens,x+87,239,0xf4d28d);
+   // Lampu dinding hangat di setiap rumah, tidak menutup jalur pintu.
+   const light=scene.add.graphics().setDepth(540);
+   const lx=x+87,ly=y+24;
+   light.fillStyle(0xffe8a2,.12).fillCircle(lx,ly,24);
+   light.fillStyle(0xffe8a2,.23).fillCircle(lx,ly,12);
+   light.fillStyle(0x74543e).fillRect(lx-6,ly-7,12,4);
+   light.fillStyle(0xffeab0).fillRoundedRect(lx-5,ly-4,10,10,3);
 
   }
   // PUSKESMAS: memanfaatkan lahan kosong di tenggara rumah warga.
@@ -147,6 +154,14 @@ export class EastHomesArt{
   rect(path,1510,342,40,4,0xe4c28a);
   // Papan nama di samping pintu, bukan tepat di jalur karakter.
 
+  // Lampu Puskesmas di dua sisi pintu masuk.
+  const clinicLights=scene.add.graphics().setDepth(540);
+  for(const [lx,ly] of [[1450,367],[1609,367]]){
+   clinicLights.fillStyle(0xffe8a2,.13).fillCircle(lx,ly,26);
+   clinicLights.fillStyle(0xffe8a2,.25).fillCircle(lx,ly,13);
+   clinicLights.fillStyle(0x6c7770).fillRect(lx-7,ly-8,14,5);
+   clinicLights.fillStyle(0xfff0b9).fillRoundedRect(lx-5,ly-4,10,11,3);
+  }
   // Pantai timur tetap mengikuti sambungan pantai versi sebelumnya.
   rect(path,1340,600,380,112,0xf3dba5);
   rect(path,1340,710,380,140,0x65bfd0);
