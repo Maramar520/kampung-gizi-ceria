@@ -502,6 +502,77 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.show('🐔 Kandang Ayam','Hari '+status.day+' · '+msg+' Telur dapat digunakan untuk memasak.',actions,
    '<div class="farm-preview">🐔 🐔 🥚</div>');
  }
+ seaFishingMenu(){
+  const coast=this.world.coast,st=coast.status;
+  if(!st.fishReady)return this.show('🎣 Dermaga Laut','Kamu sudah memancing hari ini. Lihat koleksi ikan atau kembali besok.',[
+   {label:'🐟 Koleksi ikan laut',fn:()=>this.seaCollectionMenu()},
+   {label:'Tutup',fn:()=>this.close()}]);
+  this.show('🎣 Memancing di Laut','Lempar kail tiga kali untuk mendapat ikan laut. Jatah ini terpisah dari Kolam Ikan.',[
+   {label:'🎣 Lempar kail ('+st.casts+'/3)',fn:()=>{
+    const result=coast.cast();this.refresh();this.world.playInteraction('fish');
+    if(result.success)this.show('🐟 Tangkapan Laut!',result.fish.emoji+' '+result.fish.name+' · '+result.fish.rarity+'. +1 ikan untuk memasak dan koleksi laut.',[
+     {label:'📖 Lihat koleksi',fn:()=>this.seaCollectionMenu()},
+     {label:'Selesai',fn:()=>this.close()}]);
+    else this.seaFishingMenu();
+   }},
+   {label:'📖 Koleksi ikan',fn:()=>this.seaCollectionMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ],'<div class="farm-preview">🌊 🎣 🐟 🌊</div>');
+ }
+ seaCollectionMenu(){
+  const list=this.world.coast.status.collection;
+  this.show('📖 Koleksi Ikan Laut',list.map(f=>f.emoji+' '+f.name+' · '+f.rarity+' · tertangkap '+f.count+' kali').join('\\n'),[
+   {label:'Kembali ke dermaga',fn:()=>this.seaFishingMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ]);
+ }
+ beachMenu(){
+  const coast=this.world.coast,st=coast.status;
+  this.show('🏖️ Pantai Selatan','Kumpulkan kerang, bersihkan pantai, atau berlayar dari dermaga. Festival memancing setiap hari ke-7.',[
+   {label:'🐚 Cari kerang'+(st.shellReady?'':' ✓'),fn:()=>{
+    if(coast.shell()){this.refresh();this.note('🐚 +1 kerang masuk ke tas!');}else this.note('Kerang hari ini sudah dikumpulkan.');
+    this.beachMenu();
+   }},
+   {label:'🧹 Bersihkan sampah pantai'+(st.cleanReady?'':' ✓'),fn:()=>{
+    if(coast.clean()){this.refresh();this.note('Pantai bersih! +12 Koin Ceria.');}else this.note('Pantai sudah bersih hari ini.');
+    this.beachMenu();
+   }},
+   {label:'🎪 Festival Memancing',fn:()=>this.beachFestivalMenu()},
+   {label:'📖 Koleksi ikan',fn:()=>this.seaCollectionMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ],'<div class="farm-preview">🌴 🐚 🏖️ 🌊</div>');
+ }
+ beachFestivalMenu(){
+  const coast=this.world.coast,st=coast.status;
+  this.show('🎪 Festival Memancing Pantai',st.festivalToday?
+   'Festival berlangsung hari ini! Tangkap setidaknya satu ikan laut untuk mendapat hadiah 25 Koin Ceria.':
+   'Festival diadakan setiap hari ke-7 permainan. Festival berikutnya hari '+(this.state.data.day+(7-this.state.data.day%7))+'.',[
+   ...(st.festivalToday?[{label:'🎁 Ambil hadiah festival'+(st.festivalClaimed?' ✓':''),fn:()=>{
+    if(coast.claimFestival()){this.refresh();this.note('Festival selesai! +25 Koin Ceria.');}
+    else this.note(st.festivalClaimed?'Hadiah hari ini sudah diambil.':'Tangkap ikan laut terlebih dahulu.');
+    this.beachFestivalMenu();
+   }}]:[]),
+   {label:'Kembali ke pantai',fn:()=>this.beachMenu()}
+  ]);
+ }
+ boatMenu(){
+  this.show('⛵ Perahu Dermaga','Naik perahu ke Pulau Kecil? Perjalanan gratis dan tidak menghapus progres.',[
+   {label:'🏝️ Berlayar ke Pulau Kecil',fn:()=>{
+    this.world.coast.visitIsland();this.close();this.state.data.x=1100;this.state.data.y=770;
+    this.world.player.sprite.setPosition(1100,770);this.state.save();this.refresh();this.note('🏝️ Selamat datang di Pulau Kecil!');
+   }},
+   {label:'Batal',fn:()=>this.close()}
+  ]);
+ }
+ islandMenu(){
+  this.show('🏝️ Pulau Kecil','Pulau tropis yang tenang. Perahu siap membawamu kembali ke dermaga.',[
+   {label:'⛵ Kembali ke dermaga',fn:()=>{
+    this.close();this.state.data.x=761;this.state.data.y=697;
+    this.world.player.sprite.setPosition(761,697);this.state.save();this.refresh();this.note('Kembali ke dermaga.');
+   }},
+   {label:'Menjelajah pulau',fn:()=>this.close()}
+  ]);
+ }
  pondMenu(){
   const status=this.dailyLife.status;
   if(!status.fishReady)return this.show('🎣 Kolam Ikan','Kamu sudah mendapatkan ikan hari ini. Datang lagi setelah tidur di rumah.',[{label:'Tutup',fn:()=>this.close()}],'<div class="farm-preview">🌊 🐟 🌊</div>');
@@ -650,6 +721,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='coop')return this.coopMenu();
   if(id==='pond')return this.pondMenu();
   if(id==='sea-fishing')return this.seaFishingMenu();
+  if(id==='boat')return this.boatMenu();
+  if(id==='island')return this.islandMenu();
   if(id==='beach')return this.beachMenu();
   if(id==='tani'||id==='nia')return this.friendMenu(id);
   if(id==='chef')return this.chefMenu();
