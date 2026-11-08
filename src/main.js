@@ -1,5 +1,5 @@
 import {GameState} from './systems/GameState.js';
-import {WorldScene} from './scenes/WorldScene.js?v=v186-night-glow';
+import {WorldScene} from './scenes/WorldScene.js?v=v187-bright-points';
 import {UIScene} from './scenes/UIScene.js?v=v150-responsive';
 // Sesuaikan rasio kanvas dengan layar, bukan menyisakan bar biru di samping.
 // Tinggi dunia tetap 600 unit agar ukuran karakter dan kontrol tetap konsisten.
