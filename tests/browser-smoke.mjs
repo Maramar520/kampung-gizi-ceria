@@ -40,6 +40,20 @@ async function testDesktop(browser){
  const context=await browser.newContext({viewport:{width:1280,height:850},deviceScaleFactor:1});
  const page=await context.newPage();
  await waitGame(page);
+ // Eastern district is reachable by the camera, while original save positions remain valid.
+ await moveTo(page,1155,395);
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').cameras.main._bounds.width),1340);
+ await page.keyboard.press('e');
+ assert.match(await page.locator('#dialogTitle').textContent(),/Alun-Alun/);
+ await page.getByRole('button',{name:/Senam dan kegiatan warga/}).click();
+ await page.getByRole('button',{name:/Ikut kegiatan/}).click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.plazaActivities.days.includes(1)),true);
+ await close(page);
+ await moveTo(page,1204,180);
+ await page.keyboard.press('e');
+ assert.match(await page.locator('#dialogTitle').textContent(),/Kepala Desa|Balai Kota/);
+ await close(page);
+ await moveTo(page,446,291);
  const gameData=()=>page.evaluate(()=>({...window.__kampungQA.state.data}));
  const dimensions=await page.evaluate(()=>({canvas:document.querySelector('#game canvas')?.getBoundingClientRect().toJSON(),viewport:innerWidth}));
  assert.ok(dimensions.canvas.width<=dimensions.viewport);
@@ -389,6 +403,11 @@ async function testMobile(browser){
  const context=await browser.newContext({...devices['Pixel 7'],viewport:{width:393,height:852}});
  const page=await context.newPage();
  await waitGame(page);
+ await moveTo(page,1155,395);
+ await page.locator('#action').tap();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Alun-Alun/);
+ await page.locator('#close').tap();
+ await moveTo(page,446,291);
  const dpad=await page.locator('[data-dir="up"]').boundingBox();
  const action=await page.locator('#action').boundingBox();
  assert.ok(dpad.width>=44&&dpad.height>=44,'D-pad touch target too small');
