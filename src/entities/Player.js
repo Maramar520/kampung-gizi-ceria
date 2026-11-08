@@ -1,4 +1,4 @@
-import {canStand} from '../world/WorldGeometry.js';
+import {canStand} from '../world/WorldGeometry.js?v=beach-access-20261108';
 export class Player{
  constructor(scene,state,obstacles){
   this.scene=scene;this.state=state;this.obstacles=obstacles;
