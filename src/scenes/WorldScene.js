@@ -38,6 +38,7 @@ import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
  create(){
+  try {
   this.createPlayerTextures=()=>createTextures(this,true);
   createTextures(this);
   const obstacles=buildWorld(this);
@@ -170,6 +171,11 @@ export class WorldScene extends Phaser.Scene {
   });
   this.game.events.emit('world-ready',this);
   this.scene.launch('UIScene');
+  } catch(error) {
+   console.error('Kampung Gizi Ceria: world create failed',error);
+   window.dispatchEvent(new ErrorEvent('error',{message:'WorldScene: '+(error?.stack||error),error}));
+   throw error;
+  }
  }
  playInteraction(kind){
   if(Object.hasOwn(ACTION_DURATION,kind))return this.activity.play(kind);
