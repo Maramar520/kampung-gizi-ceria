@@ -7,7 +7,8 @@ import {GardenArt} from '../world/GardenArt.js';
 import {FarmArt} from '../world/FarmArt.js';
 import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
-import {CoastSystem} from '../systems/CoastSystem.js?v=v119-life';
+import {CoastSystem} from '../systems/CoastSystem.js?v=v121-expedition';
+import {CoastExpeditionSystem} from '../systems/CoastExpeditionSystem.js';
 import {FriendEvents} from '../systems/FriendEvents.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js?v=residents-only-20261108';
@@ -35,6 +36,7 @@ export class WorldScene extends Phaser.Scene {
   this.gardenArt=new GardenArt(this,this.garden);
   this.dailyLife=new DailyLifeSystem(this.game.state);
   this.coast=new CoastSystem(this.game.state);
+  this.coastExpedition=new CoastExpeditionSystem(this.game.state,this.coast);
   this.social=new SocialSystem(this.game.state);
   this.friendEvents=new FriendEvents(this.game.state);
   this.missions=new MissionSystem(this.game.state);
