@@ -1,6 +1,6 @@
 // Peta v1.3: denah SVG asli (360×270) dipetakan ke world 960×600.
 // Tiga kolom / dua baris dipisahkan jalan x≈448, x≈760, dan y≈282.
-export const WORLD_WIDTH=1720, WORLD_HEIGHT=850;
+export const WORLD_WIDTH=1720, WORLD_HEIGHT=1200;
 export const SPAWN={x:446,y:291};
 export const LAYOUT=Object.freeze({
  home:{x:45,y:49,w:197,h:190},
