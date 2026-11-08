@@ -8,6 +8,7 @@ import {FarmArt} from '../world/FarmArt.js';
 import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
 import {CoastSystem} from '../systems/CoastSystem.js';
+import {FriendEvents} from '../systems/FriendEvents.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js?v=riko-friend-20261108';
 import {MissionSystem} from '../systems/MissionSystem.js';
@@ -35,6 +36,7 @@ export class WorldScene extends Phaser.Scene {
   this.dailyLife=new DailyLifeSystem(this.game.state);
   this.coast=new CoastSystem(this.game.state);
   this.social=new SocialSystem(this.game.state);
+  this.friendEvents=new FriendEvents(this.game.state);
   this.missions=new MissionSystem(this.game.state);
   this.decor=new HomeDecorSystem(this.game.state);
   this.restaurantOrders=new RestaurantOrderSystem(this.game.state);
@@ -74,6 +76,9 @@ export class WorldScene extends Phaser.Scene {
    new NPC(this,{x:430,y:652,name:'PENGUNJUNG PANTAI',texture:'nia',stops:[{x:430,y:652},{x:530,y:652},{x:560,y:684},{x:430,y:652}]}),
    new NPC(this,{x:955,y:662,name:'PEJALAN PANTAI',texture:'tani',stops:[{x:955,y:662},{x:1000,y:682},{x:935,y:677},{x:955,y:662}]})
   ];
+  this.fisherman=new NPC(this,{x:1120,y:778,name:'NELAYAN BAYU',texture:'tani',stops:[
+   {x:1120,y:778,activity:'🎣 Memeriksa jala',pause:2},{x:1080,y:775},{x:1060,y:786,activity:'🐚 Mencari kerang',pause:2},{x:1120,y:778}
+  ]});
   this.zones=INTERACTIONS;
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
@@ -274,6 +279,8 @@ export class WorldScene extends Phaser.Scene {
   const riko=rikoHere?{id:'riko',x:this.restaurantCustomer.npc.x,y:this.restaurantCustomer.npc.y,r:31,label:'Tamu Riko'}:null;
   const nearby=riko&&Math.hypot(d.x-riko.x,d.y-riko.y)<riko.r;
   if(nearby)return 'riko';
+  const bayuNear=Math.hypot(d.x-this.fisherman.x,d.y-this.fisherman.y)<34;
+  if(bayuNear)return 'bayu';
   return nearestInteraction(d,this.zones.map(z=>{
    const npc=this.npcById(z.id);
    return npc?{...z,x:npc.x,y:npc.y}:z;
@@ -308,8 +315,21 @@ export class WorldScene extends Phaser.Scene {
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
    this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);this.wargaA.update(dt);this.wargaB.update(dt);this.restaurantCustomer.update(dt);
+   // Pengunjung benar-benar berjalan ke area berteduh, tidak hilang mendadak.
    const beachOpen=this.clock.weather!=='Hujan'&&this.clock.phase!==3;
-   for(const visitor of this.beachVisitors){visitor.sprite.setVisible(beachOpen);visitor.label?.setVisible(beachOpen);visitor.activityText.setVisible(false);if(beachOpen)visitor.update(dt);}
+   if(this.beachRoutineOpen!==beachOpen){
+    this.beachRoutineOpen=beachOpen;
+    this.beachVisitors.forEach((visitor,i)=>{
+     const shelter=i===0?{x:430,y:585}:{x:955,y:585};
+     const route=beachOpen?(i===0?
+      [{x:430,y:652},{x:530,y:652,activity:'🏖️ Bermain pasir',pause:2},{x:560,y:684},{x:430,y:652}]:
+      [{x:955,y:662},{x:1000,y:682,activity:'🐚 Mengamati kerang',pause:2},{x:935,y:677},{x:955,y:662}]):
+      [{x:visitor.x,y:615},{...shelter,activity:'🏠 Berteduh',pause:3}];
+     visitor.setRoutine(route,visitor.name,beachOpen);
+    });
+   }
+   for(const visitor of this.beachVisitors)visitor.update(dt);
+   this.fisherman.update(dt);
 
    // Once a villager has exited an interior through its door, begin the
    // normal repeating workday without teleporting or cutting across walls.
@@ -323,8 +343,8 @@ export class WorldScene extends Phaser.Scene {
   const id=this.getNearest();
   this.prompt.setVisible(!!id&&!this.game.dialogOpen);
   if(id){
-   const z=this.zones.find(q=>q.id===id)||{id:'riko',label:'Tamu Riko',x:this.restaurantCustomer.npc.x,y:this.restaurantCustomer.npc.y};
-   const npc=this.npcById(id);
+   const z=this.zones.find(q=>q.id===id)|| (id==='bayu'?{id,label:'Nelayan Bayu',x:this.fisherman.x,y:this.fisherman.y}:{id:'riko',label:'Tamu Riko',x:this.restaurantCustomer.npc.x,y:this.restaurantCustomer.npc.y});
+   const npc=id==='bayu'?this.fisherman:this.npcById(id);
    this.prompt.setPosition(npc?npc.x:z.x,(npc?npc.y:z.y)-63);
    this.prompt.setText('E / AKSI · '+z.label);
   }
