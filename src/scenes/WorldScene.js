@@ -88,6 +88,11 @@ export class WorldScene extends Phaser.Scene {
   this.mayor=new NPC(this,{x:1204,y:180,name:'KEPALA DESA',texture:'mayor',stops:[{x:1204,y:180}]});
   this.wargaA=new NPC(this,{x:1200,y:452,name:'WARGA LINA',texture:'nia',stops:[{x:1200,y:452}]});
   this.wargaB=new NPC(this,{x:1080,y:471,name:'WARGA ARIF',texture:'tani',stops:[{x:1080,y:471}]});
+  // Staf puskesmas dan warga pasien bergerak sesuai fase waktu.
+  this.clinicDoctor=new NPC(this,{x:1520,y:450,name:'DOKTER MAYA',texture:'rani',stops:[{x:1520,y:450}]});
+  this.clinicNurse=new NPC(this,{x:1460,y:410,name:'PERAWAT DINA',texture:'sari',stops:[{x:1460,y:410}]});
+  this.clinicPatient=new NPC(this,{x:1530,y:320,name:'PASIEN',texture:'tani',stops:[{x:1530,y:320}]});
+  this.clinicRoutineKey='';
   this.restaurantCustomer=new RestaurantCustomer(this);
   this.beachVisitors=[
    new NPC(this,{x:430,y:652,name:'PENGUNJUNG PANTAI',texture:'nia',stops:[{x:430,y:652},{x:530,y:652},{x:560,y:684},{x:430,y:652}]}),
