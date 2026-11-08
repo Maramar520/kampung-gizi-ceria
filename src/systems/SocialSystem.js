@@ -1,5 +1,5 @@
 // v1.5: persahabatan sederhana. Tidak membuat save key baru dan tidak memengaruhi quest utama.
-export const FRIEND_IDS=Object.freeze(['sari','chef','tani','nia','rani','arif','lina','mayor']);
+export const FRIEND_IDS=Object.freeze(['sari','chef','tani','nia','rani','arif','lina','mayor','riko']);
 export const FRIENDS=Object.freeze({
  sari:{name:'Bu Sari',emoji:'👩',place:'Jalan kampung; pulang ke rumah kanan bawah saat hujan'},
  chef:{name:'Chef Bimo',emoji:'👨‍🍳',place:'Restoran sehat'},
@@ -8,7 +8,8 @@ export const FRIENDS=Object.freeze({
  rani:{name:'Kak Rani',emoji:'👩‍🏫',place:'Perpustakaan gizi di Rumah Warga'},
  arif:{name:'Warga Arif',emoji:'👨',place:'Alun-Alun Kampung'},
  lina:{name:'Warga Lina',emoji:'👩',place:'Alun-Alun Kampung'},
- mayor:{name:'Kepala Desa',emoji:'🏛️',place:'Balai Desa'}
+ mayor:{name:'Kepala Desa',emoji:'🏛️',place:'Balai Desa'},
+ riko:{name:'Tamu Riko',emoji:'🧑',place:'Restoran Sehat saat menjadi pelanggan'}
 });
 export const MAX_HEARTS=5;
 export const DIALOGUES=Object.freeze({
@@ -31,6 +32,7 @@ export const DIALOGUES=Object.freeze({
  arif:[['Halo! Ayo olahraga ringan di alun-alun.','Berjalan kaki membantu tubuh tetap aktif.','Sore ini enak untuk menyapa tetangga!']],
  lina:[['Halo! Aku suka menanam bunga di alun-alun.','Jangan lupa makan sayuran berwarna-warni.','Ayo menjaga kebersihan kampung bersama!']],
  mayor:[['Selamat datang di Balai Desa!','Terima kasih sudah membantu warga.','Kampung sehat dibangun bersama-sama!']],
+ riko:[['Halo! Aku Riko, senang berkenalan denganmu!','Aku suka mencoba menu sehat di restoran.','Terima kasih sudah menyapaku, sampai jumpa lagi!']],
  rani:[
   ['Selamat pagi! Buku gizi sedang menunggu.','Kita bisa belajar Isi Piringku bersama.','Bacalah satu hal baru sebelum pulang!'],
   ['Ayo membaca tentang sayur dan buah.','Coba jawab kuis makanan sehat di rak buku.','Buku gizi bisa dibaca lagi besok.']
@@ -67,7 +69,8 @@ export function dialogueFor(id,day,phase=0){
    rani:'Perpustakaan mulai sepi. Ayo baca sebentar lalu istirahat!',
    arif:'Sudah malam, sampai bertemu besok di alun-alun!',
    lina:'Selamat malam! Besok kita rawat taman lagi.',
-   mayor:'Balai Desa tutup untuk hari ini. Sampai besok!'}[id]||'Selamat malam!';
+   mayor:'Balai Desa tutup untuk hari ini. Sampai besok!',
+   riko:'Selamat malam! Besok kita bertemu lagi, ya!'}[id]||'Selamat malam!';
  }
  return list[(safeDay-1)%list.length][safePhase];
 }
