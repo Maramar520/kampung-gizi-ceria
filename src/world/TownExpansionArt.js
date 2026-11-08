@@ -4,7 +4,11 @@ export class TownExpansionArt {
   this.festival=festival;
   const g=scene.add.graphics().setDepth(-85);
   const rect=(x,y,w,h,color)=>{g.fillStyle(color);g.fillRect(x,y,w,h);};
+  // Same base grass and procedural grass tufts as the original six-block district.
   rect(960,0,380,600,0xa4cd91);
+  for(let y=9;y<600;y+=17)for(let x=957;x<1340;x+=19){
+   if((x*7+y*11)%17<7){rect(x,y,3,5,0x74b075);rect(x+5,y+2,2,3,0xb9d899);}
+  }
   // Sambungan jalan: tutup celah 8px antara jalan lama (sampai x=952)
   // dan kawasan timur; simpang tegak lurus menghubungkan dua tujuan.
   rect(948,261,392,49,0xead5af);
@@ -26,7 +30,12 @@ export class TownExpansionArt {
   rect(1054,177,43,22,0xc5a77d);rect(1059,181,32,12,0xf7e9cd);
   rect(1224,174,32,30,0x92b59a);rect(1230,168,20,12,0x76a878);
   // Alun-alun: fountain, flowerbeds, benches, flag and event space.
-  rect(1005,344,302,200,0xd3c6a0);rect(1015,354,282,180,0xb9d59e);
+  // Alun-alun lawn matches the old kampung grass; paths and decorations stay in place.
+  rect(1005,344,302,200,0xa4cd91);
+  rect(1015,354,282,180,0xa4cd91);
+  for(let y=361;y<529;y+=17)for(let x=1022;x<1293;x+=19){
+   if((x*7+y*11)%17<7){rect(x,y,3,5,0x74b075);rect(x+5,y+2,2,3,0xb9d899);}
+  }
   rect(1142,344,44,200,0xe9d8b5);rect(1005,417,302,31,0xe9d8b5);
   g.fillStyle(0x92b8b4);g.fillCircle(1068,394,29);
   g.fillStyle(0x5e9db7);g.fillCircle(1068,394,23);
