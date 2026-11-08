@@ -40,6 +40,14 @@ async function testDesktop(browser){
  const context=await browser.newContext({viewport:{width:1280,height:850},deviceScaleFactor:1});
  const page=await context.newPage();
  await waitGame(page);
+ // Eastern district must be discoverable through visible navigation controls.
+ await page.locator('#townOverview').click();
+ assert.ok(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').cameras.main.zoom<.8));
+ await page.locator('#townOverview').click();
+ await page.locator('#goEast').click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.x),1155);
+ await page.locator('#goWest').click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.x),760);
  // Eastern district is reachable by the camera, while original save positions remain valid.
  await moveTo(page,1155,395);
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').cameras.main._bounds.width),1340);
@@ -403,6 +411,8 @@ async function testMobile(browser){
  const context=await browser.newContext({...devices['Pixel 7'],viewport:{width:393,height:852}});
  const page=await context.newPage();
  await waitGame(page);
+ await page.locator('#goEast').tap();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.x),1155);
  await moveTo(page,1155,395);
  await page.locator('#action').tap();
  assert.match(await page.locator('#dialogTitle').textContent(),/Alun-Alun/);
