@@ -373,12 +373,11 @@ export class WorldScene extends Phaser.Scene {
    // Masuk -> daftar -> tunggu -> periksa -> keluar lewat pintu yang sama.
    this.clinicPatient.setRoutine(clinicOpen?[
     {x:1530,y:320},{x:1530,y:336},{x:1530,y:363},
-    {x:1530,y:385},{x:1495,y:385},
-    {x:1470,y:395,activity:'🪑 Menunggu giliran',pause:3},
-    {x:1495,y:395},{x:1500,y:455},{x:1530,y:455},
+    {x:1530,y:385},{x:1530,y:455},{x:1500,y:455},
+    {x:1470,y:475,activity:'🪑 Menunggu giliran',pause:3},
+    {x:1500,y:455},{x:1530,y:455},
     {x:1565,y:455,activity:'🩺 Diperiksa',pause:3},
-    {x:1530,y:455},{x:1500,y:455},{x:1500,y:385},
-    {x:1530,y:385},{x:1530,y:363},{x:1530,y:336},{x:1530,y:320,activity:'🏡 Pulang',pause:2}
+    {x:1530,y:455},{x:1530,y:385},{x:1530,y:363},{x:1530,y:336},{x:1530,y:320,activity:'🏡 Pulang',pause:2}
    ]:[{x:1530,y:320,activity:'🏡 Pulang',pause:3}],'PASIEN',clinicOpen);
   }
   if(!this.game.dialogOpen){
