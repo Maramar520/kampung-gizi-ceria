@@ -76,9 +76,11 @@ export class WorldScene extends Phaser.Scene {
    new NPC(this,{x:430,y:652,name:'PENGUNJUNG PANTAI',texture:'nia',stops:[{x:430,y:652},{x:530,y:652},{x:560,y:684},{x:430,y:652}]}),
    new NPC(this,{x:955,y:662,name:'PEJALAN PANTAI',texture:'tani',stops:[{x:955,y:662},{x:1000,y:682},{x:935,y:677},{x:955,y:662}]})
   ];
+  for(const visitor of this.beachVisitors)visitor.walkable=(x,y)=>canStand(x,y);
   this.fisherman=new NPC(this,{x:1120,y:778,name:'NELAYAN BAYU',texture:'tani',stops:[
    {x:1120,y:778,activity:'🎣 Memeriksa jala',pause:2},{x:1080,y:775},{x:1060,y:786,activity:'🐚 Mencari kerang',pause:2},{x:1120,y:778}
   ]});
+  this.fisherman.walkable=(x,y)=>canStand(x,y);
   this.zones=INTERACTIONS;
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
@@ -311,16 +313,22 @@ export class WorldScene extends Phaser.Scene {
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
    this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);this.wargaA.update(dt);this.wargaB.update(dt);this.restaurantCustomer.update(dt);
-   // Pengunjung benar-benar berjalan ke area berteduh, tidak hilang mendadak.
+   // Rute pengunjung melalui jalan kampung dan pintu bangunan saat hujan/malam.
    const beachOpen=this.clock.weather!=='Hujan'&&this.clock.phase!==3;
    if(this.beachRoutineOpen!==beachOpen){
     this.beachRoutineOpen=beachOpen;
     this.beachVisitors.forEach((visitor,i)=>{
-     const shelter=i===0?{x:430,y:585}:{x:955,y:585};
-     const route=beachOpen?(i===0?
+     const home=i===0?[{x:430,y:585},{x:448,y:585},{x:448,y:319},
+      {x:211,y:319},{x:211,y:355}]:
+      [{x:955,y:585},{x:760,y:585},{x:760,y:319},
+       {x:869,y:319},{x:869,y:355}];
+     const leisure=i===0?
       [{x:430,y:652},{x:530,y:652,activity:'🏖️ Bermain pasir',pause:2},{x:560,y:684},{x:430,y:652}]:
-      [{x:955,y:662},{x:1000,y:682,activity:'🐚 Mengamati kerang',pause:2},{x:935,y:677},{x:955,y:662}]):
-      [{x:visitor.x,y:615},{...shelter,activity:'🏠 Berteduh',pause:3}];
+      [{x:955,y:662},{x:1000,y:682,activity:'🐚 Mengamati kerang',pause:2},{x:935,y:677},{x:955,y:662}];
+     const inside=visitor.y<370;
+     const returnPath=inside?[...home.slice(0,-1).reverse(),leisure[0]]:[leisure[0]];
+     const route=beachOpen?[...returnPath,...leisure]:home.map((p,j)=>j===home.length-1?
+      {...p,activity:'🏠 Berteduh di dalam',pause:3}:p);
      visitor.setRoutine(route,visitor.name,beachOpen);
     });
    }
