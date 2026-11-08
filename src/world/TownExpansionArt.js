@@ -43,6 +43,10 @@ export class TownExpansionArt {
    g.fillStyle(i%2?0xf2b6ad:0xf4d98a);g.fillCircle(x,y,4);
   }
   rect(1268,405,4,61,0x8c826c);rect(1272,405,24,15,0xe8a78e);
+  // Interactive mayor mission board inside the town hall (access via E at Balai Kota).
+  rect(1042,102,94,8,0x7d644d);rect(1046,80,86,31,0xd6b787);
+  rect(1052,86,73,3,0xf8eed6);rect(1052,93,61,3,0xf8eed6);
+  this.missionBoard=scene.add.text(1089,72,'📋 MISI HARIAN',{fontFamily:'monospace',fontSize:'11px',fontStyle:'bold',color:'#604b37',backgroundColor:'#fff0ca',padding:{x:3,y:2}}).setOrigin(.5).setDepth(550);
   this.banner=scene.add.text(1155,82,'🏛️ BALAI KOTA',{fontFamily:'monospace',fontSize:'15px',fontStyle:'bold',color:'#4c5940',backgroundColor:'#fff1d2',padding:{x:5,y:3}}).setOrigin(.5).setDepth(550);
   this.title=scene.add.text(1155,327,'🌳 ALUN-ALUN KAMPUNG',{fontFamily:'monospace',fontSize:'14px',fontStyle:'bold',color:'#456049',backgroundColor:'#fff1d2',padding:{x:5,y:3}}).setOrigin(.5).setDepth(550);
   this.fest=scene.add.text(1155,370,'🎪 FESTIVAL KAMPUNG SEHAT',{fontFamily:'monospace',fontSize:'12px',color:'#654b39',backgroundColor:'#ffe3ae',padding:{x:4,y:3}}).setOrigin(.5).setDepth(550);
