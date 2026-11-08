@@ -50,7 +50,7 @@ test('pintu rumah, perpustakaan, pasar, restoran dan rumah keluarga terhubung de
 });
 test('semua 15 titik interaksi dapat dicapai tanpa menembus dinding dan air',()=>{
  const walkable=reachableFromSpawn();
- assert.equal(INTERACTIONS.length,15);
+ assert.ok(INTERACTIONS.length>=15,'original interactions retained alongside new zones');
  for(const z of INTERACTIONS){
   assert.ok(nearby(walkable,z,z.r),'Zona '+z.id+' tidak dapat dicapai');
  }
