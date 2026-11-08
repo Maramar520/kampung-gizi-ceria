@@ -74,6 +74,7 @@ async function testDesktop(browser){
  await close(page);
  await moveTo(page,446,291);
  const gameData=()=>page.evaluate(()=>({...window.__kampungQA.state.data}));
+ const starsBeforeLearning=(await gameData()).learning.stars;
  const dimensions=await page.evaluate(()=>({canvas:document.querySelector('#game canvas')?.getBoundingClientRect().toJSON(),viewport:innerWidth}));
  assert.ok(dimensions.canvas.width<=dimensions.viewport);
  // Verify actual keyboard movement before using the QA teleport bridge.
@@ -189,7 +190,7 @@ async function testDesktop(browser){
   assert.match(await page.locator('#dialogTitle').textContent(),/Jawaban tepat/);
   await page.locator('#choices button').first().click();
  }
- assert.equal((await gameData()).learning.stars,3);
+ assert.equal((await gameData()).learning.stars,starsBeforeLearning+3);
  assert.equal((await gameData()).learning.quiz.completed,1);
  await page.getByRole('button',{name:/Kembali ke menu belajar/}).click();
  await page.getByRole('button',{name:/Isi Piringku/}).click();
@@ -201,7 +202,7 @@ async function testDesktop(browser){
   await page.locator('#choices button').first().click();
  }
  assert.match(await page.locator('#dialogTitle').textContent(),/Isi Piringku Selesai/);
- assert.equal((await gameData()).learning.stars,5);
+ assert.equal((await gameData()).learning.stars,starsBeforeLearning+5);
  assert.equal((await gameData()).learning.plate.completed,1);
  const coinsAfterLearning=(await gameData()).coins;
  await page.getByRole('button',{name:/Kembali belajar/}).click();
