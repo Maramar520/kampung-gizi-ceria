@@ -556,7 +556,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const status=this.world.restaurantOrders.status,order=status.order;
   const recipe=RECIPES[order.recipe],known=knownRecipe(this.state.data,order.recipe);
   const missing=missingFor(this.state.data,order.recipe);
-  const summary=order.customer+' memesan '+recipe.name+'.\nBahan: '+recipe.ingredients.join(', ')+
+  const summary='👤 Pelanggan NPC: '+(this.world.restaurantCustomer?.status==='arriving'?'sedang berjalan menuju meja':this.world.restaurantCustomer?.status==='ordering'?'sudah duduk dan menunggu pesanan':this.world.restaurantCustomer?.status==='eating'?'sedang menikmati makanan':this.world.restaurantCustomer?.status==='leaving'?'sedang meninggalkan restoran':'pesanan selesai')+'.\n'+order.customer+' memesan '+recipe.name+'.\nBahan: '+recipe.ingredients.join(', ')+
    '.\nHadiah: '+order.coins+' Koin Ceria + '+order.stars+' ⭐.\n'+
    (status.served?'Pesanan hari ini sudah selesai!':
     status.prepared?'Masakan sudah siap diantar kepada Chef Bimo.':
@@ -564,7 +564,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const buttons=[];
   if(!status.served&&status.prepared)buttons.push({label:'🍽️ Antar pesanan kepada pelanggan',fn:()=>{
    const reward=this.world.restaurantOrders.serve();
-   if(reward){this.refresh();this.note('Pesanan sukses! +'+reward.coins+' KC +'+reward.stars+' ⭐');}
+   if(reward){this.refresh();this.note('Pelanggan membayar! +'+reward.coins+' KC +'+reward.stars+' ⭐');}
    this.restaurantMenu();
   }});
   if(!status.served&&!status.prepared){
