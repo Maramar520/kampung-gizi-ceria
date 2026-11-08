@@ -36,6 +36,18 @@ export class SouthCoastArt {
   for(const [x,y] of [[118,765],[331,799],[1040,760],[1218,814]]){
    rect(x,y,13,4,0x4b9da9);rect(x+11,y-2,5,8,0x4b9da9);
   }
+  // Pulau kecil yang bisa dikunjungi dengan perahu, terpisah dari dermaga.
+  g.fillStyle(0xe9d69e);g.fillRoundedRect(1020,723,160,112,36);
+  g.fillStyle(0xa7cf8c);g.fillRoundedRect(1040,737,120,76,26);
+  for(const [x,y] of [[1055,753],[1140,785]]){
+   rect(x,y,7,31,0xa4774d);
+   g.fillStyle(0x6caa78);g.fillCircle(x-9,y-6,16);g.fillCircle(x+10,y-12,17);
+  }
+  scene.add.text(1054,810,'🏝️ PULAU KECIL',{fontFamily:'monospace',fontSize:'12px',color:'#6e6546',backgroundColor:'#fff1cf',padding:{x:4,y:2}}).setDepth(600);
+  // Perahu menunggu di samping dermaga.
+  g.fillStyle(0x8d684b);g.fillEllipse(822,727,42,20);
+  rect(820,702,3,23,0x755b45);
+  g.fillStyle(0xfff0d6);g.fillTriangle(824,704,824,724,845,724);
   // Payung pantai, kursi santai, kelapa dan dekorasi.
   for(const [x,y] of [[170,657],[1130,650]]){
    rect(x,y+4,4,30,0x9a7959);
