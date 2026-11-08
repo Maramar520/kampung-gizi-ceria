@@ -25,6 +25,7 @@ import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-road-connected-20261108';
 import {EastHomesArt} from '../world/EastHomesArt.js';
+import {residentHomeRoute,residentLeaveHomeRoute,residentHomeActivity,homePosition} from '../world/ResidentHomeRoutes.js';
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
 import {VillageLifeSystem} from '../systems/VillageLifeSystem.js';
@@ -183,18 +184,37 @@ export class WorldScene extends Phaser.Scene {
    if(npc.y<345)return [{x:1155,y:345}];
    return [];
   };
-  this.wargaA.setRoutine(sheltered?shelterRoute(this.wargaA,1200):
-   [...toPlaza(this.wargaA),...plazaLoopA], 'WARGA LINA',!sheltered);
-  this.wargaB.setRoutine(sheltered?shelterRoute(this.wargaB,1105):
-   [...toPlaza(this.wargaB),...plazaLoopB], 'WARGA ARIF',!sheltered);
+  // v1.26: Lina dan Arif pulang ke rumah sendiri saat hujan/malam,
+  // lalu keluar lewat pintu dan kembali bekerja di Alun-Alun saat pagi.
+  for(const [id,npc,label,loop] of [
+   ['lina',this.wargaA,'WARGA LINA',plazaLoopA],
+   ['arif',this.wargaB,'WARGA ARIF',plazaLoopB]]){
+   const home=homePosition(id),inside=npc.x>home.x-48&&npc.x<home.x+48&&npc.y<235;
+   const activity=residentHomeActivity(id,phase,raining);
+   if(sheltered){
+    npc.setRoutine(inside?[{...home,activity,pause:3}]:residentHomeRoute(id,npc,activity),label,false);
+   }else{
+    const prefix=inside?residentLeaveHomeRoute(id):toPlaza(npc);
+    npc.setRoutine([...prefix,...loop],label,true);
+   }
+  }
   const justStoppedRaining=this.lastRaining===true&&!raining&&phase!==3;
   this.lastRaining=raining;
   this.routineKey=key;
+  // Nia juga tinggal di kawasan timur. Hujan/malam: pulang ke rumah.
+  // Saat pagi: keluar dari rumah melalui jalan timur sebelum kembali bekerja.
+  const niaHome=homePosition('nia');
+  const niaInside=this.nia.x>niaHome.x-48&&this.nia.x<niaHome.x+48&&this.nia.y<235;
+  if(niaSheltering){
+   this.nia.setRoutine(niaInside?[{...niaHome,activity:residentHomeActivity('nia',phase,raining),pause:3}]:
+    residentHomeRoute('nia',this.nia,residentHomeActivity('nia',phase,raining)),'NIA',false);
+   this.nia.nextJobRoute=null;
+  }
   if(raining){
    // A villager already inside a shelter stays inside; villagers at work
    // leave through their current building's door before taking the road.
    for(const [id,npc,label] of [['sari',this.sari,'BU SARI'],
-    ['tani',this.tani,'PAK TANI'],['nia',this.nia,'NIA']]){
+    ['tani',this.tani,'PAK TANI']]){
     let prefix=[];
     if(isInsideShelter(id,npc)){
      npc.setRoutine([{x:npc.x,y:npc.y}],label,false);
@@ -218,37 +238,24 @@ export class WorldScene extends Phaser.Scene {
    this.sari.nextJobRoute=null;this.tani.nextJobRoute=null;this.nia.nextJobRoute=null;
    this.sari.setRoutine(dryReturnRoute('sari',this.sari),'BU SARI',false);
    this.tani.setRoutine(dryReturnRoute('tani',this.tani),'PAK TANI',false);
-   this.nia.setRoutine(dryReturnRoute('nia',this.nia),'NIA',false);
+   if(niaInside)this.nia.setRoutine([...residentLeaveHomeRoute('nia'),...workRoute('nia',phase)],'NIA',false);
    // Setelah hujan, kembali ke rute kerja sesuai fase saat ini.
    // Jangan mengulang rute pendek yang membuat NPC terlihat mondar-mandir.
    this.chef.setRoutine(workRoute('chef',phase),'',phase!==3);
    this.rani.setRoutine(workRoute('rani',phase),'KAK RANI',phase!==3);
    return;
   }
-  // Malam tanpa hujan: Nia benar-benar berjalan ke dalam pasar.
-  // Jika ia berada di perpustakaan, keluar melalui pintu sebelum menuju pasar.
-  if(phase===3){
-   const n=this.nia;
-   if(isInsideShelter('nia',n)){
-    n.setRoutine([{x:n.x,y:n.y}],'NIA',false);
-   }else{
-    let prefix=[];
-    if(n.x>500&&n.x<715&&n.y<245)
-     prefix=[{x:608,y:208},{x:608,y:237},{x:608,y:281}];
-    else if(n.x<390&&n.y>340)prefix=[{x:211,y:339},{x:211,y:318}];
-    n.setRoutine([...prefix,...rainyRoute('nia')],'NIA',false);
-   }
-   n.nextJobRoute=null;
-  }
   // v1.9: jalur kerja melewati pintu yang sama dengan pemain dan
   // berhenti di pos kegiatan (kebun, pasar, dapur, perpustakaan).
   for(const [id,npc] of [['sari',this.sari],['tani',this.tani],
    ['nia',this.nia],['chef',this.chef],['rani',this.rani]]){
-   if(id==='nia'&&phase===3)continue;
+   if(id==='nia'&&niaSheltering)continue;
    // Festival diselenggarakan hanya di alun-alun; rutinitas kerja lama tetap berjalan.
    const route=workRoute(id,phase);
    let prefix=[];
-   if(id==='nia'&&leavingNiaShelter&&isInsideShelter('nia',npc)){
+   if(id==='nia'&&niaInside){
+    prefix=residentLeaveHomeRoute('nia');
+   }else if(id==='nia'&&leavingNiaShelter&&isInsideShelter('nia',npc)){
     prefix=dryReturnRoute('nia',npc);
    }else if((id==='sari'||id==='tani')&&npc.x>817&&npc.y>340){
     prefix=dryReturnRoute(id,npc);
