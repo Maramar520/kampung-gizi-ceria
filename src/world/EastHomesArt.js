@@ -42,14 +42,17 @@ export class EastHomesArt{
    // Papan kayu horizontal, identik gaya rumah lama.
    for(let yy=y+17;yy<y+height-9;yy+=22)
     rect(houses,x+6,yy,w-12,2,0xe8c29c);
-   // Lis dinding coklat, pintu selatan terbuka 52px.
-   rect(houses,x,y,w,11,0x956b50);
-   rect(houses,x,y,11,height,0x956b50);
-   rect(houses,x+w-11,y,11,height,0x956b50);
-   rect(houses,x,y+height-11,24,11,0x956b50);
-   rect(houses,x+76,y+height-11,24,11,0x956b50);
-   rect(houses,cx-26,y+height-5,52,7,0xe8c391);
+   // Dinding mengikuti persis trim rumah pemain lama (#b68168), pintu 52px.
+   rect(houses,x,y,w,11,0xb68168);
+   rect(houses,x,y,11,height,0xb68168);
+   rect(houses,x+w-11,y,11,height,0xb68168);
+   rect(houses,x,y+height-11,24,11,0xb68168);
+   rect(houses,x+76,y+height-11,24,11,0xb68168);
+   rect(houses,cx-26,y+height-5,52,7,0xe4c28a);
    rect(houses,cx-24,y+height+3,48,5,0x9f7552);
+   // Detail dinding identik dengan fungsi room() pada WorldArt.js.
+   rect(houses,x+11,y+15,w-22,3,0xfff4d7);
+   for(let px=x+21;px<x+w-18;px+=25)rect(houses,px,y+4,12,4,0xf0c49d);
    // Atap pendek cutaway: interior rumah terlihat seluruhnya.
    rect(houses,x-5,y-15,w+10,15,0x72533e);
    rect(houses,x-3,y-13,w+6,11,color);
