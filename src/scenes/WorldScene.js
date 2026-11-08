@@ -20,7 +20,6 @@ import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
 import {RestaurantCustomer} from '../systems/RestaurantCustomer.js';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js';
-import {MiniMap} from '../ui/MiniMap.js';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
 export class WorldScene extends Phaser.Scene {
@@ -90,7 +89,6 @@ export class WorldScene extends Phaser.Scene {
   this.cameras.main.setZoom(1);
   this.game.events.emit('world-ready',this);
   this.scene.launch('UIScene');
-  this.minimap=new MiniMap(this);
  }
  playInteraction(kind){
   if(Object.hasOwn(ACTION_DURATION,kind))return this.activity.play(kind);
@@ -292,7 +290,7 @@ export class WorldScene extends Phaser.Scene {
  update(_time,delta){
   const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
-  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.townArt.update(this.time.now);this.minimap?.render();this.updateRoutines();
+  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.townArt.update(this.time.now);this.updateRoutines();
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
