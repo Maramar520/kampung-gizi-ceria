@@ -322,6 +322,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    {label:'🧼 Pelajaran Kebersihan',fn:()=>this.schoolQuiz('bersih','Kapan perlu mencuci tangan dengan sabun?','🧼 Sebelum makan dan setelah toilet','🚫 Tidak perlu cuci tangan')},
    {label:'🌱 Pelajaran Lingkungan',fn:()=>this.schoolQuiz('lingkungan','Apa yang bisa dilakukan agar sekolah bersih?','🗑️ Buang sampah pada tempatnya','🍂 Buang sampah ke sungai')},
    {label:'🍱 Mini-game Bekal Sehat',fn:()=>this.schoolLunch()},
+   {label:'🎯 Tantangan Isi Piringku',fn:()=>this.schoolPlateChallenge(0)},
    {label:'🎁 Ambil Hadiah',fn:()=>this.schoolClaim()},
    {label:'Tutup',fn:()=>this.close()}
   ]);
@@ -330,6 +331,20 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.show('📚 Kuis '+id,question,[
    {label:correct,fn:()=>{this.school.lesson(id);this.show('🌟 Jawaban Benar','Hebat! Kamu telah menyelesaikan pelajaran '+id+'.', [{label:'Kembali',fn:()=>this.schoolMenu()}]);}},
    {label:wrong,fn:()=>this.show('💡 Coba Lagi','Ayo pilih kebiasaan yang baik untuk kesehatan dan lingkungan.',[{label:'Coba Lagi',fn:()=>this.schoolQuiz(id,question,correct,wrong)}])}
+  ]);
+ }
+ schoolPlateChallenge(step=0){
+  const stages=[
+   ['🥦 Tantangan 1/3','Apa yang sebaiknya memenuhi sekitar setengah piring?', '🥦 Sayur dan buah','🍬 Permen dan kue'],
+   ['🍚 Tantangan 2/3','Apa contoh makanan pokok sumber energi?', '🍚 Nasi, jagung, atau kentang','🥤 Minuman manis saja'],
+   ['🐟 Tantangan 3/3','Apa contoh lauk sumber protein?', '🐟 Ikan, telur, tahu, atau tempe','🍭 Permen warna-warni']
+  ];
+  const [title,question,correct,wrong]=stages[step];
+  this.show(title,question,[
+   {label:correct,fn:()=>step===stages.length-1?
+    this.show('🌟 Hebat!','Kamu berhasil menyusun pilihan Isi Piringku! Yuk lanjutkan kuis dan bekal sehat untuk mendapat hadiah harian.',[{label:'Kembali ke Sekolah',fn:()=>this.schoolMenu()}]):
+    this.schoolPlateChallenge(step+1)},
+   {label:wrong,fn:()=>this.show('💡 Coba Lagi','Perhatikan makanan yang beragam dan seimbang. Kamu boleh mencoba lagi!',[{label:'Ulangi Tantangan',fn:()=>this.schoolPlateChallenge(step)}])}
   ]);
  }
  schoolLunch(){
