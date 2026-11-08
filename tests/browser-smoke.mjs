@@ -40,13 +40,10 @@ async function testDesktop(browser){
  const context=await browser.newContext({viewport:{width:1280,height:850},deviceScaleFactor:1});
  const page=await context.newPage();
  await waitGame(page);
- // v1.12: minimap and interactive navigation are visible at desktop size.
- assert.equal(await page.locator('#minimap').count(),1);
- assert.ok(await page.locator('#minimap').isVisible());
- // Eastern district must be discoverable through visible navigation controls.
- await page.locator('#townOverview').click();
- assert.ok(await page.evaluate(()=>{const cam=window.__kampungQA.scene.getScene('WorldScene').cameras.main;return cam.zoom<.8&&Math.abs(cam.midPoint.x-670)<25;}));
- await page.locator('#townOverview').click();
+ // v1.15: no minimap, sidebar or visible map button; game remains unobstructed.
+ assert.equal(await page.locator('#minimap').count(),0);
+ assert.equal(await page.locator('.minimap-wrap').count(),0);
+ assert.equal(await page.locator('#townOverview').isVisible(),false);
  await page.locator('#goEast').click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.x),1155);
  await page.locator('#goWest').click();
