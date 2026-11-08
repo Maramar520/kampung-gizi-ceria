@@ -23,7 +23,9 @@ export class MiniMap{
   const c=this.ctx,w=this.canvas.width,h=this.canvas.height,sx=w/WORLD_WIDTH,sy=h/WORLD_HEIGHT;
   c.clearRect(0,0,w,h);c.fillStyle='#a6ce96';c.fillRect(0,0,w,h);
   c.fillStyle='#e6d5ac';c.fillRect(0,261*sy,w,49*sy);
-  for(const x of [448,760,1155])c.fillRect((x-17)*sx,0,34*sx,h);
+  for(const x of [448,760])c.fillRect((x-17)*sx,0,34*sx,h);
+  // Jalan timur bercabang dari jalan utama menuju Balai Kota dan Alun-Alun.
+  c.fillRect(1134*sx,227*sy,42*sx,122*sy);
   const colors={home:'#f0d6b7',village:'#e7d7c4',market:'#e7b6a1',restaurant:'#efb68d',store:'#e7d1ae',townHall:'#c4d9e8',plaza:'#85b98b',garden:'#78a65e',coop:'#bc9773',pond:'#78b9d8'};
   for(const [name,color] of Object.entries(colors)){
    const b=LAYOUT[name];if(!b)continue;
@@ -32,6 +34,10 @@ export class MiniMap{
   }
   c.font='bold 9px sans-serif';c.fillStyle='#354b3c';
   c.fillText('KAMPUNG LAMA',10,11);c.fillText('BALAI KOTA',207,12);c.fillText('ALUN-ALUN',206,112);
+  const phase=this.world.clock?.phase??0,weather=this.world.clock?.weather;
+  if(phase===3){c.fillStyle='rgba(19,38,76,.33)';c.fillRect(0,0,w,h);}
+  else if(phase===2){c.fillStyle='rgba(235,137,96,.14)';c.fillRect(0,0,w,h);}
+  if(weather==='Hujan'){c.fillStyle='rgba(61,106,151,.16)';c.fillRect(0,0,w,h);}
   const p=this.world.player.sprite;
   c.beginPath();c.arc(p.x*sx,p.y*sy,4,0,Math.PI*2);c.fillStyle='#2875e1';c.fill();
   c.lineWidth=1.5;c.strokeStyle='#ffffff';c.stroke();
