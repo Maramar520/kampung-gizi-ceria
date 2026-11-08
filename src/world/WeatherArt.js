@@ -1,6 +1,6 @@
 // v1.7 — visual weather overlay, no new spritesheets, scenes, collisions, or assets.
 // Weather and lighting must cover the full expanded 1340x600 world.
-import {WORLD_WIDTH,WORLD_HEIGHT} from './WorldGeometry.js';
+import {WORLD_WIDTH,WORLD_HEIGHT} from './WorldGeometry.js?v=v158-weather-sea-height';
 const TINTS=[
  {color:0xffdf98,alpha:.07},
  {color:0xffefbe,alpha:.025},
