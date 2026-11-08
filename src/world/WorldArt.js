@@ -4,10 +4,13 @@ import {OBSTACLES,LAYOUT} from './WorldGeometry.js';
 // Kunci tekstur sprite lama dipertahankan agar posisi, NPC, dan save tetap kompatibel.
 export const CHARACTER_ACTIONS=Object.freeze(['sleep','water','harvest','cook','fish','plant']);
 export function createTextures(scene){
+ const appearance=scene.game.state?.data?.character||{};
+ const shirts={biru:[0x7caad3,0x4c83b0],merah:[0xe6a0a0,0xb86e79],hijau:[0x91c493,0x578d65],ungu:[0xb9a3df,0x8973b8],kuning:[0xf0d28b,0xc6a25c]};
+ const shirt=shirts[appearance.shirt]||shirts.biru;
  const g=scene.make.graphics({x:0,y:0},false);
  const rect=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
  const palette={
-  player:{shirt:0x7caad3,shade:0x4c83b0,hair:0x594536,skin:0xf3c8a5,accent:0xe4c184},
+  player:{shirt:shirt[0],shade:shirt[1],hair:0x594536,skin:0xf3c8a5,accent:0xe4c184},
   sari:{shirt:0xe4a18c,shade:0xc67877,hair:0x674637,skin:0xf1cba5,accent:0xf0d5a9},
   chef:{shirt:0xf0eee4,shade:0xc4d7cd,hair:0x665041,skin:0xf1c6a4,accent:0x8abc9d},
   tani:{shirt:0x8fb47b,shade:0x517c56,hair:0x594633,skin:0xeac39e,accent:0xd6b171},
@@ -56,6 +59,11 @@ export function createTextures(scene){
    rect(side?21:14,20+bounce,9,2,0xd99186);
    rect(9,19+bounce,4,3,0xe8a69b);
    if(!side)rect(27,19+bounce,3,3,0xe8a69b);
+  }
+  // Rambut pemain disesuaikan dengan jenis kelamin, tanpa menutupi mata.
+  if(name==='player'&&appearance.gender==='perempuan'){
+   if(back){rect(5,9+bounce,5,21,p.hair);rect(29,9+bounce,5,21,p.hair);}
+   else{rect(4,9+bounce,5,21,p.hair);rect(29,9+bounce,5,21,p.hair);}
   }
   // Karakter berbeda: rambut Bu Sari, celemek koki, dan tas pemain.
   if(name==='sari'){
