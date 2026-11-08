@@ -539,7 +539,7 @@ try{
  assert.deepEqual(errors,[],'Uncaught browser errors');
  console.log('PASS desktop full quest + farming/fishing and mobile touch layout');
 }catch(error){console.error('Browser QA failed:',error);process.exitCode=1;}
-finally{await browser.close();server.kill('SIGTERM');}  // v1.20: festival takes place at Alun-Alun, never in the traditional market.
+finally{await browser.close();server.kill('SIGTERM');}  // v1.20: festival only occurs in Alun-Alun, never the market.
   await page.evaluate(()=>{
    const w=window.__kampungQA.scene.getScene('WorldScene');
    w.game.state.data.day=3;w.clock.startDay();w.updateRoutines();w.townArt.update(w.time.now);
