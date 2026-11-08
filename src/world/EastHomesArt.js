@@ -9,7 +9,7 @@ export class EastHomesArt{
  constructor(scene){
   const ground=scene.add.graphics().setDepth(-99);
   const roads=scene.add.graphics().setDepth(-89);
-  const floor=scene.add.graphics().setDepth(-78);
+  const floor=scene.add.graphics().setDepth(-76);
   const deco=scene.add.graphics().setDepth(-74);
   const rect=(g,x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
   const frame=(g,x,y,w,h,c,edge=0x88694c,t=3)=>{
@@ -34,12 +34,12 @@ export class EastHomesArt{
    for(let j=0;j<2;j++)rect(roads,cx-13+j*17,243,8,3,0xdfbb91);
    // Bingkai rumah seperti fungsi room() pada kampung lama.
    // Alas coklat kayu seperti pondasi rumah-rumah kampung lama, di bawah lantai interior.
-   rect(floor,x-7,y-7,w+14,h+14,0x886449);
-   rect(floor,x-4,y-4,w+8,h+8,0xb9885d);
-   rect(floor,x-2,y-2,w+4,h+4,0xd1a576);
+   rect(floor,x-10,y-10,w+20,h+20,0x78543c);
+   rect(floor,x-7,y-7,w+14,h+14,0xb9885d);
+   rect(floor,x-4,y-4,w+8,h+8,0xd1a576);
    // Lantai wajib digambar di atas SEMUA lapisan rumput dan jalan.
-   frame(floor,x,y,w,h,({nia:0xf7e0d6,arif:0xf0dfc3,lina:0xf4e1cf})[id],0x9e7757,3);
-   for(let yy=y+23;yy<y+h-10;yy+=22)rect(floor,x+8,yy,w-16,2,0xe8c29c);
+   frame(floor,x,y,w,h,({nia:0xc99b72,arif:0xc49a71,lina:0xd0a27c})[id],0x896247,3);
+   for(let yy=y+23;yy<y+h-10;yy+=22)rect(floor,x+8,yy,w-16,2,0x9f7554);
    const trim=({nia:0xb68168,arif:0x9a7658,lina:0xa27b70})[id];
    rect(deco,x,y,11,h,trim);rect(deco,x+w-11,y,11,h,trim);
    rect(deco,x,y,w,11,trim);
