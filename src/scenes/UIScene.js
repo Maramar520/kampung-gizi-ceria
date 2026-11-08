@@ -99,7 +99,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     if(reward)this.note('Hadiah festival! +'+reward.coins+' KC +'+reward.stars+' ⭐');
     this.refresh();this.festivalMenu();
    }});
-  if(info.joined&&!info.communityDone)actions.push({label:'🤝 Bantu warga menghias pasar',fn:()=>{
+  if(info.joined&&!info.communityDone)actions.push({label:'🤝 Bantu warga menghias Alun-Alun',fn:()=>{
    const reward=f.communityHelp();if(reward)this.note('Terima kasih! +12 KC +2 ⭐');
    this.refresh();this.festivalMenu();
   }});
