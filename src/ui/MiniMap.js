@@ -12,10 +12,16 @@ export class MiniMap{
    const r=this.canvas.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*WORLD_WIDTH,
     y=(e.clientY-r.top)/r.height*WORLD_HEIGHT;
    const place=this.locations.reduce((a,b)=>Math.hypot(x-b.x,y-b.y)<Math.hypot(x-a.x,y-a.y)?b:a);
-   this.world.highlightPlace(place.id);
+   if(!['plaza','townHall','library','coop','pond','festival'].includes(place.id)){
+    // Pilihan lokasi lain tetap dapat dinavigasi lewat kamera tanpa marker.
+   }else this.world.highlightPlace(place.id);
    const cam=this.world.cameras.main;
    cam.stopFollow();cam.centerOn(place.x,place.y);
-   this.world.time.delayedCall(2300,()=>{if(cam.zoom>=.95)cam.startFollow(this.world.player.sprite,true,.12,.12);});
+   if(this.restoreCamera)this.restoreCamera.remove(false);
+   this.restoreCamera=this.world.time.delayedCall(2300,()=>{
+    if(cam.zoom>=.95)cam.startFollow(this.world.player.sprite,true,.12,.12);
+    this.restoreCamera=null;
+   });
   });
  }
  render(){
