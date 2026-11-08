@@ -110,11 +110,19 @@ export class EastHomesArt{
   rect(houses,hx,hy+hh-12,hw,12,wall);
   rect(houses,hx+104,hy-5,52,7,0xe4c28a);
   rect(houses,hx+104,hy+2,52,4,0xf3ddba);
-  rect(houses,hx-4,hy-19,hw+8,20,0x6f958d);
-  rect(houses,hx,hy-16,hw,14,0xbadcd2);
+  // Kanopi dibagi dua agar tidak menutupi pintu dan jalur masuk.
+  rect(houses,hx-4,hy-19,108,20,0x6f958d);
+  rect(houses,hx+156,hy-19,108,20,0x6f958d);
+  rect(houses,hx,hy-16,104,14,0xbadcd2);
+  rect(houses,hx+156,hy-16,104,14,0xbadcd2);
   rect(houses,hx+117,hy-17,26,17,0xfff8ef);
   rect(houses,hx+127,hy-15,6,13,0xdb7774);
   rect(houses,hx+122,hy-10,16,5,0xdb7774);
+  // Jalan setapak tepat di tengah pintu (x=1530), melewati pondasi.
+  // Digambar di layer rumah agar tidak tertutup pondasi coklat.
+  rect(houses,hx+104,hy-9,52,10,0xead5af);
+  rect(houses,hx+104,hy+1,52,11,0xf6dfbd);
+  rect(houses,hx+106,hy-3,48,3,0xe4c28a);
   // Resepsionis dan ruang tunggu.
   frame(houses,hx+18,hy+41,83,32,0xc69b70,0x84624b,3);
   rect(houses,hx+30,hy+46,54,7,0xfff3d5);
