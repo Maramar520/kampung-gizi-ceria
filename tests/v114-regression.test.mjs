@@ -25,18 +25,18 @@ test('customer route and town hall board present',()=>{
  assert.doesNotMatch(ui,/menghias pasar/);
 });
 
-test('minimap stays outside game overlay and mobile controls remain available',()=>{
+test('no visible minimap, full-map button or sidebar on desktop/mobile',()=>{
  const html=read('index.html');
- const map=html.indexOf('<div class="minimap-wrap">');
- const game=html.indexOf('<div class="gamewrap">');
- assert.ok(map>=0&&game>map,'minimap must precede game wrapper');
- assert.match(html,/\.minimap-wrap\{position:relative/);
+ assert.doesNotMatch(html,/<canvas id="minimap"/);
+ assert.doesNotMatch(html,/<aside class="minimap-wrap"/);
  assert.match(html,/class="dpad"/);
  assert.match(html,/id="game"/);
+ assert.match(html,/id="townOverview" hidden/);
 });
-test('customer paths avoid restaurant furniture',()=>{
+test('customer restaurant route avoids furniture and has full phases',async()=>{
+ const {RESTAURANT_ENTRY,RESTAURANT_EXIT,restaurantPathClear}=await import('../src/systems/RestaurantCustomer.js');
+ assert.equal(restaurantPathClear([{x:607,y:281},...RESTAURANT_ENTRY]),true);
+ assert.equal(restaurantPathClear([{x:690,y:470},...RESTAURANT_EXIT]),true);
  const npc=read('src/systems/RestaurantCustomer.js');
- assert.match(npc,/x:670,y:351/);
- assert.match(npc,/x:607,y:319/);
- assert.match(npc,/this.stage==='arriving'&&served/);
+ for(const stage of ['arriving','ordering','eating','paying','leaving'])assert.match(npc,new RegExp(stage));
 });
