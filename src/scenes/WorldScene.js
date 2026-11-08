@@ -25,7 +25,7 @@ import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=v180-remove-labels';
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=v176-clean';
 import {SchoolArt} from '../world/SchoolArt.js?v=v182-school-lights';
-import {EastHomesArt} from '../world/EastHomesArt.js?v=v182-home-lights';
+import {EastHomesArt} from '../world/EastHomesArt.js?v=v183-bright-matching-lights';
 import {residentHomeRoute,residentLeaveHomeRoute,residentHomeActivity,homePosition} from '../world/ResidentHomeRoutes.js';
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
