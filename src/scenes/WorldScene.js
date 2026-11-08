@@ -405,10 +405,11 @@ export class WorldScene extends Phaser.Scene {
   this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.villageWeatherDetails.update(this.time.now,this.clock.weather,this.clock.phase);this.townArt.update(this.time.now);this.updateRoutines();
   // Sekolah: berangkat melalui jalan utama, masuk lewat pintu utara,
   // belajar, bermain di alun-alun, lalu kembali ke rumah saat malam.
-  const schoolKey=this.game.state.data.day+'-'+this.clock.phase;
+  const schoolShelter=this.clock.weather==='rain'||this.clock.weather==='hujan'||this.clock.phase>=2;
+  const schoolKey=this.game.state.data.day+'-'+this.clock.phase+'-'+schoolShelter;
   if(this.schoolRoutineKey!==schoolKey){
    this.schoolRoutineKey=schoolKey;
-   const schoolOpen=this.clock.phase===0||this.clock.phase===1;
+   const schoolOpen=!schoolShelter&&(this.clock.phase===0||this.clock.phase===1);
    this.schoolTeacher.setRoutine(schoolOpen?[
     {x:839,y:106,activity:'📚 Mengajar gizi',pause:3},
     {x:854,y:106,activity:'🧼 Mengajar kebersihan',pause:3},
@@ -416,22 +417,11 @@ export class WorldScene extends Phaser.Scene {
    ]:[{x:839,y:106,activity:'📚 Menyiapkan materi',pause:3}],'BU GURU',schoolOpen);
    this.schoolStudents.forEach((npc,i)=>{
     const homeX=i===0?1420:1530;
-    const outbound=[
-     {x:homeX,y:247},{x:homeX,y:281},{x:1340,y:281},
-     {x:960,y:281},{x:868,y:281},{x:868,y:250},
-     {x:868,y:222},{x:868,y:195}
-    ];
-    const returning=[
-     {x:868,y:222},{x:868,y:250},{x:868,y:281},
-     {x:960,y:281},{x:1340,y:281},
-     {x:homeX,y:281},{x:homeX,y:247,activity:'🏠 Pulang',pause:3}
-    ];
-    npc.setRoutine(schoolOpen?[...outbound,
-     {x:850+i*36,y:169,activity:'✏️ Belajar',pause:3},
-     {x:868,y:195},...returning]:
-     [{x:homeX,y:247,activity:'🏠 Istirahat',pause:3}],
-     i===0?'MURID A':'MURID B',schoolOpen);
-   });
+    const schoolRoute=[{x:homeX,y:247},{x:homeX,y:281},{x:1340,y:281},{x:960,y:281},{x:868,y:281},{x:868,y:250},{x:868,y:222},{x:868,y:195},{x:850+i*36,y:169,activity:'✏️ Belajar',pause:3},{x:868,y:195},{x:868,y:250},{x:868,y:281},{x:960,y:281},{x:1340,y:281},{x:homeX,y:281},{x:homeX,y:247}];
+    // Berteduh dan istirahat di dalam rumah Pak Tani dan Bu Sari saat hujan/sore/malam.
+    const shelterRoute=[{x:868,y:250},{x:868,y:281},{x:868,y:322},{x:869,y:353},{x:848+i*38,y:374,activity:'🏡 Istirahat / berteduh',pause:3}];
+    npc.setRoutine(schoolOpen?schoolRoute:shelterRoute,i===0?'MURID A':'MURID B',schoolOpen);
+   });;
   }
   const clinicOpen=this.clock.phase!==3;
   const clinicKey=this.game.state.data.day+'-'+this.clock.phase;
