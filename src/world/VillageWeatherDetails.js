@@ -12,12 +12,21 @@ export class VillageWeatherDetails{
    }
   }
   if(phase===3){
-   // Titik terang malam, tanpa gambar lampu dinding atau papan nama.
-   // Sekolah, Puskesmas, serta rumah Nia, Arif, dan Lina.
-   for(const [x,y] of [[834,112],[898,112],[1450,401],[1530,414],[1608,401],[1418,164],[1528,164],[1638,164]]){
-    g.fillStyle(0xffe4a0,.11).fillCircle(x,y,29);
-    g.fillStyle(0xffedb1,.22).fillCircle(x,y,15);
-    g.fillStyle(0xfff4cc,.8).fillCircle(x,y,3);
+   // Cahaya interior jelas seperti titik terang rumah pemain, tanpa objek lampu.
+   // Ditempatkan di ruang kosong setiap bangunan supaya tidak tertutup furnitur.
+   const buildingGlow=[
+    [825,88],[905,88],               // Sekolah Gizi
+    [1435,385],[1540,385],[1618,385], // Puskesmas
+    [1395,89],[1445,89],            // Rumah Nia
+    [1505,89],[1555,89],            // Rumah Arif
+    [1615,89],[1665,89]             // Rumah Lina
+   ];
+   const pulse=1+Math.sin(ms/850)*.045;
+   for(const [x,y] of buildingGlow){
+    g.fillStyle(0xffd779,.22).fillCircle(x,y,35*pulse);
+    g.fillStyle(0xffe5a0,.36).fillCircle(x,y,22*pulse);
+    g.fillStyle(0xfff1c0,.62).fillCircle(x,y,11*pulse);
+    g.fillStyle(0xfffbe2,1).fillCircle(x,y,4);
    }
    for(const [x,y] of [[445,265],[760,260],[1155,265],[760,575],[608,326],[211,325]]){
     g.fillStyle(0xffd58a,.12).fillEllipse(x,y+8,45,18);
