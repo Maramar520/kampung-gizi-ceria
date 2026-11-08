@@ -10,7 +10,7 @@ export function normalizeCoast(raw){
  return {lastFishDay:safe(c.lastFishDay),casts:Math.min(2,safe(c.casts)),
   catches:Array.isArray(c.catches)?c.catches.filter(id=>SEA_FISH.some(f=>f.id===id)).slice(-100):[],
   lastShellDay:safe(c.lastShellDay),lastCleanDay:safe(c.lastCleanDay),
-  islandVisits:safe(c.islandVisits),lastTreasureDay:safe(c.lastTreasureDay),festivalDays:Array.isArray(c.festivalDays)?c.festivalDays.filter(safe).slice(-100):[]};
+  islandVisits:safe(c.islandVisits),shellsCollected:safe(c.shellsCollected),beachCleanups:safe(c.beachCleanups),lastTreasureDay:safe(c.lastTreasureDay),festivalDays:Array.isArray(c.festivalDays)?c.festivalDays.filter(safe).slice(-100):[]};
 }
 export class CoastSystem {
  constructor(state){this.state=state;this.state.data.coast=normalizeCoast(this.state.data.coast);}
@@ -34,13 +34,13 @@ export class CoastSystem {
  }
  shell(){
   if(!this.status.shellReady)return false;
-  this.data.lastShellDay=this.day;
+  this.data.lastShellDay=this.day;this.data.shellsCollected++;
   this.state.data.inventory.kerang=(this.state.data.inventory.kerang||0)+1;
   this.state.save();return true;
  }
  clean(){
   if(!this.status.cleanReady)return false;
-  this.data.lastCleanDay=this.day;this.state.data.coins+=12;
+  this.data.lastCleanDay=this.day;this.data.beachCleanups++;this.state.data.coins+=12;
   this.state.save();return true;
  }
  visitIsland(){this.data.islandVisits++;this.state.save();}
