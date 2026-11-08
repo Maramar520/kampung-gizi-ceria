@@ -106,9 +106,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const festival=this.world.festival;
   const start=Math.floor((day-1)/28)*28+1;
   const cells=Array.from({length:28},(_,i)=>{
-   const d=start+i,active=d===day,event=(d>=3&&(d-3)%4===0);
+   const d=start+i,active=d===day,event=(d>=3&&(d-3)%4===0),weekend=(d%7===6||d%7===0);
    const birthdays=Object.entries(BIRTHDAYS).filter(([,birthday])=>birthday===(d-1)%28+1);
-   return '<div class="calendar-day'+(active?' today':'')+(event?' festival':'')+'"'+(active?' aria-current="date"':'')+'>'+d+'<small>'+(active?'Hari ini':birthdays.length?'🎂':event?'🎉':'&nbsp;')+'</small></div>';
+   return '<div class="calendar-day'+(active?' today':'')+(event?' festival':'')+'"'+(active?' aria-current="date"':'')+'>'+d+'<small>'+(active?'Hari ini':birthdays.length?'🎂':event?'🎉':weekend?'🎈':'&nbsp;')+'</small></div>';
   }).join('');
   const phase=this.world.clock.description;
   this.show('📅 Kalender Kampung','Hari '+day+' · '+phase.phase+' · '+phase.weather+'. Festival Kampung Sehat berikutnya pada hari '+festival.next+' di Alun-Alun. Kalender mengikuti hari permainan dan berganti saat pemain tidur.',[
@@ -116,7 +116,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    {label:'🎉 Jadwal festival',fn:()=>this.festivalGuide()},
    {label:'🏛️ Misi Balai Kota',fn:()=>this.mayorMissionMenu()},
    {label:'Tutup',fn:()=>this.close()}
-  ],'<div class="calendar-sheet" aria-label="Kalender 28 hari permainan">'+cells+'</div><div class="calendar-legend">🟩 Hari ini · 🎉 Hari festival · Satu halaman = 28 hari permainan</div>');
+  ],'<div class="calendar-sheet" aria-label="Kalender 28 hari permainan">'+cells+'</div><div class="calendar-legend">🟩 Hari ini · 🎉 Hari festival · 🎈 Akhir pekan · Satu halaman = 28 hari permainan</div>');
  }
  birthdayCalendarMenu(){
   const names={sari:'Bu Sari',chef:'Chef Bimo',tani:'Pak Tani',nia:'Nia',rani:'Kak Rani',arif:'Warga Arif',lina:'Warga Lina',mayor:'Kepala Desa'};
@@ -195,14 +195,23 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   })));
  }
  plazaMenu(){
-  const active=this.world.festival.active;
+  const active=this.world.festival.active,weekend=this.world.weekendVillage.event;
   this.show('🌳 Alun-Alun Kampung',active?
    'Festival Kampung Sehat sedang berlangsung! Warga berkumpul di dekat air mancur dan panggung kegiatan.':
    'Selamat datang di alun-alun! Ada air mancur, bangku taman dan tempat warga berkumpul. Festival diadakan setiap empat hari permainan.',[
     {label:active?'🎪 Ikut Festival Kampung Sehat':'📅 Jadwal festival',fn:()=>active?this.festivalMenu():this.festivalGuide()},
     {label:'🤸 Senam dan kegiatan warga',fn:()=>this.plazaActivity()},
+    ...(weekend?[{label:weekend.name,fn:()=>this.weekendMenu()}]:[]),
     {label:'Tutup',fn:()=>this.close()}
    ]);
+ }
+ weekendMenu(){
+  const system=this.world.weekendVillage,event=system.event;
+  if(!event)return this.plazaMenu();
+  this.show('🎈 Kegiatan Akhir Pekan',event.name+'\\n'+event.description+'\\nHadiah: '+event.coins+' KC + '+event.stars+' ⭐.'+(system.completed?'\\nKamu sudah berpartisipasi hari ini.':''),[
+   ...(!system.completed?[{label:'🙌 Ikut kegiatan bersama warga',fn:()=>{const reward=system.join();if(reward){this.refresh();this.note('Kegiatan selesai! +'+reward.coins+' KC +'+reward.stars+' ⭐');}this.weekendMenu();}}]:[]),
+   {label:'🌳 Kembali ke Alun-Alun',fn:()=>this.plazaMenu()}
+  ]);
  }
  plazaActivity(){
   const day=this.state.data.day;
