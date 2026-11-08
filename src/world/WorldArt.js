@@ -234,24 +234,30 @@ export function buildWorld(scene) {
  for(let x=261;x<388;x+=21){r(deco,x,58,5,10,0xb58b5f);}
  // PETERNAKAN menempel di area rumah, bukan di pojok kanan peta.
  label('TERNAK',325,150,12);
- // RUMAH WARGA bagian tengah atas — interior terbuka, bukan label placeholder.
- room('village',0xf2dcbf,0xa98265);
- label('PERPUSTAKAAN',606,32,14);
- frame(deco,551,106,54,40,0xceb48f,0x947255,3);
- r(deco,557,114,41,11,0xfaf4e6);r(deco,557,130,41,6,0xa9c5b8);
- shelf(626,83,67);table(630,169,50,32,0xc19a73);
- // v1.8: perpustakaan gizi menjadi sudut baca terbuka dalam rumah warga.
- // Tidak ada perubahan hitbox atau pintu dari denah enam blok.
- label('📚 RUANG BACA',650,62,11);
- frame(deco,637,142,52,20,0xb1ccaf,0x77958d,2);
- for(let i=0;i<5;i++){r(deco,642+i*9,148,6,4,[0xe5b882,0xd8a6a0,0x92abc4][i%3]);}
- for(let i=0;i<4;i++){r(deco,633+i*15,91,9,13,[0xc9a6c6,0xe8bd7d,0x94c2b0,0xacc4e1][i%4]);}
- r(deco,670,151,12,5,0xf5e4c7);r(deco,672,147,8,5,0x9277a7);
-
- r(deco,648,177,16,12,0xfff0d7);
+ // PERPUSTAKAAN GIZI BARU v2.2: tetap memakai ruang dan pintu lama.
+ room('village',0xf6e4c9,0xa98265);
+ label('PERPUSTAKAAN GIZI',606,32,13);
+ // Rak buku berwarna-warni sepanjang dinding atas dan sisi kiri.
+ for(const [x,y,w] of [[523,80,81],[623,80,71],[516,115,70]]){
+  frame(deco,x,y,w,30,0xb98b62,0x856249,3);
+  for(let i=0;i<Math.floor((w-9)/10);i++)r(deco,x+6+i*10,y+6,7,17,[0x91b6a2,0xe4b47f,0xa8a0ca,0xe1a2a2,0x9bbdd2][i%5]);
+  r(deco,x+4,y+25,w-8,3,0x805d47);
+ }
+ // Meja baca kelompok dengan buku terbuka dan alat tulis.
+ table(624,164,64,34,0xc49b75);
+ r(deco,637,172,17,13,0xfaf0dd);r(deco,655,172,17,13,0xfaf0dd);
+ r(deco,654,173,2,13,0xbfa68a);r(deco,645,177,5,2,0x9eb6a1);
+ // Pojok baca: karpet, bantal dan buku bergambar.
+ frame(deco,547,166,60,34,0xb6d0b6,0x8ba88f,2);
+ for(const [x,y,c] of [[552,173,0xe9b9a4],[579,183,0xc3b7dc]])frame(deco,x,y,19,13,c,0xa58f88,2);
+ r(deco,573,171,12,9,0xf9f1d7);r(deco,579,171,2,9,0xd8bd8f);
+ // Papan edukasi Isi Piringku dan tanaman hias.
+ frame(deco,619,120,71,30,0x668d7d,0x84634d,2);
+ r(deco,625,126,38,3,0xf8e9cc);r(deco,625,133,27,3,0xf8e9cc);
+ r(deco,666,127,17,15,0xf5e8d1);r(deco,670,130,7,6,0x83b56f);
  flowerBox(509,220,70);
- frame(deco,509,86,27,36,0xa4c6cc,0x9b7861,2);
- r(deco,521,88,3,32,0xfff4d6);r(deco,511,102,23,3,0xfff4d6);
+ frame(deco,509,86,10,35,0x9cbdad,0x83664c,2);
+ r(deco,511,79,6,10,0x74a96f);
  // KOLAM di kanan atas ditambahkan di FarmArt sesuai pond footprint.
  // PASAR TRADISIONAL BARU: tetap pada blok lama dan pintu utara tetap terbuka.
  room('market',0xf4ddbd,0xb57c63,true);
