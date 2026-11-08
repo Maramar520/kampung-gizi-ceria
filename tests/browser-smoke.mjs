@@ -365,14 +365,13 @@ async function testDesktop(browser){
  assert.ok(niaNight.stopped&&niaNight.x>190&&niaNight.x<243&&niaNight.y>342&&niaNight.y<390,
   'Nia must enter traditional market at night even if not raining: '+JSON.stringify(niaNight));
  await page.screenshot({path:'qa-artifacts/desktop-nia-night-market.png',fullPage:true});
- // v1.10: festival activates in market day three, quiz and reward can be claimed once.
+ // v1.20: festival only occurs at Alun-Alun, never the market.
  await page.evaluate(()=>{
   const w=window.__kampungQA.scene.getScene('WorldScene');
-  w.game.state.data.day=3;w.clock.startDay();
-  w.updateRoutines();w.festivalArt.update(w.time.now);
+  w.game.state.data.day=3;w.clock.startDay();w.updateRoutines();w.townArt.update(w.time.now);
  });
- await actionAt(page,208,376,'Pasar');
- await page.getByRole('button',{name:/Ikuti Festival Kampung Sehat/}).click();
+ await actionAt(page,1155,395,'Alun-Alun');
+ await page.getByRole('button',{name:/Festival Kampung Sehat/}).click();
  assert.match(await page.locator('#dialogTitle').textContent(),/Festival Kampung Sehat/);
  await page.getByRole('button',{name:/Ikut festival/}).click();
  await page.getByRole('button',{name:/Kuis festival/}).click();
@@ -539,24 +538,4 @@ try{
  assert.deepEqual(errors,[],'Uncaught browser errors');
  console.log('PASS desktop full quest + farming/fishing and mobile touch layout');
 }catch(error){console.error('Browser QA failed:',error);process.exitCode=1;}
-finally{await browser.close();server.kill('SIGTERM');}  // v1.20: festival only occurs in Alun-Alun, never the market.
-  await page.evaluate(()=>{
-   const w=window.__kampungQA.scene.getScene('WorldScene');
-   w.game.state.data.day=3;w.clock.startDay();w.updateRoutines();w.townArt.update(w.time.now);
-  });
-  await actionAt(page,1155,395,'Alun-Alun');
-  await page.getByRole('button',{name:/Festival Kampung Sehat/}).click();
-  assert.match(await page.locator('#dialogTitle').textContent(),/Festival Kampung Sehat/);
-  await page.getByRole('button',{name:/Ikut festival/}).click();
-  await page.getByRole('button',{name:/Kuis festival/}).click();
-  const answer=await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').festival.question.correct);
-  await page.locator('#choices button').nth(answer).click();
-  await page.getByRole('button',{name:/Kembali ke festival/}).click();
-  const beforeFestival=(await gameData()).coins;
-  await page.getByRole('button',{name:/Ambil hadiah/}).click();
-  assert.equal((await gameData()).coins,beforeFestival+35);
-  assert.equal((await gameData()).festival.celebratedDays.filter(d=>d===3).length,1);
-  assert.equal(await page.getByRole('button',{name:/Ambil hadiah/}).count(),0);
-  await close(page);
-  await page.screenshot({path:'qa-artifacts/desktop-festival.png',fullPage:true});
-
+finally{await browser.close();server.kill('SIGTERM');}
