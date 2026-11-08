@@ -221,7 +221,7 @@ button{touch-action:manipulation}
 .festival-banner{background:#fff0c8;border:2px dashed #e2b477;border-radius:12px;
  font-size:35px;text-align:center;padding:14px;margin:12px 0}
 @media(max-width:600px){.festival-banner{font-size:29px;padding:11px}}
- .minimap-wrap{position:relative;right:auto;top:auto;z-index:1;margin:8px auto 12px;width:max-content;background:#fff9e9eb;border:2px solid #7f9d7c;border-radius:9px;padding:5px;max-width:calc(100% - 16px)}.minimap-wrap canvas{display:block;width:268px;max-width:100%;height:auto;cursor:pointer;touch-action:manipulation}.minimap-wrap small{display:block;font-size:10px;color:#3e6046;text-align:center}@media(max-width:600px){.minimap-wrap{padding:3px;max-width:100%}.minimap-wrap canvas{width:min(268px,calc(100vw - 40px))}.minimap-wrap small{font-size:8px}} </style>
+ .minimap-wrap{position:relative;right:auto;top:auto;z-index:1;margin:0;width:100%;background:#fff9e9eb;border:2px solid #7f9d7c;border-radius:9px;padding:5px;max-width:calc(100% - 16px)}.minimap-wrap canvas{display:block;width:268px;max-width:100%;height:auto;cursor:pointer;touch-action:manipulation}.minimap-wrap small{display:block;font-size:10px;color:#3e6046;text-align:center}@media(max-width:600px){.minimap-wrap{padding:5px;max-width:100%}.minimap-wrap canvas{width:100%}.minimap-wrap small{font-size:8px}} .play-layout{display:grid;grid-template-columns:220px minmax(0,1fr);align-items:start;gap:12px;margin:10px 0}.play-layout .gamewrap{min-width:0}.minimap-wrap{display:flex;flex-direction:column;gap:6px;position:sticky;top:12px}.minimap-wrap canvas{width:100%}.minimap-wrap strong{font-size:14px;color:#476b4d;text-align:center}@media(max-width:700px){.play-layout{grid-template-columns:1fr;gap:8px}.minimap-wrap{position:relative;top:auto;max-width:100%;padding:7px}.minimap-wrap canvas{width:100%;max-height:125px;object-fit:contain}} </style>
 </head>
 <body>
 <header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.14</small></h1><p>Cozy pixel art v1.14 · Balai Kota, Festival & Mini Map</p></header>
@@ -255,7 +255,7 @@ button{touch-action:manipulation}
  <button type="button" id="goEast">🏛️ Pergi ke Alun-Alun & Balai Kota →</button>
  <button type="button" id="goWest">🏡 Kembali ke Kampung Lama</button>
 </nav>
-<div class="minimap-wrap"><canvas id="minimap" width="268" height="120" aria-label="Mini map seluruh kampung"></canvas><small>🗺️ Ketuk lokasi untuk menuju area · titik biru = pemain</small></div>
+<div class="play-layout"><aside class="minimap-wrap" aria-label="Sidebar peta kampung"><strong>🗺️ Peta Kampung</strong><canvas id="minimap" width="268" height="120" aria-label="Mini map seluruh kampung"></canvas><small>🗺️ Ketuk lokasi untuk menuju area · titik biru = pemain</small></aside>
 <div class="gamewrap">
 <div id="game"></div>
 <div class="toast" id="toast">WASD / panah untuk bergerak • E untuk interaksi</div>
@@ -272,6 +272,7 @@ button{touch-action:manipulation}
   <footer class="notebook-footer">Kampung Gizi Ceria • Tekan Esc untuk menutup</footer>
  </div>
 </section>
+</div>
 </div>
 <div class="modal hidden" id="dialog"><div class="panel">
 <button class="close" id="close">✕</button><h2 id="dialogTitle"></h2>
