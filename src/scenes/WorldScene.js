@@ -1,4 +1,4 @@
-import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=friends-20261108';
+import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=south-coast-20261108';
 import {createTextures,buildWorld} from '../world/WorldArt.js';
 import {Player} from '../entities/Player.js';
 import {NPC} from '../entities/NPC.js';
