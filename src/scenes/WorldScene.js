@@ -353,8 +353,30 @@ export class WorldScene extends Phaser.Scene {
   const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
   this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.villageWeatherDetails.update(this.time.now,this.clock.weather,this.clock.phase);this.townArt.update(this.time.now);this.updateRoutines();
+  const clinicOpen=this.clock.phase!==3;
+  const clinicKey=this.game.state.data.day+'-'+this.clock.phase;
+  if(this.clinicRoutineKey!==clinicKey){
+   this.clinicRoutineKey=clinicKey;
+   this.clinicDoctor.setRoutine(clinicOpen?[
+    {x:1520,y:450,activity:'🩺 Memeriksa pasien',pause:2},
+    {x:1580,y:450,activity:'📋 Mencatat hasil',pause:2},
+    {x:1580,y:495},{x:1520,y:495}
+   ]:[{x:1520,y:450,activity:'🌙 Puskesmas tutup',pause:3}],'DOKTER MAYA',clinicOpen);
+   this.clinicNurse.setRoutine(clinicOpen?[
+    {x:1460,y:410,activity:'📋 Pendaftaran',pause:2},
+    {x:1480,y:410},{x:1480,y:460,activity:'💊 Menyiapkan obat',pause:2},
+    {x:1460,y:460}
+   ]:[{x:1460,y:410,activity:'🌙 Istirahat',pause:3}],'PERAWAT DINA',clinicOpen);
+   this.clinicPatient.setRoutine(clinicOpen?[
+    {x:1530,y:320},{x:1530,y:336},{x:1530,y:377},
+    {x:1470,y:395,activity:'🪑 Menunggu giliran',pause:3},
+    {x:1530,y:420},{x:1565,y:435,activity:'🩺 Diperiksa',pause:3},
+    {x:1530,y:510},{x:1530,y:545},{x:1530,y:336},{x:1530,y:320}
+   ]:[{x:1530,y:320,activity:'🏡 Pulang',pause:3}],'PASIEN',clinicOpen);
+  }
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
+   this.clinicDoctor.update(dt);this.clinicNurse.update(dt);this.clinicPatient.update(dt);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
    this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);this.wargaA.update(dt);this.wargaB.update(dt);this.restaurantCustomer.update(dt);
