@@ -9,8 +9,8 @@ export class EastHomesArt{
  constructor(scene){
   const ground=scene.add.graphics().setDepth(-99);
   const roads=scene.add.graphics().setDepth(-89);
-  const floor=scene.add.graphics().setDepth(-76);
-  const deco=scene.add.graphics().setDepth(-74);
+  const floor=scene.add.graphics().setDepth(-68);
+  const deco=scene.add.graphics().setDepth(-64);
   const rect=(g,x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
   const frame=(g,x,y,w,h,c,edge=0x88694c,t=3)=>{
    rect(g,x-t,y-t,w+t*2,h+t*2,edge);rect(g,x,y,w,h,c);
@@ -22,8 +22,11 @@ export class EastHomesArt{
   const furniture=(x,y,w,h,c,edge=0x88694c)=>frame(deco,x,y,w,h,c,edge,2);
   // Rumput dan tekstur identik dengan buildWorld() pada enam blok lama.
   rect(ground,1340,0,380,600,0xa4cd91);
+  // Jangan gambar sehelai rumput pun di tapak ketiga rumah.
+  const inHome=(x,y)=>Object.values(EAST_HOMES).some(h=>
+   x>=h.x-12&&x<=h.x+h.w+12&&y>=h.y-14&&y<=h.y+h.h+14);
   for(let y=9;y<600;y+=17)for(let x=1345;x<1720;x+=19)
-   if((x*7+y*11)%17<7)tuft(x,y);
+   if(!inHome(x,y)&&(x*7+y*11)%17<7)tuft(x,y);
   // Jalan lama berlanjut tanpa celah. Tepi, tekstur, dan warna sama.
   frame(roads,1340,261,380,49,0xead5af,0xd3b18a,2);
   for(let x=1350;x<1720;x+=58)rect(roads,x,282,25,3,0xd7b88f);
@@ -37,7 +40,7 @@ export class EastHomesArt{
    rect(floor,x-10,y-10,w+20,h+20,0x78543c);
    rect(floor,x-7,y-7,w+14,h+14,0xb9885d);
    rect(floor,x-4,y-4,w+8,h+8,0xd1a576);
-   // Lantai wajib digambar di atas SEMUA lapisan rumput dan jalan.
+   // Lantai kayu solid berada di atas lapisan rumput; tidak boleh transparan.
    frame(floor,x,y,w,h,({nia:0xc99b72,arif:0xc49a71,lina:0xd0a27c})[id],0x896247,3);
    for(let yy=y+23;yy<y+h-10;yy+=22)rect(floor,x+8,yy,w-16,2,0x9f7554);
    const trim=({nia:0xb68168,arif:0x9a7658,lina:0xa27b70})[id];
