@@ -120,22 +120,42 @@ export class WorldScene extends Phaser.Scene {
   const leavingNiaShelter=this.niaSheltering===true&&!niaSheltering;
   this.niaSheltering=niaSheltering;
   if(this.routineKey===key)return;
-  const mayorRoute=(raining||phase===3)?[{x:1204,y:180,activity:'🏛️ Administrasi',pause:2}]:
-   [{x:1204,y:180},{x:1155,y:208},{x:1155,y:238},{x:1155,y:281},
-    {x:1155,y:345},{x:1155,y:395,activity:this.festival.active?'🎉 Memimpin festival':'🌳 Menyapa warga',pause:2},
-    {x:1155,y:345},{x:1155,y:281},{x:1155,y:238},{x:1155,y:208},{x:1204,y:180}];
-  const mayorReturning=(raining||phase===3)&&this.mayor.y>238;
-  const returnRoute=mayorReturning?[{x:1155,y:this.mayor.y},{x:1155,y:345},{x:1155,y:281},
-   {x:1155,y:238},{x:1155,y:208},{x:1204,y:180}]:mayorRoute;
-  this.mayor.setRoutine(returnRoute,'KEPALA DESA',!raining&&phase!==3);
-  // Warga bergerak secara fisik di area terbuka, tidak hanya animasi kaki.
+  // Rute pintu Balai Kota -> jalan utama -> alun-alun; tidak melintasi dinding.
+  const hallToSquare=[{x:1155,y:208},{x:1155,y:238},{x:1155,y:281},
+   {x:1155,y:345},{x:1155,y:395}];
+  const squareToHall=[{x:1155,y:345},{x:1155,y:281},{x:1155,y:238},
+   {x:1155,y:208},{x:1204,y:180}];
+  const mayorInside=this.mayor.x>=1025&&this.mayor.x<=1285&&this.mayor.y<238;
+  const mayorOutside=this.mayor.y>238;
+  const mayorRoute=(raining||phase===3)?
+   (mayorInside?[{x:1204,y:180,activity:'🏛️ Administrasi',pause:2}]:
+    [...squareToHall,{x:1204,y:180,activity:'🏛️ Administrasi',pause:2}]):
+   [{x:1204,y:180},...hallToSquare.map((p,i)=>i===4?{...p,activity:this.festival.active?'🎉 Memimpin festival':'🌳 Menyapa warga',pause:2}:p),
+    ...squareToHall];
+  this.mayor.setRoutine(mayorRoute,'KEPALA DESA',!raining&&phase!==3);
   const sheltered=raining||phase===3;
-  this.wargaA.setRoutine(sheltered?[{x:1155,y:this.wargaA.y},{x:1155,y:345},{x:1155,y:281},{x:1155,y:238},{x:1155,y:207},{x:1200,y:180}]:
-   [{x:1200,y:452,activity:this.festival.active?'🎪 Menonton lomba':'🤸 Senam',pause:2},
-    {x:1200,y:480},{x:1245,y:480,activity:'🌳 Bersantai',pause:2},{x:1245,y:452}], 'WARGA LINA',!sheltered);
-  this.wargaB.setRoutine(sheltered?[{x:1155,y:this.wargaB.y},{x:1155,y:345},{x:1155,y:281},{x:1155,y:238},{x:1155,y:207},{x:1105,y:182}]:
-   [{x:1080,y:471,activity:this.festival.active?'🥗 Menyiapkan stan':'🧹 Merawat taman',pause:2},
-    {x:1080,y:500},{x:1110,y:500},{x:1110,y:471}], 'WARGA ARIF',!sheltered);
+  const plazaLoopA=[{x:1200,y:452,activity:this.festival.active?'🎪 Menonton lomba':'🤸 Senam',pause:2},
+   {x:1200,y:480},{x:1245,y:480,activity:'🌳 Bersantai',pause:2},{x:1245,y:452}];
+  const plazaLoopB=[{x:1080,y:471,activity:this.festival.active?'🥗 Menyiapkan stan':'🧹 Merawat taman',pause:2},
+   {x:1080,y:500},{x:1110,y:500},{x:1110,y:471}];
+  const shelterRoute=(npc,destination)=>{
+   if(npc.y<238&&npc.x>=1025)return [{x:destination,y:180,activity:'🏛️ Berteduh',pause:3}];
+   const points=[];
+   // Keluar dari alun-alun lewat jalur tengah, kemudian masuk melalui pintu.
+   if(npc.y>345)points.push({x:1155,y:npc.y},{x:1155,y:345});
+   points.push({x:1155,y:281},{x:1155,y:238},{x:1155,y:208},
+    {x:destination,y:180,activity:'🏛️ Berteduh',pause:3});
+   return points;
+  };
+  const toPlaza=npc=>{
+   if(npc.y<238)return [{x:1155,y:208},{x:1155,y:238},{x:1155,y:281},{x:1155,y:345}];
+   if(npc.y<345)return [{x:1155,y:345}];
+   return [];
+  };
+  this.wargaA.setRoutine(sheltered?shelterRoute(this.wargaA,1200):
+   [...toPlaza(this.wargaA),...plazaLoopA], 'WARGA LINA',!sheltered);
+  this.wargaB.setRoutine(sheltered?shelterRoute(this.wargaB,1105):
+   [...toPlaza(this.wargaB),...plazaLoopB], 'WARGA ARIF',!sheltered);
   const justStoppedRaining=this.lastRaining===true&&!raining&&phase!==3;
   this.lastRaining=raining;
   this.routineKey=key;
@@ -192,11 +212,8 @@ export class WorldScene extends Phaser.Scene {
   for(const [id,npc] of [['sari',this.sari],['tani',this.tani],
    ['nia',this.nia],['chef',this.chef],['rani',this.rani]]){
    if(id==='nia'&&phase===3)continue;
-   // Festival day: Nia and Bu Sari visit the traditional market to join
-   // the activity, reusing existing workstation routes and doorways.
-   const festivalPhase=this.festival.active&&phase!==3?
-    (id==='nia'?1:id==='sari'?0:phase):phase;
-   const route=workRoute(id,festivalPhase);
+   // Festival diselenggarakan hanya di alun-alun; rutinitas kerja lama tetap berjalan.
+   const route=workRoute(id,phase);
    let prefix=[];
    if(id==='nia'&&leavingNiaShelter&&isInsideShelter('nia',npc)){
     prefix=dryReturnRoute('nia',npc);
