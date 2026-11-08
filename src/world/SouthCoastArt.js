@@ -7,14 +7,14 @@ export class SouthCoastArt {
   const rect=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h);};
   // Pantai berpasir, batas pantai berlekuk, dan laut biru pastel.
   rect(0,600,1720,112,0xf3dba5);
-  rect(0,710,1720,140,0x65bfd0);
+  rect(0,710,1720,490,0x65bfd0);
   for(let x=0;x<1720;x+=30){
    const y=703+Math.round(Math.sin(x*.035)*5);
    rect(x,y,30,9,0x9ddcdb);
    rect(x,y+10,30,3,0xd6f0dc);
   }
   // Pasir dan rumput di tepi kampung.
-  rect(0,600,1720,17,0xa4cd91);
+  rect(0,600,1720,17,0xf3dba5);
   for(let x=18;x<1720;x+=47){
    rect(x,627+(x%5)*9,5,3,0xe3c58e);
    rect(x+12,670+(x%7)*3,3,3,0xffedca);
