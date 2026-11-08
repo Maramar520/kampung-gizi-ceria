@@ -291,17 +291,43 @@ export function buildWorld(scene) {
   r(deco,x+8,y-7,13,12,0x80ad70);
  }
  flowerBox(113,527,55);flowerBox(270,527,48);
- // RESTORAN SEHAT: blok tengah bawah, interior bebas dimasuki dari jalan.
- room('restaurant',0xf3d6bc,0xb88269,true);
- label('RESTORAN SEHAT',607,322,14);
- for(let i=0;i<9;i++)r(deco,504+i*24,335,24,9,i%2?0xf8e6b2:0xc98274);
- shelf(515,360,64);
- table(533,395,102,36,0xb98961);
- for(let x=543;x<631;x+=30){frame(deco,x,383,20,15,0xf5ecdb,0xb2a79b,1);r(deco,x+6,387,8,6,x%2?0x80aa7b:0xe5b073);}
- table(522,482,49,31,0xd3a881);table(639,481,51,31,0xd3a881);
- frame(deco,630,366,60,21,0x58796b,0x745944,2);
- r(deco,636,373,42,2,0xf5e9c2);r(deco,637,379,34,2,0xf5e9c2);
- flowerBox(505,524,73);
+ // RESTORAN GIZI SEHAT BARU v1.99: renovasi visual di footprint asli.
+ // Pintu utara x~607, dapur interaktif x=687,y=442, dan area gerak NPC tidak berubah.
+ room('restaurant',0xf6e2c9,0xb88269,true);
+ label('RESTORAN GIZI SEHAT',607,322,13);
+ // Kanopi pastel di fasad, mengikuti bentuk bangunan lama.
+ for(let i=0;i<9;i++)r(deco,504+i*24,335,24,9,i%2?0xffe9d1:0xdb9584);
+ // Dapur terbuka di sisi kanan: rak bahan, meja racik, kompor, dan piring.
+ shelf(639,359,58);
+ frame(deco,636,394,63,26,0xc4946c,0x926a50,3);
+ for(const [x,c] of [[645,0x7eac6b],[662,0xe7b36e],[680,0xd88f79]]){
+  r(deco,x,398,13,12,0xf4e8d2);r(deco,x+4,401,6,6,c);
+ }
+ // Kompor di sisi kanan bawah agar titik interaksi dapur tetap dapat didekati.
+ frame(deco,657,468,42,33,0x98aaa4,0x728a84,3);
+ for(const x of [668,687]){r(deco,x-5,476,13,13,0x465f5e);r(deco,x-2,479,7,7,0xb9c9c4);}
+ // Etalase makanan sehat di kiri, dengan sayur, protein, dan buah.
+ frame(deco,515,367,107,41,0xc89a72,0x99704e,3);
+ r(deco,519,371,99,7,0xf9ebd6);
+ for(let i=0;i<5;i++){
+  const x=522+i*19;
+  r(deco,x,383,15,16,0xf1e6cf);
+  r(deco,x+3,386,9,9,[0x85b96b,0xe5ad65,0xe39a88,0xa6c781,0xe9c35f][i]);
+ }
+ // Meja kasir di sisi kiri, lorong tengah menuju dapur tetap terbuka.
+ table(518,425,73,25,0xc99a73);
+ r(deco,530,418,20,10,0xf6e7d0);r(deco,556,419,16,8,0x8daaa0);
+ // Dua set meja makan di sudut bawah, bukan di jalur masuk.
+ for(const [x,y] of [[532,482],[620,482]]){
+  table(x,y,54,29,0xd0a27c);
+  r(deco,x+21,y+8,13,11,0xf9eddd);
+  r(deco,x+25,y+11,6,5,0x83b46d);
+  r(deco,x+4,y-11,18,8,0xae8868);r(deco,x+4,y+30,18,8,0xae8868);
+ }
+ // Papan menu sehat dan tanaman hias.
+ frame(deco,634,364,64,22,0x638677,0x87664c,2);
+ for(let i=0;i<3;i++)r(deco,641,370+i*5,43-i*7,2,0xf8ead1);
+ flowerBox(505,524,73);flowerBox(646,524,52);
  // RUMAH PAK TANI & BU SARI, blok kanan bawah.
  // Denah luar dan pintu masuk tidak berubah; interior terbuka seperti rumah pemain.
  room('store',0xf1dec4,0xa17f67,true);
