@@ -57,21 +57,49 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  close(){if(this.notebook?.visible){this.notebook.close();return;}this.minigame.stop();this.game.dialogOpen=false;$('dialog').classList.add('hidden');if(this.cookTween){this.cookTween.stop();this.cookTween=null}}
  market(){
-  const featured=this.world.festival.status;
+  const featured=this.world.festival.status,life=this.world.villageLife;
   const items=[
-   {label:'📍 Lihat lokasi Festival di Alun-Alun',fn:()=>this.festivalGuide()},
-   ...Object.entries({beras:12,telur:15,bayam:10,wortel:14,tomat:15,kangkung:12,selada:14,brokoli:19,labu:21}).map(([id,price])=>({
-    label:'Beli '+id+' — '+price+' KC',fn:()=>{
-     const s=this.state.data;if(s.coins<price){this.note('Koin tidak cukup!');return;}
-     s.coins-=price;s.inventory[id]=(s.inventory[id]||0)+1;this.refresh();this.market();
-     this.note('Berhasil membeli '+id);
-    }})),
+   {label:'📍 Festival di Alun-Alun',fn:()=>this.festivalGuide()},
+   {label:'📦 Pesanan Belanja Warga',fn:()=>this.marketOrderMenu()},
+   ...Object.keys({beras:1,telur:1,bayam:1,wortel:1,tomat:1,kangkung:1,selada:1,brokoli:1,labu:1}).map(id=>({
+    label:'Beli '+id+' — '+life.price(id)+' KC'+(id===life.featured?' 🔖 Diskon':'')+' · Stok '+life.stock(id),
+    fn:()=>{if(life.buy(id)){this.refresh();this.note('Berhasil membeli '+id);}
+     else this.note(life.stock(id)<1?'Stok habis hari ini.':'Koin tidak cukup.');
+     this.market();}
+   })),
    ...CROP_IDS.map(id=>({label:CROPS[id].emoji+' Bibit '+CROPS[id].name+' — '+CROPS[id].price+' KC',fn:()=>{
     if(!this.garden.buySeeds(1,id)){this.note('Koin tidak cukup.');return;}
     this.refresh();this.market();this.note('Bibit '+CROPS[id].name+' ditambahkan!');
    }}))
   ];
-  this.show('🧺 Pasar Tradisional','Beli bahan masakan atau bibit. Sayuran juga dapat ditanam di kebun! '+(featured.active?'🎉 Festival berlangsung di Alun-Alun, bukan di pasar!':'Festival berikutnya hari '+featured.next+'.'),items);
+  this.show('🧺 Pasar Tradisional','Hari '+this.state.data.day+' · Diskon harian: '+life.featured+
+   '. Stok diperbarui setiap hari. '+(featured.active?'🎉 Festival berlangsung di Alun-Alun.':'Festival berikutnya hari '+featured.next+'.'),items);
+ }
+ marketOrderMenu(){
+  const life=this.world.villageLife,order=life.order;
+  this.show('📦 Pesanan Warga',life.orderDone?'Pesanan hari ini sudah diselesaikan. Terima kasih!':
+   'Warga membutuhkan '+order.amount+' '+order.id+'. Hadiah '+order.reward+' Koin Ceria. Kamu bisa membeli atau memanen bahannya terlebih dahulu.',[
+   ...(!life.orderDone?[{label:'📦 Serahkan '+order.id,fn:()=>{
+    if(life.fulfill()){this.refresh();this.note('Pesanan selesai! +'+order.reward+' KC');}
+    else this.note('Bahan '+order.id+' belum cukup.');
+    this.marketOrderMenu();
+   }}]:[]),
+   {label:'🧺 Kembali ke pasar',fn:()=>this.market()},
+   {label:'Tutup',fn:()=>this.close()}
+  ]);
+ }
+ communityEventMenu(){
+  const life=this.world.villageLife,event=life.todayEvent;
+  this.show('🌿 Kegiatan Bersama Warga','Hari '+this.state.data.day+' · '+event.title+
+   '\\nBergabung bersama warga untuk menjaga kesehatan dan lingkungan kampung. Hadiah: '+event.reward+' KC dan '+event.stars+' bintang belajar.'+
+   (life.eventDone?'\\n\\n✓ Sudah ikut kegiatan hari ini.':''),[
+   ...(!life.eventDone?[{label:'✨ Ikut kegiatan',fn:()=>{
+    if(life.joinEvent()){this.refresh();this.note('Kegiatan selesai! +'+event.reward+' KC');}
+    this.communityEventMenu();
+   }}]:[]),
+   {label:'🌳 Kembali ke Alun-Alun',fn:()=>this.plazaMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ]);
  }
  calendarMenu(){
   const day=Math.max(1,Number(this.state.data.day)||1);
