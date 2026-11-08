@@ -27,6 +27,7 @@ import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-road-connected-20
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
 import {VillageLifeSystem} from '../systems/VillageLifeSystem.js';
+import {WeekendVillageSystem} from '../systems/WeekendVillageSystem.js';
 import {VillageWeatherDetails} from '../world/VillageWeatherDetails.js';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
@@ -43,6 +44,7 @@ export class WorldScene extends Phaser.Scene {
   this.coastExpedition=new CoastExpeditionSystem(this.game.state,this.coast);
   this.marineEducation=new MarineEducationSystem(this.game.state);
   this.villageLife=new VillageLifeSystem(this.game.state);
+  this.weekendVillage=new WeekendVillageSystem(this.game.state);
   this.social=new SocialSystem(this.game.state);
   this.friendEvents=new FriendEvents(this.game.state);
   this.missions=new MissionSystem(this.game.state);
@@ -160,9 +162,10 @@ export class WorldScene extends Phaser.Scene {
     ...squareToHall];
   this.mayor.setRoutine(mayorRoute,'KEPALA DESA',!raining&&phase!==3);
   const sheltered=raining||phase===3;
-  const plazaLoopA=[{x:1200,y:452,activity:this.festival.active?'🎪 Menonton lomba':'🤸 Senam',pause:2},
+  const weekend=this.weekendVillage.event;
+  const plazaLoopA=[{x:1200,y:452,activity:this.festival.active?'🎪 Menonton lomba':weekend?'🎈 Kegiatan akhir pekan':'🤸 Senam',pause:2},
    {x:1200,y:480},{x:1245,y:480,activity:'🌳 Bersantai',pause:2},{x:1245,y:452}];
-  const plazaLoopB=[{x:1080,y:471,activity:this.festival.active?'🥗 Menyiapkan stan':'🧹 Merawat taman',pause:2},
+  const plazaLoopB=[{x:1080,y:471,activity:this.festival.active?'🥗 Menyiapkan stan':weekend?'🧺 Membantu acara warga':'🧹 Merawat taman',pause:2},
    {x:1080,y:500},{x:1110,y:500},{x:1110,y:471}];
   const shelterRoute=(npc,destination)=>{
    if(npc.y<238&&npc.x>=1025)return [{x:destination,y:180,activity:'🏛️ Berteduh',pause:3}];
