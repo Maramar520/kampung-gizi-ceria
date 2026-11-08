@@ -212,7 +212,7 @@ async function testDesktop(browser){
   await page.locator('#choices button').nth(correct).click();
   await page.locator('#choices button').first().click();
  }
- assert.equal((await gameData()).learning.stars,5);
+ assert.equal((await gameData()).learning.stars,starsBeforeLearning+5);
  assert.equal((await gameData()).coins,coinsAfterLearning);
  await close(page);
  // v1.8: learning is a daily task, claimed once, with permanent badge.
