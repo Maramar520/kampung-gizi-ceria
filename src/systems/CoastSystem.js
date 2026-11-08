@@ -10,7 +10,7 @@ export function normalizeCoast(raw){
  return {lastFishDay:safe(c.lastFishDay),casts:Math.min(2,safe(c.casts)),
   catches:Array.isArray(c.catches)?c.catches.filter(id=>SEA_FISH.some(f=>f.id===id)).slice(-100):[],
   lastShellDay:safe(c.lastShellDay),lastCleanDay:safe(c.lastCleanDay),
-  islandVisits:safe(c.islandVisits),festivalDays:Array.isArray(c.festivalDays)?c.festivalDays.filter(safe).slice(-100):[]};
+  islandVisits:safe(c.islandVisits),lastTreasureDay:safe(c.lastTreasureDay),festivalDays:Array.isArray(c.festivalDays)?c.festivalDays.filter(safe).slice(-100):[]};
 }
 export class CoastSystem {
  constructor(state){this.state=state;this.state.data.coast=normalizeCoast(this.state.data.coast);}
@@ -19,6 +19,7 @@ export class CoastSystem {
  get festivalToday(){return this.day%7===0;}
  get status(){return {fishReady:this.data.lastFishDay!==this.day,casts:this.data.casts,
   shellReady:this.data.lastShellDay!==this.day,cleanReady:this.data.lastCleanDay!==this.day,
+  treasureReady:this.data.lastTreasureDay!==this.day,
   festivalToday:this.festivalToday,festivalClaimed:this.data.festivalDays.includes(this.day),
   collection:SEA_FISH.map(f=>({...f,count:this.data.catches.filter(id=>id===f.id).length}))};}
  cast(){
@@ -43,6 +44,11 @@ export class CoastSystem {
   this.state.save();return true;
  }
  visitIsland(){this.data.islandVisits++;this.state.save();}
+ treasure(){
+  if(!this.status.treasureReady)return false;
+  this.data.lastTreasureDay=this.day;this.state.data.coins+=8;
+  this.state.save();return true;
+ }
  claimFestival(){
   if(!this.festivalToday||this.status.festivalClaimed||!this.data.catches.length)return false;
   this.data.festivalDays.push(this.day);this.state.data.coins+=25;this.state.save();return true;
