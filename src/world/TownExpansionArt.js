@@ -23,17 +23,40 @@ export class TownExpansionArt {
    if((y>=261&&y<310)||(y>=417&&y<461))continue;
    rect(plazaCX-2,y,4,17,roadHighlight);
   }
-  // Balai Kota: cutaway interior, door open at bottom centre.
-  rect(1025,65,260,173,0xf1dec5);
-  for(let y=86;y<220;y+=23)rect(1037,y,237,2,0xe2bf9e);
-  rect(1025,65,260,11,0x9b8069);rect(1025,65,11,173,0x9b8069);
-  rect(1274,65,11,173,0x9b8069);
-  rect(1025,227,104,11,0x9b8069);rect(1181,227,104,11,0x9b8069);
-  rect(1082,114,46,25,0xb88c61);rect(1090,119,30,9,0xe8d6b7);
-  rect(1192,105,62,14,0x9c7a56);
-  for(let i=0;i<5;i++)rect(1198+i*10,96,7,14,[0xa1bd91,0xe6b57b,0xa2b5cf][i%3]);
-  rect(1054,177,43,22,0xc5a77d);rect(1059,181,32,12,0xf7e9cd);
-  rect(1224,174,32,30,0x92b59a);rect(1230,168,20,12,0x76a878);
+  // Balai Kota baru: renovasi visual di footprint lama x=1025..1285,y=65..238.
+  // Interior terbuka; pintu selatan x=1129..1181 dan jalur NPC tetap bebas.
+  rect(1025,65,260,173,0xf5dfc5);
+  // Lantai kayu terang dengan pola ubin halus.
+  for(let y=79;y<227;y+=20){
+   rect(1036,y,238,2,0xe4bf9d);
+   for(let x=1042+((y/20|0)%2)*14;x<1267;x+=38)rect(x,y+5,2,12,0xebceb1);
+  }
+  // Bingkai bangunan dan atap dekoratif pendek agar interior tetap terlihat.
+  rect(1025,65,260,12,0x947b69);
+  rect(1033,67,244,5,0xb88c74);
+  for(let x=1043;x<1268;x+=25)rect(x,68,13,3,0xf3d9ae);
+  rect(1025,65,11,173,0x987764);rect(1274,65,11,173,0x987764);
+  rect(1025,227,104,11,0x987764);rect(1181,227,104,11,0x987764);
+  // Keset pintu dan jalan masuk menyatu dengan jalur menuju alun-alun.
+  rect(1132,225,46,9,0xd6ad80);rect(1135,238,40,12,road);
+  // Papan informasi dan lemari arsip di sisi kiri, tidak menutupi papan misi.
+  rect(1043,119,65,44,0xbaa083);rect(1048,124,55,34,0xf8ecd4);
+  for(let i=0;i<3;i++){rect(1053,129+i*9,40,3,[0xa3b8a0,0xd9b38b,0xa7b5d0][i]);}
+  rect(1043,177,43,38,0x9d8068);
+  for(let y=184;y<=205;y+=11){rect(1049,y,31,7,0xcbb096);rect(1063,y+2,5,2,0x80694f);}
+  // Meja pelayanan administrasi, kursi tunggu, dan pot tanaman.
+  rect(1190,113,70,26,0xa97d5b);rect(1195,117,60,16,0xd4ad83);
+  rect(1200,108,22,7,0xf5ebd5);rect(1235,107,13,10,0x91b5a6);
+  for(const [x,y] of [[1204,172],[1241,172],[1204,201],[1241,201]]){
+   rect(x-12,y-6,24,10,0xb48d6c);rect(x-10,y+4,5,7,0x8e6d55);rect(x+5,y+4,5,7,0x8e6d55);
+  }
+  rect(1250,195,16,17,0x9b8067);rect(1247,185,22,13,0x78a77b);
+  g.fillStyle(0x93c491);g.fillCircle(1258,185,10);
+  // Lambang desa di dinding belakang, tanpa tulisan besar di atas bangunan.
+  g.fillStyle(0xe7c88a);g.fillCircle(1155,91,14);
+  g.fillStyle(0x6b9e77);g.fillCircle(1155,91,9);
+  rect(1151,85,8,11,0xf8ead2);
+  // Ruang tengah sengaja kosong untuk Kepala Desa, pejalan pantai, dan interaksi.
   // Renovasi alun-alun hanya dalam footprint lama x=1005..1307, y=344..544.
   // Rumah Pak Tani & Bu Sari ada di blok barat, tidak disentuh.
   const path=0xe8cbb0,stone=0xf3dfc7,hedge=0x5e9b63;
