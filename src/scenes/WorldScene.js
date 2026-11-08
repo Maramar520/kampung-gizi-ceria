@@ -7,6 +7,7 @@ import {GardenArt} from '../world/GardenArt.js';
 import {FarmArt} from '../world/FarmArt.js';
 import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
+import {CoastSystem} from '../systems/CoastSystem.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js?v=riko-friend-20261108';
 import {MissionSystem} from '../systems/MissionSystem.js';
@@ -32,6 +33,7 @@ export class WorldScene extends Phaser.Scene {
   this.clock=new TimeWeatherSystem(this.game.state,this.garden);
   this.gardenArt=new GardenArt(this,this.garden);
   this.dailyLife=new DailyLifeSystem(this.game.state);
+  this.coast=new CoastSystem(this.game.state);
   this.social=new SocialSystem(this.game.state);
   this.missions=new MissionSystem(this.game.state);
   this.decor=new HomeDecorSystem(this.game.state);
@@ -68,6 +70,10 @@ export class WorldScene extends Phaser.Scene {
   this.wargaA=new NPC(this,{x:1200,y:452,name:'WARGA LINA',texture:'nia',stops:[{x:1200,y:452}]});
   this.wargaB=new NPC(this,{x:1080,y:471,name:'WARGA ARIF',texture:'tani',stops:[{x:1080,y:471}]});
   this.restaurantCustomer=new RestaurantCustomer(this);
+  this.beachVisitors=[
+   new NPC(this,{x:430,y:652,name:'PENGUNJUNG PANTAI',texture:'nia',stops:[{x:430,y:652},{x:530,y:652},{x:560,y:684},{x:430,y:652}]}),
+   new NPC(this,{x:955,y:662,name:'PEJALAN PANTAI',texture:'tani',stops:[{x:955,y:662},{x:1000,y:682},{x:935,y:677},{x:955,y:662}]})
+  ];
   this.zones=INTERACTIONS;
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
@@ -302,6 +308,9 @@ export class WorldScene extends Phaser.Scene {
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
    this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);this.wargaA.update(dt);this.wargaB.update(dt);this.restaurantCustomer.update(dt);
+   const beachOpen=this.clock.weather!=='Hujan'&&this.clock.phase!==3;
+   for(const visitor of this.beachVisitors){visitor.sprite.setVisible(beachOpen);visitor.label?.setVisible(beachOpen);visitor.activityText.setVisible(false);if(beachOpen)visitor.update(dt);}
+
    // Once a villager has exited an interior through its door, begin the
    // normal repeating workday without teleporting or cutting across walls.
    for(const npc of [this.sari,this.tani,this.nia,this.chef,this.rani,this.mayor]){
