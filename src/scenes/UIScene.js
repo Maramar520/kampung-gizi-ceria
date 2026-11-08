@@ -8,7 +8,7 @@ import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();$('calendarButton').onclick=()=>this.calendarMenu();
 $('townOverview').onclick=()=>{const cam=this.world.cameras.main;const overview=cam.zoom>=.95;if(overview){cam.stopFollow();cam.setZoom(.68);cam.centerOn(670,300);}else{cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);} $('townOverview').textContent=overview?'🔎 Kembali ke Karakter':'🗺️ Lihat Seluruh Peta';this.note(overview?'Mode peta penuh aktif. Tekan kembali untuk mengikuti karakter.':'Kamera kembali mengikuti karakter.');};
 const travel=(x,y,label)=>{this.close();this.world.keysHeld.clear();this.state.data.x=x;this.state.data.y=y;this.world.player.sprite.setPosition(x,y);const cam=this.world.cameras.main;cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);cam.centerOn(x,y);$('townOverview').textContent='🗺️ Lihat Seluruh Peta';this.refresh();this.note(label);};
 $('goEast').onclick=()=>travel(1155,281,'🏛️ Balai Kota di utara, alun-alun di selatan. Ikuti jalan!');
@@ -29,6 +29,7 @@ this.keyboardNotebookHandler=event=>{
  if(key==='m'){event.preventDefault();this.missionsMenu();return;}
  if(key==='h'){event.preventDefault();this.decorMenu();return;}
  if(key==='v'){event.preventDefault();this.festivalGuide();return;}
+ if(key==='k'){event.preventDefault();this.calendarMenu();return;}
  const tab={i:'inventory',r:'recipes',j:'journal'}[key];
  if(tab){event.preventDefault();this.openNotebook(tab);}
 };
@@ -69,6 +70,21 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    }}))
   ];
   this.show('🧺 Pasar Tradisional','Beli bahan masakan atau bibit. Sayuran juga dapat ditanam di kebun! '+(featured.active?'🎉 Festival berlangsung di Alun-Alun, bukan di pasar!':'Festival berikutnya hari '+featured.next+'.'),items);
+ }
+ calendarMenu(){
+  const day=Math.max(1,Number(this.state.data.day)||1);
+  const festival=this.world.festival;
+  const start=Math.floor((day-1)/28)*28+1;
+  const cells=Array.from({length:28},(_,i)=>{
+   const d=start+i,active=d===day,event=(d>=3&&(d-3)%4===0);
+   return '<div class="calendar-day'+(active?' today':'')+(event?' festival':'')+'"'+(active?' aria-current="date"':'')+'>'+d+'<small>'+(active?'Hari ini':event?'🎉':'&nbsp;')+'</small></div>';
+  }).join('');
+  const phase=this.world.clock.description;
+  this.show('📅 Kalender Kampung','Hari '+day+' · '+phase.phase+' · '+phase.weather+'. Festival Kampung Sehat berikutnya pada hari '+festival.next+' di Alun-Alun. Kalender mengikuti hari permainan dan berganti saat pemain tidur.',[
+   {label:'🎉 Jadwal festival',fn:()=>this.festivalGuide()},
+   {label:'🏛️ Misi Balai Kota',fn:()=>this.mayorMissionMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ],'<div class="calendar-sheet" aria-label="Kalender 28 hari permainan">'+cells+'</div><div class="calendar-legend">🟩 Hari ini · 🎉 Hari festival · Satu halaman = 28 hari permainan</div>');
  }
  festivalGuide(){
   const status=this.world.festival.status;
