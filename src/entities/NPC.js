@@ -20,7 +20,10 @@ export class NPC {
    if(this.label)this.label.setPosition(this.x,this.y-45).setDepth(900);
    return;
   }
-  this.activityText.setVisible(false);
+  // Pekerjaan rumah dan tidur tetap terlihat setelah mencapai pos akhir.
+  const last=this.stops[this.stops.length-1];
+  const resting=this.finished&&!this.loop&&!!last?.activity;
+  this.activityText.setText(resting?last.activity:'').setPosition(this.x,this.y-70).setVisible(resting);
   let walking=false,dx=0,dy=0;
   if(this.stops.length&&!this.finished){
    const target=this.stops[this.index];dx=target.x-this.x;dy=target.y-this.y;
