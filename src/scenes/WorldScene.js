@@ -18,7 +18,6 @@ import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
 import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
-import {FestivalArt} from '../world/FestivalArt.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js';
 import {MiniMap} from '../ui/MiniMap.js';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
@@ -42,7 +41,6 @@ export class WorldScene extends Phaser.Scene {
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
   this.weatherArt=new WeatherArt(this,this.clock);
-  this.festivalArt=new FestivalArt(this,this.festival);
   this.townArt=new TownExpansionArt(this,this.festival);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
@@ -275,7 +273,7 @@ export class WorldScene extends Phaser.Scene {
  update(_time,delta){
   const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
-  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.festivalArt.update(this.time.now);this.townArt.update(this.time.now);this.minimap?.render();this.updateRoutines();
+  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.townArt.update(this.time.now);this.minimap?.render();this.updateRoutines();
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
