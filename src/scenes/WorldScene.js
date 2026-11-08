@@ -7,7 +7,7 @@ import {GardenArt} from '../world/GardenArt.js';
 import {FarmArt} from '../world/FarmArt.js';
 import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
-import {CoastSystem} from '../systems/CoastSystem.js';
+import {CoastSystem} from '../systems/CoastSystem.js?v=v119-life';
 import {FriendEvents} from '../systems/FriendEvents.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js?v=riko-friend-20261108';
