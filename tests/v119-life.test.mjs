@@ -36,3 +36,7 @@ test('beach and dock reachable, water blocked, boat and island interactive',()=>
  assert.equal(nearestInteraction({x:761,y:707},INTERACTIONS).id,'boat');
  assert.equal(nearestInteraction({x:1100,y:775},INTERACTIONS).id,'island');
 });
+
+test('main road stays walkable through the beach and pier connection',()=>{
+ for(let y=540;y<=795;y+=5)assert.equal(canStand(760,y),true,'main beach access blocked at y='+y);
+});
