@@ -846,6 +846,13 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const id=this.world.getNearest(),s=this.state.data;
   if(id)this.world.playInteraction(id);
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
+  if(['niaHome','arifHome','linaHome'].includes(id)){
+   const who={niaHome:'Nia',arifHome:'Arif',linaHome:'Lina'}[id];
+   return this.show('🏡 Rumah '+who,'Rumah '+who+' berada di kawasan permukiman timur. Interior terbuka, dengan kasur, lemari, meja belajar, dan tanaman. Kamu bisa berkunjung tanpa mengubah progres permainan.',[
+    {label:'🤝 Lihat pertemanan',fn:()=>this.socialOverview()},
+    {label:'Tutup',fn:()=>this.close()}
+   ]);
+  }
   if(id==='plaza')return this.plazaMenu();
   if(id==='townHall')return this.townHallMenu();
   if(id==='mayor')return this.mayorMenu();
