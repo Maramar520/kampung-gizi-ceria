@@ -9,15 +9,13 @@ export class TownExpansionArt {
   for(let y=9;y<600;y+=17)for(let x=957;x<1340;x+=19){
    if((x*7+y*11)%17<7){rect(x,y,3,5,0x74b075);rect(x+5,y+2,2,3,0xb9d899);}
   }
-  // Sambungan jalan: tutup celah 8px antara jalan lama (sampai x=952)
-  // dan kawasan timur; simpang tegak lurus menghubungkan dua tujuan.
-  rect(948,261,392,49,0xead5af);
-  rect(1134,227,42,122,0xead5af);
-  for(let x=966;x<1328;x+=58)rect(x,282,25,3,0xd7b88f);
-  for(let y=244;y<345;y+=32)rect(1152,y,5,14,0xeedbb7);
-  // Existing horizontal road continues east; north/south paths join both new places.
-  // Jalur utama sudah digambar menyambung di atas, tanpa celah.
-  rect(1125,15,60,50,0xead5af);
+  // Jalan kampung dan jalur alun-alun memakai satu palet dan sumbu yang sama.
+  const road=0xead5af,roadMark=0xd7b88f,roadHighlight=0xeedbb7;
+  rect(948,261,392,49,road);
+  rect(1133,227,44,317,road); // sambung utuh dari Balai Kota ke selatan alun-alun
+  rect(1125,15,60,50,road);
+  for(let x=966;x<1328;x+=58)rect(x,282,25,3,roadMark);
+  for(let y=244;y<544;y+=38){if(y>=261&&y<310)continue;rect(1153,y,4,17,roadHighlight);}
   // Balai Kota: cutaway interior, door open at bottom centre.
   rect(1025,65,260,173,0xf1dec5);
   for(let y=86;y<220;y+=23)rect(1037,y,237,2,0xe2bf9e);
@@ -34,12 +32,9 @@ export class TownExpansionArt {
   // No separate plaza turf layer: the continuous town grass above already
   // covers this area using exactly the same world-grid and palette as the old town.
   // A second lawn rectangle would paint over those tufts and look different.
-  // Jalur Alun-Alun menyatu dengan jalan utama (y=261..310), tanpa celah.
-   // Gunakan warna dan lebar yang sama dengan jalan kampung.
-   rect(1142,310,44,234,0xead5af);
-   rect(1005,417,302,31,0xead5af);
-   // Garis kecil menyambung dari simpang utama ke bagian tengah alun-alun.
-   for(let y=323;y<540;y+=38)rect(1162,y,4,17,0xeedbb7);
+  // Jalan internal alun-alun lebar 44px, menyatu di simpang tengah.
+  rect(1005,417,302,44,road);
+  for(let x=1016;x<1290;x+=58){if(x>=1120&&x<=1190)continue;rect(x,437,25,3,roadMark);}
   g.fillStyle(0x92b8b4);g.fillCircle(1068,394,29);
   g.fillStyle(0x5e9db7);g.fillCircle(1068,394,23);
   g.fillStyle(0xd4e8df);g.fillCircle(1068,394,9);
