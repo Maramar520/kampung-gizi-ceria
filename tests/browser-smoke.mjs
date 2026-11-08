@@ -150,8 +150,8 @@ async function testDesktop(browser){
  await page.locator('#friendsButton').click();
  await page.locator('#dialog:not(.hidden)').waitFor();
  assert.match(await page.locator('#dialogTitle').textContent(),/Buku Pertemanan/);
- assert.equal(await page.locator('.social-friend').count(),5);
- assert.equal(await page.locator('.social-hearts').count(),5);
+ assert.equal(await page.locator('.social-friend').count(),8);
+ assert.equal(await page.locator('.social-hearts').count(),8);
  await close(page);
  // v1.8 — help Kak Rani sort vegetable books; wrong shelf can be retried.
  const raniLocation=await page.evaluate(()=>{
@@ -481,7 +481,7 @@ async function testMobile(browser){
  await page.locator('#dialog').waitFor({state:'hidden'});
  await page.locator('#friendsButton').tap();
  assert.match(await page.locator('#dialogTitle').textContent(),/Buku Pertemanan/);
- assert.equal(await page.locator('.social-friend').count(),5);
+ assert.equal(await page.locator('.social-friend').count(),8);
  await page.locator('#close').tap();
  await page.locator('#dialog').waitFor({state:'hidden'});
  // Mobile: tap the real AKSI button beside Nia and close the full-screen dialog.
