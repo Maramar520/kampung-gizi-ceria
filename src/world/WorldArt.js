@@ -3,7 +3,7 @@ import {OBSTACLES,LAYOUT} from './WorldGeometry.js';
 // v1.4: semua sprite dan pose kegiatan digambar secara prosedural.
 // Kunci tekstur sprite lama dipertahankan agar posisi, NPC, dan save tetap kompatibel.
 export const CHARACTER_ACTIONS=Object.freeze(['sleep','water','harvest','cook','fish','plant']);
-export function createTextures(scene){
+export function createTextures(scene,onlyPlayer=false){
  const appearance=scene.game.state?.data?.character||{};
  const shirts={biru:[0x7caad3,0x4c83b0],merah:[0xe6a0a0,0xb86e79],hijau:[0x91c493,0x578d65],ungu:[0xb9a3df,0x8973b8],kuning:[0xf0d28b,0xc6a25c]};
  const shirt=shirts[appearance.shirt]||shirts.biru;
@@ -143,7 +143,7 @@ export function createTextures(scene){
    if(frame>0)rect(36,33,4,4,0xdfeee7);
   }
  };
- for(const name of Object.keys(palette)){
+ for(const name of (onlyPlayer?['player']:Object.keys(palette))){
   for(const dir of ['down','up','side']){
    for(const frame of [0,1,2]){
     g.clear();draw(name,dir,frame);
