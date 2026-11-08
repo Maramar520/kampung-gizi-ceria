@@ -89,15 +89,15 @@ export class EastHomesArt{
    rect(gardens,x+75,241,23,6,0xa67a52);
    flower(gardens,x+12,239,color);
    flower(gardens,x+87,239,0xf4d28d);
-   // Lampu rumah diseragamkan dengan model lampu sekolah: dua lampu terang.
+   // Lampu identik dengan rumah pemain: ukuran, bentuk, dan intensitas sama.
    const light=scene.add.graphics().setDepth(640);
    for(const [lx,ly] of [[x+19,y+25],[x+81,y+25]]){
-    light.fillStyle(0xffe8a0,.22).fillCircle(lx,ly,27);
-    light.fillStyle(0xffe8a0,.42).fillCircle(lx,ly,16);
-    light.fillStyle(0xfff4c3,.68).fillCircle(lx,ly,8);
-    light.fillStyle(0x745b43).fillRect(lx-6,ly-7,12,4);
-    light.fillStyle(0xfff5c5).fillRoundedRect(lx-5,ly-4,10,10,3);
-    light.fillStyle(0xffffff,.95).fillRect(lx-2,ly-1,4,4);
+    light.fillStyle(0xffe8a0,.34).fillCircle(lx,ly,33);
+    light.fillStyle(0xffedab,.58).fillCircle(lx,ly,21);
+    light.fillStyle(0xfff5c9,.8).fillCircle(lx,ly,11);
+    light.fillStyle(0x745b43).fillRect(lx-7,ly-9,14,5);
+    light.fillStyle(0xffefb6).fillRoundedRect(lx-6,ly-4,12,13,3);
+    light.fillStyle(0xffffff,1).fillRect(lx-3,ly-1,6,5);
    }
 
   }
