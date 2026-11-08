@@ -30,6 +30,7 @@ import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
 import {VillageLifeSystem} from '../systems/VillageLifeSystem.js';
 import {WeekendVillageSystem} from '../systems/WeekendVillageSystem.js';
+import {CommunitySocialSystem} from '../systems/CommunitySocialSystem.js';
 import {VillageWeatherDetails} from '../world/VillageWeatherDetails.js';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
@@ -47,6 +48,7 @@ export class WorldScene extends Phaser.Scene {
   this.marineEducation=new MarineEducationSystem(this.game.state);
   this.villageLife=new VillageLifeSystem(this.game.state);
   this.weekendVillage=new WeekendVillageSystem(this.game.state);
+  this.communitySocial=new CommunitySocialSystem(this.game.state);
   this.social=new SocialSystem(this.game.state);
   this.friendEvents=new FriendEvents(this.game.state);
   this.missions=new MissionSystem(this.game.state);
@@ -165,10 +167,11 @@ export class WorldScene extends Phaser.Scene {
     ...squareToHall];
   this.mayor.setRoutine(mayorRoute,'KEPALA DESA',!raining&&phase!==3);
   const sheltered=raining||phase===3;
+  const socialVisit=!sheltered&&phase===2&&day%3===1;
   const weekend=this.weekendVillage.event;
-  const plazaLoopA=[{x:1200,y:452,activity:this.festival.active?'🎪 Menonton lomba':weekend?'🎈 Kegiatan akhir pekan':'🤸 Senam',pause:2},
+  const plazaLoopA=[{x:1200,y:452,activity:this.festival.active?'🎪 Menonton lomba':weekend?'🎈 Kegiatan akhir pekan':socialVisit?'💬 Menyapa Arif':'🤸 Senam',pause:2},
    {x:1200,y:480},{x:1245,y:480,activity:'🌳 Bersantai',pause:2},{x:1245,y:452}];
-  const plazaLoopB=[{x:1080,y:471,activity:this.festival.active?'🥗 Menyiapkan stan':weekend?'🧺 Membantu acara warga':'🧹 Merawat taman',pause:2},
+  const plazaLoopB=[{x:1080,y:471,activity:this.festival.active?'🥗 Menyiapkan stan':weekend?'🧺 Membantu acara warga':socialVisit?'💬 Menyapa Lina':'🧹 Merawat taman',pause:2},
    {x:1080,y:500},{x:1110,y:500},{x:1110,y:471}];
   const shelterRoute=(npc,destination)=>{
    if(npc.y<238&&npc.x>=1025)return [{x:destination,y:180,activity:'🏛️ Berteduh',pause:3}];
@@ -184,6 +187,11 @@ export class WorldScene extends Phaser.Scene {
    if(npc.y<345)return [{x:1155,y:345}];
    return [];
   };
+  if(socialVisit){
+   // Bertemu dan menyapa di jalan Alun-Alun, bukan berjalan di tempat.
+   plazaLoopA.push({x:1155,y:452,activity:'👋 Halo Arif!',pause:2},{x:1200,y:452});
+   plazaLoopB.push({x:1155,y:471,activity:'👋 Halo Lina!',pause:2},{x:1080,y:471});
+  }
   // v1.26: Lina dan Arif pulang ke rumah sendiri saat hujan/malam,
   // lalu keluar lewat pintu dan kembali bekerja di Alun-Alun saat pagi.
   for(const [id,npc,label,loop] of [
