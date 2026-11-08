@@ -410,6 +410,16 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 .gamewrap>section.hud>.chip:nth-child(4),.gamewrap>section.hud>.chip:nth-child(5),.gamewrap>section.hud>.chip:nth-child(6){display:block!important}
 .gamewrap>.toast{top:56px}
 @media(max-width:700px){.gamewrap>section.hud{inset:4px 4px auto 4px!important;gap:2px!important}.gamewrap>section.hud>.chip{font-size:9px!important;padding:3px 4px!important}.gamewrap>.toast{top:66px}}
+
+/* v1.72: kalender/waktu/cuaca kiri, koin/bintang/energi kanan */
+.gamewrap>section.hud{display:block!important;position:absolute!important;inset:8px 8px auto 8px!important;height:auto!important;width:auto!important;z-index:70!important;pointer-events:none!important}
+.gamewrap>section.hud .hud-group{position:absolute;top:0;display:flex;flex-direction:column;align-items:stretch;gap:4px;max-width:46%;pointer-events:none}
+.gamewrap>section.hud .hud-left{left:0;align-items:flex-start}
+.gamewrap>section.hud .hud-right{right:0;align-items:flex-end}
+.gamewrap>section.hud .hud-group>.chip{display:block!important;flex:0 0 auto!important;min-width:0!important;width:auto!important;margin:0!important;padding:5px 8px!important;font-size:11px!important;line-height:1.2!important;background:#fff9e9ed!important;pointer-events:auto!important;white-space:normal}
+.gamewrap>section.hud .hud-group>.chip small{display:none!important}
+.gamewrap>section.hud .hud-nutrition{display:none!important}
+@media(max-width:700px){.gamewrap>section.hud{inset:4px 4px auto 4px!important}.gamewrap>section.hud .hud-group{max-width:47%;gap:2px}.gamewrap>section.hud .hud-group>.chip{font-size:9px!important;padding:3px 5px!important}}
 </style>
 </head>
 <body>
@@ -440,15 +450,21 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 
 <div id="game"></div>
 <section class="hud">
-<div class="chip">🪙 <span id="coins"></span><small>Koin</small></div>
-<div class="chip">⭐ <span id="stars">0</span><small>Bintang Belajar</small></div>
-<div class="chip">⚡ <span id="energy"></span><small>Energi</small></div>
-<div class="chip">🍚 <span id="carb"></span><small>Karbo</small></div>
-<div class="chip">🥚 <span id="protein"></span><small>Protein</small></div>
-<div class="chip">🥬 <span id="vitamin"></span><small>Vitamin</small></div>
+<div class="hud-group hud-left">
 <button type="button" class="chip calendar-hud" id="calendarHud" title="Buka kalender kampung">📅 Hari <span id="day"></span> · <span id="phase">Pagi</span> · <span id="status"></span><small>Ketuk untuk kalender</small></button>
 <button type="button" class="chip calendar-hud" id="timeSpeedButton" title="Ubah kecepatan waktu permainan" aria-label="Kecepatan waktu permainan">⏩ <span id="timeSpeedLabel">1×</span><small>Kecepatan Waktu</small></button>
 <div class="chip weather-chip" aria-live="polite"><span id="weather">🌤️ Pagi · Cerah</span><small>Cuaca Kampung</small></div>
+</div>
+<div class="hud-group hud-right">
+<div class="chip">🪙 <span id="coins"></span><small>Koin</small></div>
+<div class="chip">⭐ <span id="stars">0</span><small>Bintang Belajar</small></div>
+<div class="chip">⚡ <span id="energy"></span><small>Energi</small></div>
+</div>
+<div class="hud-nutrition" aria-label="Status gizi">
+<div class="chip">🍚 <span id="carb"></span><small>Karbo</small></div>
+<div class="chip">🥚 <span id="protein"></span><small>Protein</small></div>
+<div class="chip">🥬 <span id="vitamin"></span><small>Vitamin</small></div>
+</div>
 </section>
 <div class="toast" id="toast">WASD / panah untuk bergerak • E untuk interaksi</div>
 <section id="notebook" class="notebook-overlay hidden" aria-hidden="true" aria-label="Buku pemain">
@@ -500,7 +516,7 @@ document.documentElement.dataset.build='1.29';
 window.addEventListener('DOMContentLoaded',()=>{
  const marker=document.createElement('small');
  marker.id='releaseVersion';
- marker.textContent='Versi terpasang: v1.71 · HUD Overlay';
+ marker.textContent='Versi terpasang: v1.72 · HUD Kiri Kanan';
  marker.style.cssText='display:block;text-align:center;color:#476c51;font-weight:700;padding:3px 8px';
  const header=document.querySelector('header');
  if(header)header.appendChild(marker);
