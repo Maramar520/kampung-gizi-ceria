@@ -7,10 +7,13 @@ import {CookingMinigame} from '../systems/CookingMinigame.js';
 import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 import {BIRTHDAYS,birthdayToday,GIFT_IDS} from '../systems/FriendEvents.js';
 import {MARINE_LESSONS} from '../systems/MarineEducationSystem.js';
+import {createVillageMiniMap,MAP_PLACES} from '../ui/VillageMiniMap.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();$('calendarButton').onclick=()=>this.calendarMenu();$('calendarHud').onclick=()=>this.calendarMenu();$('timeSpeedButton').onclick=()=>{const speeds=[1,2,4];const current=this.world.clock.speed;this.world.clock.setSpeed(speeds[(speeds.indexOf(current)+1)%speeds.length]);this.refresh();this.note('Kecepatan waktu '+this.world.clock.speed+'×');};
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});const destination=$('mapDestination');for(const place of MAP_PLACES){const option=document.createElement('option');option.value=place.id;option.textContent=place.label;destination.appendChild(option);}
+const navigate=place=>{if(!place)return;destination.value=place.id;this.world.highlightPlace?.(place.id);const cam=this.world.cameras.main;cam.stopFollow();cam.centerOn(place.x,place.y);this.note('📍 '+place.label+' ditandai di peta. Bergerak untuk melanjutkan perjalanan.');this.time.delayedCall(2400,()=>cam.startFollow(this.world.player.sprite,true,.12,.12));};
+this.miniMapCleanup=createVillageMiniMap($('villageMiniMap'),this.world,navigate);$('mapNavigate').onclick=()=>navigate(MAP_PLACES.find(p=>p.id===destination.value));this.events.once('shutdown',()=>this.miniMapCleanup?.());this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();$('calendarButton').onclick=()=>this.calendarMenu();$('calendarHud').onclick=()=>this.calendarMenu();$('timeSpeedButton').onclick=()=>{const speeds=[1,2,4];const current=this.world.clock.speed;this.world.clock.setSpeed(speeds[(speeds.indexOf(current)+1)%speeds.length]);this.refresh();this.note('Kecepatan waktu '+this.world.clock.speed+'×');};
 $('townOverview').onclick=()=>{const cam=this.world.cameras.main;const overview=cam.zoom>=.95;if(overview){cam.stopFollow();cam.setZoom(.68);cam.centerOn(670,300);}else{cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);} $('townOverview').textContent=overview?'🔎 Kembali ke Karakter':'🗺️ Lihat Seluruh Peta';this.note(overview?'Mode peta penuh aktif. Tekan kembali untuk mengikuti karakter.':'Kamera kembali mengikuti karakter.');};
 const travel=(x,y,label)=>{this.close();this.world.keysHeld.clear();this.state.data.x=x;this.state.data.y=y;this.world.player.sprite.setPosition(x,y);const cam=this.world.cameras.main;cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);cam.centerOn(x,y);$('townOverview').textContent='🗺️ Lihat Seluruh Peta';this.refresh();this.note(label);};
 $('goEast').onclick=()=>travel(1155,281,'🏛️ Balai Kota di utara, alun-alun di selatan. Ikuti jalan!');
@@ -202,8 +205,17 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     {label:active?'🎪 Ikut Festival Kampung Sehat':'📅 Jadwal festival',fn:()=>active?this.festivalMenu():this.festivalGuide()},
     {label:'🤸 Senam dan kegiatan warga',fn:()=>this.plazaActivity()},
     ...(weekend?[{label:weekend.name,fn:()=>this.weekendMenu()}]:[]),
+    ...(this.world.communitySocial.event?[{label:'🧺 Acara Sosial Warga',fn:()=>this.communityMenu()}]:[]),
     {label:'Tutup',fn:()=>this.close()}
    ]);
+ }
+ communityMenu(){
+  const sys=this.world.communitySocial,event=sys.event;
+  if(!event)return this.plazaMenu();
+  this.show('🌸 Acara Sosial Alun-Alun',event.name+'\\n'+event.description+'\\nHadiah: '+event.coins+' KC dan 1 ⭐.'+(sys.joined?'\\nSudah ikut hari ini.':''),[
+   ...(!sys.joined?[{label:'🙌 Ikut bersama warga',fn:()=>{const reward=sys.join();if(reward){this.refresh();this.note('+'+reward.coins+' KC dan +1 ⭐');}this.communityMenu();}}]:[]),
+   {label:'Kembali',fn:()=>this.plazaMenu()}
+  ]);
  }
  weekendMenu(){
   const system=this.world.weekendVillage,event=system.event;
@@ -479,11 +491,21 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const birthday=birthdayToday(id,this.state.data.day);
   this.show(p.emoji+' '+p.name,greeting+'\n'+tip+(birthday?'\n🎂 Hari ini ulang tahunnya!':''),[
    {label:'🎁 Beri hadiah',fn:()=>this.giftMenu(id)},
+   ...(birthday?[{label:'🎂 Rayakan ulang tahun bersama',fn:()=>this.birthdayParty(id)}]:[]),
    {label:id==='tani'?'🌿 Belajar kelompok sayuran':'🎒 Tantangan bekal bergizi',fn:()=>this.libraryGuide()},
    {label:'🤝 Lihat daftar teman',fn:()=>this.socialOverview()},
    {label:'Sampai jumpa!',fn:()=>this.close()}
   ]);
   this.refresh();
+ }
+ birthdayParty(id){
+  const sys=this.world.communitySocial,p=this.social.profile(id);
+  const received=sys.birthdayReward(id,birthdayToday);
+  this.refresh();this.show('🎂 Ulang Tahun '+p.name,received?
+   'Selamat ulang tahun! Kamu ikut merayakan bersama warga. Hadiah spesial: +8 KC.':
+   'Perayaan hari ini sudah diikuti. Sampai ulang tahun berikutnya!',[
+    {label:'🎁 Berikan hadiah makanan',fn:()=>this.giftMenu(id)},
+    {label:'Kembali',fn:()=>this.friendMenu(id)}]);
  }
  giftMenu(id){
   const p=this.social.profile(id);
