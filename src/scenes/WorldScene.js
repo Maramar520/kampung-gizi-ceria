@@ -19,6 +19,7 @@ import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {FestivalArt} from '../world/FestivalArt.js';
+import {TownExpansionArt} from '../world/TownExpansionArt.js';
 
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
@@ -39,6 +40,7 @@ export class WorldScene extends Phaser.Scene {
   this.ambientArt=new AmbientArt(this);
   this.weatherArt=new WeatherArt(this,this.clock);
   this.festivalArt=new FestivalArt(this,this.festival);
+  this.townArt=new TownExpansionArt(this,this.festival);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
    Object.assign(this.game.state.data,SPAWN);
@@ -59,6 +61,7 @@ export class WorldScene extends Phaser.Scene {
    {x:405,y:317},{x:414,y:282},{x:484,y:282},{x:483,y:315}
   ]});
   this.rani=new NPC(this,{x:692,y:207,name:'KAK RANI',texture:'rani',stops:[{x:692,y:207},{x:692,y:186},{x:692,y:207}]});
+  this.mayor=new NPC(this,{x:1204,y:180,name:'KEPALA DESA',texture:'mayor',stops:[{x:1204,y:180}]});
   this.zones=INTERACTIONS;
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
@@ -77,7 +80,7 @@ export class WorldScene extends Phaser.Scene {
    if(key)this.keysHeld.delete(key);
   });
   window.addEventListener('blur',()=>this.keysHeld.clear());
-  this.cameras.main.setBounds(0,0,960,600);
+  this.cameras.main.setBounds(0,0,1340,600);
   this.cameras.main.startFollow(this.player.sprite,true,.12,.12);
   this.cameras.main.setZoom(1);
   this.game.events.emit('world-ready',this);
@@ -93,13 +96,13 @@ export class WorldScene extends Phaser.Scene {
   this.tweens.add({targets:subject,scaleX:1.12,scaleY:.88,duration:110,yoyo:true,
    ease:'Sine.easeOut',onComplete:()=>subject.setScale(1)});
   const emoji={stove:'🍳',market:'🧺',bed:'💤',chef:'📖',garden:'🌱',
-   coop:'🥚',pond:'🎣',store:'🏡',village:'🏡',npc:'✨',tani:'🌱',nia:'💬',library:'📚',rani:'📖'}[kind]||'✨';
+   coop:'🥚',pond:'🎣',store:'🏡',village:'🏡',npc:'✨',tani:'🌱',nia:'💬',library:'📚',rani:'📖',mayor:'🏛️',plaza:'🎪',townHall:'🏛️'}[kind]||'✨';
   const puff=this.add.text(x,y-47,emoji,{fontSize:'22px'}).setOrigin(.5).setDepth(2200);
   this.tweens.add({targets:puff,y:y-77,alpha:0,duration:650,
    ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
  }
  npcById(id){
-  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia,rani:this.rani})[id]||null;
+  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia,rani:this.rani,mayor:this.mayor})[id]||null;
  }
  updateRoutines(){
   const phase=this.clock.phase,day=this.game.state.data.day;
@@ -113,6 +116,11 @@ export class WorldScene extends Phaser.Scene {
   const leavingNiaShelter=this.niaSheltering===true&&!niaSheltering;
   this.niaSheltering=niaSheltering;
   if(this.routineKey===key)return;
+  const mayorRoute=(raining||phase===3)?[{x:1204,y:180,activity:'🏛️ Administrasi',pause:2}]:
+   [{x:1204,y:180},{x:1155,y:208},{x:1155,y:238},{x:1155,y:281},
+    {x:1155,y:345},{x:1155,y:395,activity:this.festival.active?'🎉 Memimpin festival':'🌳 Menyapa warga',pause:2},
+    {x:1155,y:345},{x:1155,y:281},{x:1155,y:238},{x:1155,y:208},{x:1204,y:180}];
+  this.mayor.setRoutine(mayorRoute,'KEPALA DESA',!raining&&phase!==3);
   const justStoppedRaining=this.lastRaining===true&&!raining&&phase!==3;
   this.lastRaining=raining;
   this.routineKey=key;
@@ -204,7 +212,9 @@ export class WorldScene extends Phaser.Scene {
    library:{x:650,y:130,title:'📚 PERPUSTAKAAN GIZI',yLabel:75},
    coop:{x:325,y:194,title:'🐔 TERNAK · SEBELAH RUMAH',yLabel:248},
    pond:{x:869,y:155,title:'🎣 KOLAM · KANAN ATAS',yLabel:263},
-   festival:{x:210,y:395,title:'🎉 FESTIVAL · PASAR TRADISIONAL',yLabel:310}
+   plaza:{x:1164,y:427,title:'🌳 ALUN-ALUN KAMPUNG',yLabel:360},
+   townHall:{x:1155,y:180,title:'🏛️ BALAI KOTA',yLabel:95},
+   festival:{x:1164,y:395,title:'🎉 FESTIVAL · PASAR TRADISIONAL',yLabel:310}
   };
   const p=markers[id];if(!p)return;
   this.keysHeld.clear();
@@ -248,15 +258,15 @@ export class WorldScene extends Phaser.Scene {
  update(_time,delta){
   const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
-  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.festivalArt.update(this.time.now);this.updateRoutines();
+  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.festivalArt.update(this.time.now);this.townArt.update(this.time.now);this.updateRoutines();
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
-   this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);
+   this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);
    // Once a villager has exited an interior through its door, begin the
    // normal repeating workday without teleporting or cutting across walls.
-   for(const npc of [this.sari,this.tani,this.nia,this.chef,this.rani]){
+   for(const npc of [this.sari,this.tani,this.nia,this.chef,this.rani,this.mayor]){
     if(npc.finished&&npc.nextJobRoute){
      const {route,label}=npc.nextJobRoute;
      npc.nextJobRoute=null;npc.setRoutine(route,label,true);
@@ -277,6 +287,6 @@ export class WorldScene extends Phaser.Scene {
   const arrow=Math.abs(dx)>Math.abs(dy)?(dx<0?'←':'→'):(dy<0?'↑':'↓');
   this.guide.setVisible(d>105&&!id);
   if(d>105&&!id)this.guide.setText(arrow+' '+goal.label).setPosition(
-   Phaser.Math.Clamp(s.x,75,880),Phaser.Math.Clamp(s.y-61,24,548));
+   Phaser.Math.Clamp(s.x,75,1260),Phaser.Math.Clamp(s.y-61,24,548));
  }
 }
