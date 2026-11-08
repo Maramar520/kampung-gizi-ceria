@@ -92,6 +92,8 @@ export class WorldScene extends Phaser.Scene {
   this.clinicDoctor=new NPC(this,{x:1520,y:450,name:'DOKTER MAYA',texture:'rani',stops:[{x:1520,y:450}]});
   this.clinicNurse=new NPC(this,{x:1460,y:410,name:'PERAWAT DINA',texture:'sari',stops:[{x:1460,y:410}]});
   this.clinicPatient=new NPC(this,{x:1530,y:320,name:'PASIEN',texture:'tani',stops:[{x:1530,y:320}]});
+  // Semua petugas/pasien menggunakan collision yang sama dengan pemain.
+  for(const npc of [this.clinicDoctor,this.clinicNurse,this.clinicPatient])npc.walkable=(x,y)=>canStand(x,y);
   this.clinicRoutineKey='';
   this.restaurantCustomer=new RestaurantCustomer(this);
   this.beachVisitors=[
@@ -367,11 +369,16 @@ export class WorldScene extends Phaser.Scene {
     {x:1480,y:410},{x:1480,y:460,activity:'💊 Menyiapkan obat',pause:2},
     {x:1460,y:460}
    ]:[{x:1460,y:410,activity:'🌙 Istirahat',pause:3}],'PERAWAT DINA',clinicOpen);
+   // Rute wajib melalui pintu utara (1530,345), bukan menembus dinding.
+   // Masuk -> daftar -> tunggu -> periksa -> keluar lewat pintu yang sama.
    this.clinicPatient.setRoutine(clinicOpen?[
-    {x:1530,y:320},{x:1530,y:336},{x:1530,y:377},
+    {x:1530,y:320},{x:1530,y:336},{x:1530,y:363},
+    {x:1530,y:385},{x:1495,y:385},
     {x:1470,y:395,activity:'🪑 Menunggu giliran',pause:3},
-    {x:1530,y:420},{x:1565,y:435,activity:'🩺 Diperiksa',pause:3},
-    {x:1530,y:510},{x:1530,y:545},{x:1530,y:336},{x:1530,y:320}
+    {x:1495,y:395},{x:1500,y:455},{x:1530,y:455},
+    {x:1565,y:455,activity:'🩺 Diperiksa',pause:3},
+    {x:1530,y:455},{x:1500,y:455},{x:1500,y:385},
+    {x:1530,y:385},{x:1530,y:363},{x:1530,y:336},{x:1530,y:320,activity:'🏡 Pulang',pause:2}
    ]:[{x:1530,y:320,activity:'🏡 Pulang',pause:3}],'PASIEN',clinicOpen);
   }
   if(!this.game.dialogOpen){
