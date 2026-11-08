@@ -370,7 +370,8 @@ async function testDesktop(browser){
   const w=window.__kampungQA.scene.getScene('WorldScene');
   w.game.state.data.day=3;w.clock.startDay();w.updateRoutines();w.townArt.update(w.time.now);
  });
- await actionAt(page,1155,395,'Alun-Alun');
+ // Read the plaza interface directly after setting the game day; NPCs may cross its center.
+ await page.evaluate(()=>window.__kampungQA.scene.getScene('UIScene').plazaMenu());
  await page.getByRole('button',{name:/Festival Kampung Sehat/}).click();
  assert.match(await page.locator('#dialogTitle').textContent(),/Festival Kampung Sehat/);
  await page.getByRole('button',{name:/Ikut festival/}).click();
