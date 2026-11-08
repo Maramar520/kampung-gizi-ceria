@@ -22,6 +22,7 @@ export class RestaurantCustomer {
  constructor(scene){
   this.scene=scene;this.day=0;this.stage='';this.wait=0;
   this.npc=new NPC(scene,{x:607,y:281,name:'PELANGGAN',texture:'nia',stops:[{x:607,y:281}]});
+  this.visitors=['Nia','Bu Sari','Pak Tani','Kak Rani'];
   this.chair=scene.add.text(RESTAURANT_SEAT.x,RESTAURANT_SEAT.y+10,'🪑',{fontSize:'21px'}).setOrigin(.5).setDepth(RESTAURANT_SEAT.y-2);
   this.meal=scene.add.text(RESTAURANT_SEAT.x-22,RESTAURANT_SEAT.y-24,'🍲',{fontSize:'20px'}).setOrigin(.5).setDepth(1600).setVisible(false);
   this.npc.sprite.setVisible(false);this.npc.label?.setVisible(false);this.npc.activityText.setVisible(false);
@@ -30,7 +31,7 @@ export class RestaurantCustomer {
  get status(){return this.stage;}
  setStage(stage,route,activity){
   this.stage=stage;
-  if(route)this.npc.setRoutine(route,'PELANGGAN',false);
+  if(route)this.npc.setRoutine(route,this.scene.restaurantOrders.order.customer.toUpperCase(),false);
   if(activity){this.npc.activity=activity;this.npc.workPause=2;}
  }
  update(dt){
@@ -38,9 +39,13 @@ export class RestaurantCustomer {
   const served=this.scene.restaurantOrders.status.served;
   if(this.day!==day){
    this.day=day;this.wait=0;this.stage=served?'done':'arriving';
+   const guest=this.scene.restaurantOrders.order.customer;
+   this.npc.texture=({'Nia':'nia','Bu Sari':'sari','Pak Tani':'tani','Kak Rani':'rani'})[guest]||'nia';
+   this.npc.label?.setText(guest.toUpperCase());
+   this.npc.sprite.setTexture(this.npc.texture+'-down-0');
    this.npc.sprite.setPosition(607,281);this.npc.sprite.setVisible(!served);this.npc.label?.setVisible(!served);
    this.npc.activityText.setVisible(false);this.meal.setVisible(false);
-   if(!served)this.npc.setRoutine(RESTAURANT_ENTRY,'PELANGGAN',false);
+   if(!served)this.npc.setRoutine(RESTAURANT_ENTRY,guest.toUpperCase(),false);
   }
   if(this.stage==='done')return;
   // Serving while the guest is walking never teleports them through furniture.
