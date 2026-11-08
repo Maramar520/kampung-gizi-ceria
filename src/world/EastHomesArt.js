@@ -94,6 +94,48 @@ export class EastHomesArt{
     backgroundColor:'#fff3d4',padding:{x:3,y:2}
    }).setOrigin(.5).setDepth(550);
   }
+  // PUSKESMAS: memanfaatkan lahan kosong di tenggara rumah warga.
+  // Interior terbuka dan lantai krem seperti rumah lainnya.
+  const hx=1400,hy=345,hw=260,hh=210;
+  frame(houses,hx-8,hy-8,hw+16,hh+16,0xc6a17c,0x78543d,4);
+  rect(houses,hx,hy,hw,hh,0xf6dfbd);
+  for(let yy=hy+24;yy<hy+hh-9;yy+=22)rect(houses,hx+10,yy,hw-20,2,0xe8c29c);
+  const wall=0xb68168;
+  rect(houses,hx,hy,hw,12,wall);
+  rect(houses,hx,hy,12,hh,wall);
+  rect(houses,hx+hw-12,hy,12,hh,wall);
+  rect(houses,hx,hy+hh-12,100,12,wall);
+  rect(houses,hx+160,hy+hh-12,100,12,wall);
+  rect(houses,hx+100,hy+hh-6,60,7,0xe4c28a);
+  rect(houses,hx-4,hy-19,hw+8,20,0x6f958d);
+  rect(houses,hx,hy-16,hw,14,0xbadcd2);
+  rect(houses,hx+117,hy-17,26,17,0xfff8ef);
+  rect(houses,hx+127,hy-15,6,13,0xdb7774);
+  rect(houses,hx+122,hy-10,16,5,0xdb7774);
+  // Resepsionis dan ruang tunggu.
+  frame(houses,hx+18,hy+41,83,32,0xc69b70,0x84624b,3);
+  rect(houses,hx+30,hy+46,54,7,0xfff3d5);
+  rect(houses,hx+28,hy+91,58,14,0x8eb9b1);
+  rect(houses,hx+28,hy+117,58,14,0x8eb9b1);
+  for(let xx of [31,64])for(let yy of [91,117])rect(houses,hx+xx,hy+yy+14,5,10,0x876b53);
+  // Sekat pemeriksaan dan tempat tidur pasien.
+  rect(houses,hx+126,hy+29,8,127,0xcba88b);
+  frame(houses,hx+159,hy+55,78,39,0xe8eff0,0x8aaba9,3);
+  rect(houses,hx+163,hy+59,21,31,0xffffff);
+  rect(houses,hx+159,hy+112,77,13,0x8fb9b2);
+  frame(houses,hx+158,hy+143,75,26,0xc9a47c,0x876a51,2);
+  // Lemari obat dan simbol medis.
+  frame(houses,hx+101,hy+35,22,51,0xf9f3dc,0x8e7664,2);
+  for(let yy of [46,61,76])rect(houses,hx+105,hy+yy,14,4,0x91b6a2);
+  rect(houses,hx+184,hy+22,22,22,0xffffff);
+  rect(houses,hx+193,hy+25,5,16,0xe38a87);
+  rect(houses,hx+187,hy+30,17,5,0xe38a87);
+  // Jalur akses dari jalan utama.
+  rect(path,1510,309,42,28,0xead5af);
+  rect(path,1510,337,42,8,0xead5af);
+  scene.add.text(hx+hw/2,hy+16,'🏥 PUSKESMAS',{fontFamily:'monospace',
+   fontSize:'16px',fontStyle:'bold',color:'#3e655d',
+   backgroundColor:'#fff5df',padding:{x:7,y:3}}).setOrigin(.5).setDepth(550);
   // Pantai timur tetap mengikuti sambungan pantai versi sebelumnya.
   rect(path,1340,600,380,112,0xf3dba5);
   rect(path,1340,710,380,140,0x65bfd0);
