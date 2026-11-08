@@ -529,6 +529,18 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.show('🐔 Kandang Ayam','Hari '+status.day+' · '+msg+' Telur dapat digunakan untuk memasak.',actions,
    '<div class="farm-preview">🐔 🐔 🥚</div>');
  }
+ coastExpeditionMenu(){
+  const badges=this.world.coastExpedition.badges;
+  this.show('📔 Buku Ekspedisi Pantai','Selesaikan kegiatan di Pantai Selatan, dermaga, dan Pulau Kecil. Setiap lencana hanya dapat ditukar sekali.\n\n'+
+   badges.map(b=>b.title+' · '+b.progress+'/'+b.target+(b.claimed?' ✓ Hadiah diambil':'')+'\n'+b.description+' · '+b.reward+' Koin Ceria').join('\n\n'),[
+    ...badges.filter(b=>!b.claimed&&b.progress>=b.target).map(b=>({label:'🎁 Klaim '+b.title,fn:()=>{
+     if(this.world.coastExpedition.claim(b.id)){this.refresh();this.note('+'+b.reward+' Koin Ceria!');}
+     this.coastExpeditionMenu();
+    }})),
+    {label:'🏖️ Kembali ke pantai',fn:()=>this.beachMenu()},
+    {label:'Tutup',fn:()=>this.close()}
+   ]);
+ }
  seaFishingMenu(){
   const coast=this.world.coast,st=coast.status;
   if(!st.fishReady)return this.show('🎣 Dermaga Laut','Kamu sudah memancing hari ini. Lihat koleksi ikan atau kembali besok.',[
@@ -578,6 +590,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    }},
    {label:'🎪 Festival Memancing',fn:()=>this.beachFestivalMenu()},
    {label:'📖 Koleksi ikan',fn:()=>this.seaCollectionMenu()},
+   {label:'📔 Buku Ekspedisi Pantai',fn:()=>this.coastExpeditionMenu()},
    {label:'Tutup',fn:()=>this.close()}
   ],'<div class="farm-preview">🌴 🐚 🏖️ 🌊</div>');
  }
@@ -606,6 +619,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  islandMenu(){
   const ready=this.world.coast.status.treasureReady;
   this.show('🏝️ Pulau Kecil','Jelajahi pulau, cari harta karun harian, dan temui Nelayan Bayu. Perahu siap membawamu kembali ke dermaga.',[
+   {label:'📔 Buku Ekspedisi Pantai',fn:()=>this.coastExpeditionMenu()},
    {label:'🧰 Cari peti harta karun'+(ready?'':' ✓'),fn:()=>{
     const found=this.world.coast.treasure();this.refresh();
     this.show(found?'🪙 Harta karun ditemukan!':'🧰 Peti kosong',found?'+8 Koin Ceria! Coba lagi besok.':'Peti sudah diperiksa hari ini.',[
