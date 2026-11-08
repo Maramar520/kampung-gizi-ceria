@@ -24,6 +24,7 @@ import {RestaurantCustomer} from '../systems/RestaurantCustomer.js?v=v124-custom
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-road-connected-20261108';
+import {SchoolArt} from '../world/SchoolArt.js';
 import {EastHomesArt} from '../world/EastHomesArt.js?v=v145-road-route';
 import {residentHomeRoute,residentLeaveHomeRoute,residentHomeActivity,homePosition} from '../world/ResidentHomeRoutes.js';
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
@@ -63,7 +64,7 @@ export class WorldScene extends Phaser.Scene {
   this.villageWeatherDetails=new VillageWeatherDetails(this);
   this.townArt=new TownExpansionArt(this,this.festival);
   this.southCoastArt=new SouthCoastArt(this);
-  this.eastHomesArt=new EastHomesArt(this);
+  this.eastHomesArt=new EastHomesArt(this);this.schoolArt=new SchoolArt(this);
   this.marineWildlifeArt=new MarineWildlifeArt(this);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
@@ -94,6 +95,13 @@ export class WorldScene extends Phaser.Scene {
   this.clinicPatient=new NPC(this,{x:1420,y:285,name:'PASIEN',texture:'tani',stops:[{x:1530,y:320}]});
   // Semua petugas/pasien menggunakan collision yang sama dengan pemain.
   for(const npc of [this.clinicDoctor,this.clinicNurse,this.clinicPatient])npc.walkable=(x,y)=>canStand(x,y);
+  this.schoolTeacher=new NPC(this,{x:1090,y:620,name:'BU GURU',texture:'rani',stops:[{x:1090,y:620}]});
+  this.schoolStudents=[
+   new NPC(this,{x:1420,y:200,name:'MURID A',texture:'nia',stops:[{x:1420,y:200}]}),
+   new NPC(this,{x:1530,y:200,name:'MURID B',texture:'tani',stops:[{x:1530,y:200}]})
+  ];
+  for(const npc of [this.schoolTeacher,...this.schoolStudents])npc.walkable=(x,y)=>canStand(x,y);
+  this.schoolRoutineKey='';
   this.clinicRoutineKey='';
   this.restaurantCustomer=new RestaurantCustomer(this);
   this.beachVisitors=[
@@ -355,6 +363,32 @@ export class WorldScene extends Phaser.Scene {
   const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
   this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.villageWeatherDetails.update(this.time.now,this.clock.weather,this.clock.phase);this.townArt.update(this.time.now);this.updateRoutines();
+  // Sekolah: berangkat melalui jalan utama, masuk lewat pintu utara,
+  // belajar, bermain di alun-alun, lalu kembali ke rumah saat malam.
+  const schoolKey=this.game.state.data.day+'-'+this.clock.phase;
+  if(this.schoolRoutineKey!==schoolKey){
+   this.schoolRoutineKey=schoolKey;
+   const schoolOpen=this.clock.phase===0||this.clock.phase===1;
+   this.schoolTeacher.setRoutine(schoolOpen?[
+    {x:1090,y:620,activity:'📚 Mengajar gizi',pause:3},
+    {x:1105,y:645,activity:'🧼 Mengajar kebersihan',pause:3},
+    {x:1090,y:620}
+   ]:[{x:1090,y:620,activity:'📚 Menyiapkan materi',pause:3}],'BU GURU',schoolOpen);
+   this.schoolStudents.forEach((npc,i)=>{
+    const homeX=i===0?1420:1530;
+    const outbound=[{x:homeX,y:247},{x:homeX,y:281},{x:1340,y:281},
+     {x:1155,y:281},{x:1155,y:345},{x:1155,y:545},
+     {x:1155,y:560},{x:1155,y:588},{x:1155,y:640}];
+    const returning=[{x:1155,y:588},{x:1155,y:560},{x:1155,y:545},
+     {x:1155,y:345},{x:1155,y:281},{x:1340,y:281},
+     {x:homeX,y:281},{x:homeX,y:247},{x:homeX,y:200,activity:'🏠 Pulang',pause:3}];
+    npc.setRoutine(schoolOpen?[...outbound,
+      {x:1120+i*65,y:640,activity:'✏️ Belajar',pause:3},
+      {x:1155,y:640},...returning]:
+      [{x:homeX,y:200,activity:'🏠 Istirahat',pause:3}],
+      i===0?'MURID A':'MURID B',schoolOpen);
+   });
+  }
   const clinicOpen=this.clock.phase!==3;
   const clinicKey=this.game.state.data.day+'-'+this.clock.phase;
   if(this.clinicRoutineKey!==clinicKey){
@@ -386,6 +420,7 @@ export class WorldScene extends Phaser.Scene {
   }
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
+   this.schoolTeacher.update(dt);for(const student of this.schoolStudents)student.update(dt);
    this.clinicDoctor.update(dt);this.clinicNurse.update(dt);this.clinicPatient.update(dt);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
