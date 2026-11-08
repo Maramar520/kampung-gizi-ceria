@@ -10,7 +10,7 @@ export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
  create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();
 $('townOverview').onclick=()=>{const cam=this.world.cameras.main;const overview=cam.zoom>=.95;if(overview){cam.stopFollow();cam.setZoom(.68);cam.centerOn(670,300);}else{cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);} $('townOverview').textContent=overview?'🔎 Kembali ke Karakter':'🗺️ Lihat Seluruh Peta';this.note(overview?'Mode peta penuh aktif. Tekan kembali untuk mengikuti karakter.':'Kamera kembali mengikuti karakter.');};
-const travel=(x,y,label)=>{this.close();this.world.keysHeld.clear();this.state.data.x=x;this.state.data.y=y;this.world.player.sprite.setPosition(x,y);this.world.cameras.main.centerOn(x,y);this.refresh();this.note(label);};
+const travel=(x,y,label)=>{this.close();this.world.keysHeld.clear();this.state.data.x=x;this.state.data.y=y;this.world.player.sprite.setPosition(x,y);const cam=this.world.cameras.main;cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);cam.centerOn(x,y);$('townOverview').textContent='🗺️ Lihat Seluruh Peta';this.refresh();this.note(label);};
 $('goEast').onclick=()=>travel(1155,281,'🏛️ Balai Kota di utara, alun-alun di selatan. Ikuti jalan!');
 $('goWest').onclick=()=>travel(760,281,'🏡 Kembali ke kawasan enam blok lama.');document.querySelectorAll('[data-find-place]').forEach(button=>{
  button.addEventListener('click',()=>{
@@ -56,8 +56,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  market(){
   const featured=this.world.festival.status;
   const items=[
-   {label:featured.active?'🎊 Ikuti Festival Kampung Sehat':'🎪 Jadwal Festival Kampung Sehat',
-    fn:()=>this.festivalMenu()},
+   {label:'📍 Lihat lokasi Festival di Alun-Alun',fn:()=>this.festivalGuide()},
    ...Object.entries({beras:12,telur:15,bayam:10,wortel:14,tomat:15,kangkung:12,selada:14,brokoli:19,labu:21}).map(([id,price])=>({
     label:'Beli '+id+' — '+price+' KC',fn:()=>{
      const s=this.state.data;if(s.coins<price){this.note('Koin tidak cukup!');return;}
@@ -69,7 +68,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     this.refresh();this.market();this.note('Bibit '+CROPS[id].name+' ditambahkan!');
    }}))
   ];
-  this.show('🧺 Pasar Tradisional','Beli bahan masakan atau bibit. Sayuran juga dapat ditanam di kebun! '+(featured.active?'🎉 Festival sedang berlangsung hari ini!':'Festival berikutnya hari '+featured.next+'.'),items);
+  this.show('🧺 Pasar Tradisional','Beli bahan masakan atau bibit. Sayuran juga dapat ditanam di kebun! '+(featured.active?'🎉 Festival berlangsung di Alun-Alun, bukan di pasar!':'Festival berikutnya hari '+featured.next+'.'),items);
  }
  festivalGuide(){
   const status=this.world.festival.status;
@@ -105,9 +104,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    this.refresh();this.festivalMenu();
   }});
   if(info.joined&&!info.cookingDone)actions.push({label:'🍲 Lomba menu gizi seimbang',fn:()=>this.festivalCookingContest()});
-  if(info.communityDone)message+=' Dekorasi pasar sudah dibantu. ';
+  if(info.communityDone)message+=' Dekorasi Alun-Alun sudah dibantu. ';
   if(info.cookingDone)message+=' Lomba memasak sudah selesai. ';
-  actions.push({label:'🧺 Kembali ke Pasar',fn:()=>this.market()});
+  actions.push({label:'🌳 Kembali ke Alun-Alun',fn:()=>this.plazaMenu()});
   this.show('🎉 Festival Kampung Sehat · Hari '+this.state.data.day,message,actions,
    '<div class="festival-banner">🎈 🥕 🥬 🎉 🍅</div>');
  }
