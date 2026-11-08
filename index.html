@@ -221,10 +221,10 @@ button{touch-action:manipulation}
 .festival-banner{background:#fff0c8;border:2px dashed #e2b477;border-radius:12px;
  font-size:35px;text-align:center;padding:14px;margin:12px 0}
 @media(max-width:600px){.festival-banner{font-size:29px;padding:11px}}
- .minimap-wrap{position:absolute;right:8px;top:42px;z-index:5;background:#fff9e9eb;border:2px solid #7f9d7c;border-radius:9px;padding:5px;max-width:calc(100% - 16px)}.minimap-wrap canvas{display:block;width:268px;max-width:100%;height:auto;cursor:pointer;touch-action:manipulation}.minimap-wrap small{display:block;font-size:10px;color:#3e6046;text-align:center}@media(max-width:600px){.minimap-wrap{top:43px;right:4px;padding:3px}.minimap-wrap canvas{width:180px}.minimap-wrap small{font-size:8px}} </style>
+ .minimap-wrap{position:relative;right:auto;top:auto;z-index:1;margin:8px auto 12px;width:max-content;background:#fff9e9eb;border:2px solid #7f9d7c;border-radius:9px;padding:5px;max-width:calc(100% - 16px)}.minimap-wrap canvas{display:block;width:268px;max-width:100%;height:auto;cursor:pointer;touch-action:manipulation}.minimap-wrap small{display:block;font-size:10px;color:#3e6046;text-align:center}@media(max-width:600px){.minimap-wrap{padding:3px;max-width:100%}.minimap-wrap canvas{width:min(268px,calc(100vw - 40px))}.minimap-wrap small{font-size:8px}} </style>
 </head>
 <body>
-<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.10</small></h1><p>Cozy pixel art v1.12 · Balai Kota, Festival & Mini Map</p></header>
+<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.14</small></h1><p>Cozy pixel art v1.14 · Balai Kota, Festival & Mini Map</p></header>
 <main class="shell">
 <section class="hud">
 <div class="chip">🪙 <span id="coins"></span><small>Koin</small></div>
@@ -255,8 +255,8 @@ button{touch-action:manipulation}
  <button type="button" id="goEast">🏛️ Pergi ke Alun-Alun & Balai Kota →</button>
  <button type="button" id="goWest">🏡 Kembali ke Kampung Lama</button>
 </nav>
-<div class="gamewrap">
 <div class="minimap-wrap"><canvas id="minimap" width="268" height="120" aria-label="Mini map seluruh kampung"></canvas><small>🗺️ Ketuk lokasi untuk menuju area · titik biru = pemain</small></div>
+<div class="gamewrap">
 <div id="game"></div>
 <div class="toast" id="toast">WASD / panah untuk bergerak • E untuk interaksi</div>
 <section id="notebook" class="notebook-overlay hidden" aria-hidden="true" aria-label="Buku pemain">
