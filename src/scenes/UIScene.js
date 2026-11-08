@@ -484,8 +484,21 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     {label:'🧠 Kuis makanan bergizi',fn:()=>this.startQuiz()},
     {label:'🍽️ Tantangan Isi Piringku',fn:()=>this.startPlate()},
     {label:'📗 Baca buku tentang kelompok makanan',fn:()=>this.readNutritionBook()},
+    {label:'📚 Tantangan Susun Rak Buku',fn:()=>this.libraryShelfChallenge(0)},
     {label:'Tutup perpustakaan',fn:()=>this.close()}
    ],'<div class="library-banner">📚 📗 🥕 🥚 🍊</div>');
+ }
+ libraryShelfChallenge(step=0){
+  const questions=[
+   ['Buku tentang wortel, bayam, dan kangkung masuk rak mana?','🥬 Rak Sayuran','🍬 Rak Camilan Manis'],
+   ['Buku tentang ikan, telur, dan tempe masuk rak mana?','🐟 Rak Lauk Berprotein','🥤 Rak Minuman Manis'],
+   ['Buku tentang nasi, jagung, dan kentang masuk rak mana?','🍚 Rak Makanan Pokok','🍭 Rak Permen']
+  ];
+  const [question,correct,wrong]=questions[step];
+  this.show('📚 Susun Rak Buku '+(step+1)+'/3',question,[
+   {label:correct,fn:()=>step===2?this.show('🌟 Pustakawan Hebat!','Semua buku sudah dikelompokkan dengan benar. Terima kasih membantu menjaga perpustakaan tetap rapi!',[{label:'Kembali',fn:()=>this.libraryMenu()}]):this.libraryShelfChallenge(step+1)},
+   {label:wrong,fn:()=>this.show('💡 Coba Lagi','Kelompokkan buku berdasarkan jenis makanan yang dibahas.',[{label:'Coba Lagi',fn:()=>this.libraryShelfChallenge(step)}])}
+  ]);
  }
  librarianMenu(){
   const greeting=this.friendsLine('rani');
