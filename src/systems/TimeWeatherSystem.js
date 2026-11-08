@@ -3,6 +3,8 @@
 // Cuaca deterministik menurut hari supaya save lama dan progres kebun konsisten.
 export const PHASES=Object.freeze(['Pagi','Siang','Sore','Malam']);
 export const PHASE_SECONDS=35;
+export const TIME_SPEEDS=Object.freeze([1,2,4]);
+export function normalizeTimeSpeed(value){return TIME_SPEEDS.includes(value)?value:1;}
 export function weatherForDay(day){
  const n=Math.max(1,Number.isSafeInteger(day)?day:1);
  return n%5===0?'Berawan':n%3===2?'Hujan':'Cerah';
@@ -24,10 +26,13 @@ export class TimeWeatherSystem{
  constructor(state,garden){
   this.state=state;this.garden=garden;
   state.data.timeWeather=normalizeTime(state.data.timeWeather,state.data.day);
+  state.data.timeSpeed=normalizeTimeSpeed(state.data.timeSpeed);
   this.elapsed=0;this.lastDay=state.data.day;
   this.rainWater();
  }
  get data(){return this.state.data.timeWeather;}
+ get speed(){return normalizeTimeSpeed(this.state.data.timeSpeed);}
+ setSpeed(speed){if(!TIME_SPEEDS.includes(speed))return false;this.state.data.timeSpeed=speed;this.state.save();return true;}
  get phase(){return this.data.phase;}
  get weather(){return this.data.weather;}
  get description(){return describeTime(this.data);}
@@ -45,7 +50,7 @@ export class TimeWeatherSystem{
   if(this.lastDay!==this.state.data.day){this.startDay();return true;}
   this.rainWater();
   if(!Number.isFinite(deltaMs)||deltaMs<=0||this.phase>=3)return false;
-  this.elapsed+=Math.min(deltaMs,1000);
+  this.elapsed+=Math.min(deltaMs,1000)*this.speed;
   if(this.elapsed<PHASE_SECONDS*1000)return false;
   this.elapsed-=PHASE_SECONDS*1000;
   this.data.phase=Math.min(3,this.phase+1);
