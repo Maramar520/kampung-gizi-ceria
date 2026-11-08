@@ -24,6 +24,7 @@ export class RestaurantCustomer {
   if(this.stage==='done')return;
   // The customer must remain visible and stationary while waiting for a prepared meal.
   if(this.stage==='arriving'&&this.npc.finished){this.stage='ordering';this.npc.setRoutine([{x:690,y:470,activity:'🍽️ Menunggu hidangan',pause:2}],'PELANGGAN',false);}
+  if(this.stage==='arriving'&&served){this.stage='eating';this.wait=5;this.npc.setRoutine([{x:670,y:470,activity:'😋 Menikmati makanan',pause:3}],'PELANGGAN',false);}
   if(this.stage==='ordering'&&served){this.stage='eating';this.wait=5;this.npc.setRoutine([{x:690,y:470,activity:'😋 Menikmati makanan',pause:3}],'PELANGGAN',false);}
   if(this.stage==='eating'){
    this.wait-=dt;
