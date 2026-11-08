@@ -212,6 +212,16 @@ export function buildWorld(scene) {
  for(const [x,y,c] of [[31,323,0xf2b7a0],[407,319,0xf4da8d],[485,308,0xe2acd0],[728,309,0xffd59e],[942,323,0xe3c3ec],[25,574,0xffd69c],[709,572,0xf8bac3]])flower(x,y,c);
  // RUMAH PEMAIN di kiri atas: potongan interior terbuka sepanjang permainan.
  room('home',0xf6dfbd,0xb68168);
+ // Lampu rumah pemain menjadi referensi visual untuk lampu rumah warga.
+ const homeLamps=scene.add.graphics().setDepth(640);
+ for(const [lx,ly] of [[72,84],[211,84]]){
+  homeLamps.fillStyle(0xffe8a0,.34).fillCircle(lx,ly,33);
+  homeLamps.fillStyle(0xffedab,.58).fillCircle(lx,ly,21);
+  homeLamps.fillStyle(0xfff5c9,.8).fillCircle(lx,ly,11);
+  homeLamps.fillStyle(0x745b43).fillRect(lx-7,ly-9,14,5);
+  homeLamps.fillStyle(0xffefb6).fillRoundedRect(lx-6,ly-4,12,13,3);
+  homeLamps.fillStyle(0xffffff,1).fillRect(lx-3,ly-1,6,5);
+ }
  label('RUMAH PEMAIN',144,32,14);
  frame(deco,68,99,51,81,0xa3bacd,0x718a9b,3);
  r(deco,76,105,36,19,0xfff9ea);r(deco,77,128,34,45,0xc4dcda);
