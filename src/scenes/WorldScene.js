@@ -262,6 +262,10 @@ export class WorldScene extends Phaser.Scene {
  }
  getNearest(){
   const d=this.game.state.data;
+  const rikoHere=this.restaurantOrders.order.customer==='Tamu Riko'&&['arriving','ordering','eating','paying'].includes(this.restaurantCustomer.status);
+  const riko=rikoHere?{id:'riko',x:this.restaurantCustomer.npc.x,y:this.restaurantCustomer.npc.y,r:31,label:'Tamu Riko'}:null;
+  const nearby=riko&&Math.hypot(d.x-riko.x,d.y-riko.y)<riko.r;
+  if(nearby)return 'riko';
   return nearestInteraction(d,this.zones.map(z=>{
    const npc=this.npcById(z.id);
    return npc?{...z,x:npc.x,y:npc.y}:z;
@@ -308,7 +312,7 @@ export class WorldScene extends Phaser.Scene {
   const id=this.getNearest();
   this.prompt.setVisible(!!id&&!this.game.dialogOpen);
   if(id){
-   const z=this.zones.find(q=>q.id===id);
+   const z=this.zones.find(q=>q.id===id)||{id:'riko',label:'Tamu Riko',x:this.restaurantCustomer.npc.x,y:this.restaurantCustomer.npc.y};
    const npc=this.npcById(id);
    this.prompt.setPosition(npc?npc.x:z.x,(npc?npc.y:z.y)-63);
    this.prompt.setText('E / AKSI · '+z.label);
