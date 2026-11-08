@@ -36,6 +36,7 @@ export class FarmArt {
   rect(894,228,13,15,0x9bb8bd);
   rect(897,230,7,5,0xe4e4d3);
   this.sceneDailyStatus=()=>scene.dailyLife?.status;
+  this.sceneWeather=()=>({rain:scene.clock?.weather==='Hujan',night:scene.clock?.phase===3});
   this.graphics=g;
   this.feedBowl=scene.add.text(331,229,'🥣',{fontSize:'16px'}).setOrigin(.5).setDepth(50).setVisible(false);
   this.eggBasket=scene.add.text(355,230,'🥚',{fontSize:'18px'}).setOrigin(.5).setDepth(51).setVisible(false);
@@ -51,9 +52,16 @@ export class FarmArt {
   const farm=this.sceneDailyStatus?.()||null;
   if(farm){this.feedBowl.setVisible(farm.fedToday);this.eggBasket.setVisible(farm.eggsReady);}
 
+  const shelter=this.sceneWeather();
   for(let i=0;i<this.chickens.length;i++){
    const c=this.chickens[i];
-   c.y=[224,223,188][i]+Math.sin(time/550+i*3)*3;
+   // Walk across the pen while dry; retreat inside the coop in rain or at night.
+   if(shelter.rain||shelter.night){
+    c.setPosition(319+i*8,197+i*2).setVisible(i===0);
+   }else{
+    const base=[[278,224],[369,223],[377,188]][i];
+    c.setPosition(base[0]+Math.sin(time/1200+i*2.3)*9,base[1]+Math.sin(time/550+i*3)*3).setVisible(true);
+   }
    c.setFlipX(Math.sin(time/870+i*2)>0);
   }
   this.fish.x=872+Math.sin(time/750)*23;
