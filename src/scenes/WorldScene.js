@@ -1,6 +1,6 @@
 import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=beach-access-20261108';
 import {createTextures,buildWorld} from '../world/WorldArt.js';
-import {Player} from '../entities/Player.js';
+import {Player} from '../entities/Player.js?v=beach-access-20261108';
 import {NPC} from '../entities/NPC.js';
 import {GardenSystem} from '../systems/GardenSystem.js';
 import {GardenArt} from '../world/GardenArt.js';
