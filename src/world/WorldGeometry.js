@@ -1,6 +1,6 @@
 // Peta v1.3: denah SVG asli (360×270) dipetakan ke world 960×600.
 // Tiga kolom / dua baris dipisahkan jalan x≈448, x≈760, dan y≈282.
-export const WORLD_WIDTH=960, WORLD_HEIGHT=600;
+export const WORLD_WIDTH=1340, WORLD_HEIGHT=600;
 export const SPAWN={x:446,y:291};
 export const LAYOUT=Object.freeze({
  home:{x:45,y:49,w:197,h:190},
@@ -11,6 +11,7 @@ export const LAYOUT=Object.freeze({
  market:{x:39,y:339,w:354,h:206},
  restaurant:{x:500,y:339,w:214,h:206},
  store:{x:806,y:339,w:126,h:206},
+ townHall:{x:1025,y:65,w:260,h:173},plaza:{x:1005,y:344,w:302,h:200},
  roads:{crossY:281,leftX:448,rightX:760}
 });
 export const DOORS=Object.freeze({
@@ -18,7 +19,7 @@ export const DOORS=Object.freeze({
  village:{x:608,y:237},
  market:{x:211,y:339},
  restaurant:{x:607,y:339},
- store:{x:869,y:339}
+ store:{x:869,y:339},townHall:{x:1155,y:238}
 });
 const rectangle=(x,y,w,h)=>({x,y,w,h});
 function houseWalls({x,y,w,h},topEntrance=false){
@@ -35,7 +36,7 @@ function houseWalls({x,y,w,h},topEntrance=false){
 }
 export const WALLS=[
  ...houseWalls(LAYOUT.home),...houseWalls(LAYOUT.village),
- ...houseWalls(LAYOUT.market,true),...houseWalls(LAYOUT.restaurant,true),...houseWalls(LAYOUT.store,true)
+ ...houseWalls(LAYOUT.townHall),...houseWalls(LAYOUT.market,true),...houseWalls(LAYOUT.restaurant,true),...houseWalls(LAYOUT.store,true)
 ];
 export const FURNITURE=[
  rectangle(68,99,51,81), // kasur
@@ -44,6 +45,7 @@ export const FURNITURE=[
  rectangle(551,106,54,40), // meja warga
  rectangle(84,392,204,35), // lapak pasar
  rectangle(533,395,102,36), // meja restoran
+ rectangle(1082,114,46,25),
  rectangle(819,393,34,51)  // kasur rumah Pak Tani dan Bu Sari
 ];
 export const NEW_WORLD_OBSTACLES=[
@@ -52,6 +54,9 @@ export const NEW_WORLD_OBSTACLES=[
 ];
 export const OBSTACLES=[...WALLS,...FURNITURE,...NEW_WORLD_OBSTACLES];
 export const INTERACTIONS=[
+ {id:'plaza',x:1164,y:427,r:92,label:'Alun-Alun Kampung'},
+ {id:'townHall',x:1155,y:198,r:75,label:'Balai Kota'},
+ {id:'mayor',x:1204,y:180,r:45,label:'Kepala Desa'},
  {id:'bed',x:99,y:161,r:49,label:'Kasur'},
  {id:'stove',x:194,y:160,r:55,label:'Kompor'},
  {id:'market',x:208,y:376,r:81,label:'Pasar'},
@@ -69,7 +74,7 @@ export const INTERACTIONS=[
  {id:'rani',x:692,y:207,r:39,label:'Kak Rani'}
 ];
 export function canStand(x,y,obstacles=OBSTACLES){
- if(!Number.isFinite(x)||!Number.isFinite(y)||x<15||x>945||y<35||y>580)return false;
+ if(!Number.isFinite(x)||!Number.isFinite(y)||x<15||x>1325||y<35||y>580)return false;
  return !obstacles.some(o=>x+9>o.x&&x-9<o.x+o.w&&y+5>o.y&&y-5<o.y+o.h);
 }
 export function nearestInteraction(position,zones=INTERACTIONS){
