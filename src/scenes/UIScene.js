@@ -165,7 +165,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ]);
  }
  townHallMenu(){
-  this.show('🏛️ Balai Kota','Selamat datang di Balai Kota! Ruang pelayanan, meja kerja, dan papan pengumuman terlihat langsung di peta.',[
+  this.show('🏛️ Balai Kota','Selamat datang di Balai Kota! Ruang pelayanan, meja kerja, dan papan pengumuman terlihat langsung di dalam Balai Kota.',[
    {label:'📋 Papan Misi Kepala Desa',fn:()=>this.mayorMissionMenu()},
    {label:'📋 Pengumuman Festival',fn:()=>this.festivalGuide()},
    {label:'🌳 Kegiatan Alun-Alun',fn:()=>this.plazaMenu()},
@@ -558,7 +558,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const status=this.world.restaurantOrders.status,order=status.order;
   const recipe=RECIPES[order.recipe],known=knownRecipe(this.state.data,order.recipe);
   const missing=missingFor(this.state.data,order.recipe);
-  const summary='👤 Pelanggan NPC: '+(this.world.restaurantCustomer?.status==='arriving'?'sedang berjalan menuju meja':this.world.restaurantCustomer?.status==='ordering'?'sudah duduk dan menunggu pesanan':this.world.restaurantCustomer?.status==='eating'?'sedang menikmati makanan':this.world.restaurantCustomer?.status==='leaving'?'sedang meninggalkan restoran':'pesanan selesai')+'.\n'+order.customer+' memesan '+recipe.name+'.\nBahan: '+recipe.ingredients.join(', ')+
+  const summary='👤 Pelanggan NPC: '+(this.world.restaurantCustomer?.status==='arriving'?'sedang berjalan menuju meja':this.world.restaurantCustomer?.status==='ordering'?'sudah duduk dan menunggu pesanan':this.world.restaurantCustomer?.status==='eating'?'sedang duduk dan menikmati makanan':this.world.restaurantCustomer?.status==='paying'?'sedang membayar pesanan':this.world.restaurantCustomer?.status==='leaving'?'sedang meninggalkan restoran':'pesanan selesai')+'.\n'+order.customer+' memesan '+recipe.name+'.\nBahan: '+recipe.ingredients.join(', ')+
    '.\nHadiah: '+order.coins+' Koin Ceria + '+order.stars+' ⭐.\n'+
    (status.served?'Pesanan hari ini sudah selesai!':
     status.prepared?'Masakan sudah siap diantar kepada Chef Bimo.':
@@ -566,7 +566,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const buttons=[];
   if(!status.served&&status.prepared)buttons.push({label:'🍽️ Antar pesanan kepada pelanggan',fn:()=>{
    const reward=this.world.restaurantOrders.serve();
-   if(reward){this.refresh();this.note('Pelanggan membayar! +'+reward.coins+' KC +'+reward.stars+' ⭐');}
+   if(reward){this.refresh();this.note('Pesanan diterima! Pembayaran tercatat +'+reward.coins+' KC +'+reward.stars+' ⭐');}
    this.restaurantMenu();
   }});
   if(!status.served&&!status.prepared){
