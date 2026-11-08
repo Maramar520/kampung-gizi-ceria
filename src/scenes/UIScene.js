@@ -201,7 +201,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ]);
  }
  mayorMenu(){
-  this.show('🏛️ Kepala Desa','Halo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
+  const greeting=this.friendsLine('mayor');
+  this.show('🏛️ Kepala Desa',greeting+'\nHalo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
+   {label:'🤝 Buku Pertemanan',fn:()=>this.socialOverview()},
    {label:'📋 Papan Misi Balai Kota',fn:()=>this.mayorMissionMenu()},
    {label:'📅 Lihat festival',fn:()=>this.festivalGuide()},
    {label:'🌳 Kegiatan warga',fn:()=>this.plazaMenu()},
@@ -638,6 +640,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='plaza')return this.plazaMenu();
   if(id==='townHall')return this.townHallMenu();
   if(id==='mayor')return this.mayorMenu();
+  if(id==='arif'||id==='lina')return this.friendMenu(id);
   if(id==='market')return this.market();
   if(id==='store')return this.familyHomeMenu();
   if(id==='village')return this.villageMenu();
