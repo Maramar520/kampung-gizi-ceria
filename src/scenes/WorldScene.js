@@ -95,10 +95,10 @@ export class WorldScene extends Phaser.Scene {
   this.clinicPatient=new NPC(this,{x:1530,y:385,name:'PASIEN',texture:'tani',stops:[{x:1530,y:385}]});
   // Semua petugas/pasien menggunakan collision yang sama dengan pemain.
   for(const npc of [this.clinicDoctor,this.clinicNurse,this.clinicPatient])npc.walkable=(x,y)=>canStand(x,y);
-  this.schoolTeacher=new NPC(this,{x:1090,y:620,name:'BU GURU',texture:'rani',stops:[{x:1090,y:620}]});
+  this.schoolTeacher=new NPC(this,{x:839,y:106,name:'BU GURU',texture:'rani',stops:[{x:839,y:106}]});
   this.schoolStudents=[
-   new NPC(this,{x:1420,y:200,name:'MURID A',texture:'nia',stops:[{x:1420,y:200}]}),
-   new NPC(this,{x:1530,y:200,name:'MURID B',texture:'tani',stops:[{x:1530,y:200}]})
+   new NPC(this,{x:1420,y:247,name:'MURID A',texture:'nia',stops:[{x:1420,y:247}]}),
+   new NPC(this,{x:1530,y:247,name:'MURID B',texture:'tani',stops:[{x:1530,y:247}]})
   ];
   for(const npc of [this.schoolTeacher,...this.schoolStudents])npc.walkable=(x,y)=>canStand(x,y);
   this.schoolRoutineKey='';
@@ -147,7 +147,7 @@ export class WorldScene extends Phaser.Scene {
   this.tweens.add({targets:subject,scaleX:1.12,scaleY:.88,duration:110,yoyo:true,
    ease:'Sine.easeOut',onComplete:()=>subject.setScale(1)});
   const emoji={stove:'🍳',market:'🧺',bed:'💤',chef:'📖',garden:'🌱',
-   coop:'🥚',pond:'🎣',store:'🏡',village:'🏡',npc:'✨',tani:'🌱',nia:'💬',library:'📚',rani:'📖',mayor:'🏛️',plaza:'🎪',townHall:'🏛️'}[kind]||'✨';
+   coop:'🥚',store:'🏡',village:'🏡',npc:'✨',tani:'🌱',nia:'💬',library:'📚',rani:'📖',mayor:'🏛️',plaza:'🎪',townHall:'🏛️'}[kind]||'✨';
   const puff=this.add.text(x,y-47,emoji,{fontSize:'22px'}).setOrigin(.5).setDepth(2200);
   this.tweens.add({targets:puff,y:y-77,alpha:0,duration:650,
    ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
@@ -313,7 +313,7 @@ export class WorldScene extends Phaser.Scene {
   const markers={
    library:{x:650,y:130,title:'📚 PERPUSTAKAAN GIZI',yLabel:75},
    coop:{x:325,y:194,title:'🐔 TERNAK · SEBELAH RUMAH',yLabel:248},
-   pond:{x:869,y:155,title:'🎣 KOLAM · KANAN ATAS',yLabel:263},
+   school:{x:868,y:145,title:'🏫 SEKOLAH GIZI',yLabel:263},
    plaza:{x:1164,y:427,title:'🌳 ALUN-ALUN KAMPUNG',yLabel:360},
    townHall:{x:1155,y:180,title:'🏛️ BALAI KOTA',yLabel:95},
    festival:{x:1164,y:395,title:'🎉 FESTIVAL · ALUN-ALUN',yLabel:310}
@@ -370,23 +370,27 @@ export class WorldScene extends Phaser.Scene {
    this.schoolRoutineKey=schoolKey;
    const schoolOpen=this.clock.phase===0||this.clock.phase===1;
    this.schoolTeacher.setRoutine(schoolOpen?[
-    {x:1090,y:620,activity:'📚 Mengajar gizi',pause:3},
-    {x:1105,y:645,activity:'🧼 Mengajar kebersihan',pause:3},
-    {x:1090,y:620}
-   ]:[{x:1090,y:620,activity:'📚 Menyiapkan materi',pause:3}],'BU GURU',schoolOpen);
+    {x:839,y:106,activity:'📚 Mengajar gizi',pause:3},
+    {x:854,y:106,activity:'🧼 Mengajar kebersihan',pause:3},
+    {x:839,y:106}
+   ]:[{x:839,y:106,activity:'📚 Menyiapkan materi',pause:3}],'BU GURU',schoolOpen);
    this.schoolStudents.forEach((npc,i)=>{
     const homeX=i===0?1420:1530;
-    const outbound=[{x:homeX,y:247},{x:homeX,y:281},{x:1340,y:281},
-     {x:1155,y:281},{x:1155,y:345},{x:1155,y:545},
-     {x:1155,y:560},{x:1155,y:588},{x:1155,y:640}];
-    const returning=[{x:1155,y:588},{x:1155,y:560},{x:1155,y:545},
-     {x:1155,y:345},{x:1155,y:281},{x:1340,y:281},
-     {x:homeX,y:281},{x:homeX,y:247},{x:homeX,y:200,activity:'🏠 Pulang',pause:3}];
+    const outbound=[
+     {x:homeX,y:247},{x:homeX,y:281},{x:1340,y:281},
+     {x:960,y:281},{x:868,y:281},{x:868,y:250},
+     {x:868,y:222},{x:868,y:195}
+    ];
+    const returning=[
+     {x:868,y:222},{x:868,y:250},{x:868,y:281},
+     {x:960,y:281},{x:1340,y:281},
+     {x:homeX,y:281},{x:homeX,y:247,activity:'🏠 Pulang',pause:3}
+    ];
     npc.setRoutine(schoolOpen?[...outbound,
-      {x:1120+i*65,y:640,activity:'✏️ Belajar',pause:3},
-      {x:1155,y:640},...returning]:
-      [{x:homeX,y:200,activity:'🏠 Istirahat',pause:3}],
-      i===0?'MURID A':'MURID B',schoolOpen);
+     {x:850+i*36,y:169,activity:'✏️ Belajar',pause:3},
+     {x:868,y:195},...returning]:
+     [{x:homeX,y:247,activity:'🏠 Istirahat',pause:3}],
+     i===0?'MURID A':'MURID B',schoolOpen);
    });
   }
   const clinicOpen=this.clock.phase!==3;
