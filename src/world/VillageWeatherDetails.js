@@ -12,7 +12,19 @@ export class VillageWeatherDetails{
    }
   }
   if(phase===3){
-   // Titik lampu di Sekolah Gizi, Puskesmas, dan rumah Nia/Arif/Lina dihapus.
+   // Titik cahaya kecil hangat saat malam, seperti penerangan Rumah Pemain.
+   // Tanpa objek lampu fisik atau lingkaran cahaya besar.
+   const indoorLights=[
+    [825,88],[905,88],                 // Sekolah Gizi
+    [1435,385],[1540,385],[1618,385], // Puskesmas
+    [1395,89],[1445,89],              // Rumah Nia
+    [1505,89],[1555,89],              // Rumah Arif
+    [1615,89],[1665,89]               // Rumah Lina
+   ];
+   for(const [x,y] of indoorLights){
+    g.fillStyle(0xffd58a,.12).fillEllipse(x,y+8,45,18);
+    g.fillStyle(0xffe8ac,.65).fillCircle(x,y,3);
+   }
    for(const [x,y] of [[445,265],[760,260],[1155,265],[760,575],[608,326],[211,325]]){
     g.fillStyle(0xffd58a,.12).fillEllipse(x,y+8,45,18);
     g.fillStyle(0xffe8ac,.65).fillCircle(x,y,3);
