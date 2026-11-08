@@ -78,14 +78,23 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const start=Math.floor((day-1)/28)*28+1;
   const cells=Array.from({length:28},(_,i)=>{
    const d=start+i,active=d===day,event=(d>=3&&(d-3)%4===0);
-   return '<div class="calendar-day'+(active?' today':'')+(event?' festival':'')+'"'+(active?' aria-current="date"':'')+'>'+d+'<small>'+(active?'Hari ini':event?'🎉':'&nbsp;')+'</small></div>';
+   const birthdays=Object.entries(BIRTHDAYS).filter(([,birthday])=>birthday===(d-1)%28+1);
+   return '<div class="calendar-day'+(active?' today':'')+(event?' festival':'')+'"'+(active?' aria-current="date"':'')+'>'+d+'<small>'+(active?'Hari ini':birthdays.length?'🎂':event?'🎉':'&nbsp;')+'</small></div>';
   }).join('');
   const phase=this.world.clock.description;
   this.show('📅 Kalender Kampung','Hari '+day+' · '+phase.phase+' · '+phase.weather+'. Festival Kampung Sehat berikutnya pada hari '+festival.next+' di Alun-Alun. Kalender mengikuti hari permainan dan berganti saat pemain tidur.',[
+   {label:'🎂 Ulang tahun warga',fn:()=>this.birthdayCalendarMenu()},
    {label:'🎉 Jadwal festival',fn:()=>this.festivalGuide()},
    {label:'🏛️ Misi Balai Kota',fn:()=>this.mayorMissionMenu()},
    {label:'Tutup',fn:()=>this.close()}
   ],'<div class="calendar-sheet" aria-label="Kalender 28 hari permainan">'+cells+'</div><div class="calendar-legend">🟩 Hari ini · 🎉 Hari festival · Satu halaman = 28 hari permainan</div>');
+ }
+ birthdayCalendarMenu(){
+  const names={sari:'Bu Sari',chef:'Chef Bimo',tani:'Pak Tani',nia:'Nia',rani:'Kak Rani',arif:'Warga Arif',lina:'Warga Lina',mayor:'Kepala Desa'};
+  const lines=Object.entries(BIRTHDAYS).filter(([id])=>names[id]).sort((a,b)=>a[1]-b[1]).map(([id,day])=>'🎂 Hari '+day+' · '+names[id]);
+  this.show('🎂 Ulang Tahun Warga','Kalender berulang setiap 28 hari permainan. Berikan hadiah saat ulang tahun untuk bonus hati.\\n'+lines.join('\\n'),[
+   {label:'Kembali ke kalender',fn:()=>this.calendarMenu()}
+  ]);
  }
  festivalGuide(){
   const status=this.world.festival.status;
@@ -221,6 +230,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
      this.close();
      this.note(rain?'Keduanya sedang berjalan menuju atau berada di dalam rumah.':'Temui mereka saat berjalan di kampung; mereka pulang saat hujan.');
     }},
+    {label:'🎁 Berkunjung dan memberi hadiah Bu Sari',fn:()=>this.giftMenu('sari')},
+    {label:'🥕 Berkunjung dan memberi hadiah Pak Tani',fn:()=>this.giftMenu('tani')},
     {label:'Kembali ke kampung',fn:()=>this.close()}
    ],'<div class="farm-preview">🏠 🛏️ 🪴</div>');
  }
