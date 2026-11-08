@@ -16,7 +16,7 @@ import {rainyRoute,dryReturnRoute,isInsideShelter} from '../world/ShelterRoutes.
 import {workRoute} from '../world/NpcWorkRoutes.js';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
 import {HomeDecorArt} from '../world/HomeDecorArt.js';
-import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
+import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js?v=guests-20261108';
 import {RestaurantCustomer} from '../systems/RestaurantCustomer.js';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
