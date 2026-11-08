@@ -20,6 +20,7 @@ import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js?v=guest
 import {RestaurantCustomer} from '../systems/RestaurantCustomer.js?v=guests-20261108';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
+import {SouthCoastArt} from '../world/SouthCoastArt.js';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
 export class WorldScene extends Phaser.Scene {
@@ -42,6 +43,7 @@ export class WorldScene extends Phaser.Scene {
   this.ambientArt=new AmbientArt(this);
   this.weatherArt=new WeatherArt(this,this.clock);
   this.townArt=new TownExpansionArt(this,this.festival);
+  this.southCoastArt=new SouthCoastArt(this);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
    Object.assign(this.game.state.data,SPAWN);
@@ -84,7 +86,7 @@ export class WorldScene extends Phaser.Scene {
    if(key)this.keysHeld.delete(key);
   });
   window.addEventListener('blur',()=>this.keysHeld.clear());
-  this.cameras.main.setBounds(0,0,1340,600);
+  this.cameras.main.setBounds(0,0,1340,850);
   this.cameras.main.startFollow(this.player.sprite,true,.12,.12);
   this.cameras.main.setZoom(1);
   this.game.events.emit('world-ready',this);
