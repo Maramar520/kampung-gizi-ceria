@@ -9,6 +9,7 @@ export class EastHomesArt{
  constructor(scene){
   const ground=scene.add.graphics().setDepth(-99);
   const roads=scene.add.graphics().setDepth(-89);
+  const floor=scene.add.graphics().setDepth(-78);
   const deco=scene.add.graphics().setDepth(-74);
   const rect=(g,x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
   const frame=(g,x,y,w,h,c,edge=0x88694c,t=3)=>{
@@ -32,8 +33,9 @@ export class EastHomesArt{
    rect(roads,cx-18,230,36,33,0xf0d9b7);
    for(let j=0;j<2;j++)rect(roads,cx-13+j*17,243,8,3,0xdfbb91);
    // Bingkai rumah seperti fungsi room() pada kampung lama.
-   frame(ground,x,y,w,h,({nia:0xf7e0d6,arif:0xf0dfc3,lina:0xf4e1cf})[id],0x9e7757,3);
-   for(let yy=y+23;yy<y+h-10;yy+=22)rect(ground,x+8,yy,w-16,2,0xe8c29c);
+   // Lantai wajib digambar di atas SEMUA lapisan rumput dan jalan.
+   frame(floor,x,y,w,h,({nia:0xf7e0d6,arif:0xf0dfc3,lina:0xf4e1cf})[id],0x9e7757,3);
+   for(let yy=y+23;yy<y+h-10;yy+=22)rect(floor,x+8,yy,w-16,2,0xe8c29c);
    const trim=({nia:0xb68168,arif:0x9a7658,lina:0xa27b70})[id];
    rect(deco,x,y,11,h,trim);rect(deco,x+w-11,y,11,h,trim);
    rect(deco,x,y,w,11,trim);
@@ -68,7 +70,7 @@ export class EastHomesArt{
    rect(deco,x+16,y+103,13,6,0x8fc985);
    // Jendela dengan cahaya dan karpet kecil di ruang tengah.
    rect(deco,x+47,y+12,24,8,0xfaf0c8);rect(deco,x+58,y+12,2,8,0x9dbaaa);
-   rect(ground,x+39,y+134,24,18,0xe6c9a2);
+   rect(floor,x+39,y+134,24,18,0xe6c9a2);
    rect(deco,x+42,y+137,18,12,({nia:0xeabac3,arif:0xc0d3a7,lina:0xd5c3e4})[id]);
    // Interior personal: meja baca Nia, bibit Arif, bunga Lina.
    if(id==='nia'){
