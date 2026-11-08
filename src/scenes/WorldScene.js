@@ -41,6 +41,8 @@ export class WorldScene extends Phaser.Scene {
   this.dailyLife=new DailyLifeSystem(this.game.state);
   this.coast=new CoastSystem(this.game.state);
   this.coastExpedition=new CoastExpeditionSystem(this.game.state,this.coast);
+  this.marineEducation=new MarineEducationSystem(this.game.state);
+  this.villageLife=new VillageLifeSystem(this.game.state);
   this.social=new SocialSystem(this.game.state);
   this.friendEvents=new FriendEvents(this.game.state);
   this.missions=new MissionSystem(this.game.state);
@@ -52,8 +54,10 @@ export class WorldScene extends Phaser.Scene {
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
   this.weatherArt=new WeatherArt(this,this.clock);
+  this.villageWeatherDetails=new VillageWeatherDetails(this);
   this.townArt=new TownExpansionArt(this,this.festival);
   this.southCoastArt=new SouthCoastArt(this);
+  this.marineWildlifeArt=new MarineWildlifeArt(this);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
    Object.assign(this.game.state.data,SPAWN);
