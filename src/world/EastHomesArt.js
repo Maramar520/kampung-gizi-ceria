@@ -89,17 +89,7 @@ export class EastHomesArt{
    rect(gardens,x+75,241,23,6,0xa67a52);
    flower(gardens,x+12,239,color);
    flower(gardens,x+87,239,0xf4d28d);
-   // Lampu identik dengan rumah pemain: ukuran, bentuk, dan intensitas sama.
-   const light=scene.add.graphics().setDepth(640);
-   for(const [lx,ly] of [[x+19,y+25],[x+81,y+25]]){
-    light.fillStyle(0xffe8a0,.34).fillCircle(lx,ly,33);
-    light.fillStyle(0xffedab,.58).fillCircle(lx,ly,21);
-    light.fillStyle(0xfff5c9,.8).fillCircle(lx,ly,11);
-    light.fillStyle(0x745b43).fillRect(lx-7,ly-9,14,5);
-    light.fillStyle(0xffefb6).fillRoundedRect(lx-6,ly-4,12,13,3);
-    light.fillStyle(0xffffff,1).fillRect(lx-3,ly-1,6,5);
-   }
-
+   // Lampu fisik rumah dihapus; penerangan malam menggunakan titik cahaya lembut.
   }
   // PUSKESMAS: memanfaatkan lahan kosong di tenggara rumah warga.
   // Interior terbuka dan lantai krem seperti rumah lainnya.
@@ -157,14 +147,7 @@ export class EastHomesArt{
   rect(path,1510,342,40,4,0xe4c28a);
   // Papan nama di samping pintu, bukan tepat di jalur karakter.
 
-  // Lampu Puskesmas di dua sisi pintu masuk.
-  const clinicLights=scene.add.graphics().setDepth(540);
-  for(const [lx,ly] of [[1450,367],[1609,367]]){
-   clinicLights.fillStyle(0xffe8a2,.13).fillCircle(lx,ly,26);
-   clinicLights.fillStyle(0xffe8a2,.25).fillCircle(lx,ly,13);
-   clinicLights.fillStyle(0x6c7770).fillRect(lx-7,ly-8,14,5);
-   clinicLights.fillStyle(0xfff0b9).fillRoundedRect(lx-5,ly-4,10,11,3);
-  }
+  // Lampu fisik Puskesmas dihapus; penerangan malam menggunakan titik cahaya lembut.
   // Pantai timur tetap mengikuti sambungan pantai versi sebelumnya.
   rect(path,1340,600,380,112,0xf3dba5);
   rect(path,1340,710,380,140,0x65bfd0);
