@@ -52,6 +52,9 @@ async function testDesktop(browser){
  await page.locator('#goWest').click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.x),760);
  // Eastern district is reachable by the camera, while original save positions remain valid.
+ const eastVisual=await page.evaluate(()=>{const w=window.__kampungQA.scene.getScene('WorldScene');return {width:w.cameras.main._bounds.width,weatherWidth:w.weatherArt.atmosphere.getBounds().width,road:w.townArt!==undefined};});
+ assert.equal(eastVisual.width,1340);
+ assert.equal(eastVisual.road,true);
  await moveTo(page,1155,395);
  assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').cameras.main._bounds.width),1340);
  await page.keyboard.press('e');
