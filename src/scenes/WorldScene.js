@@ -162,8 +162,9 @@ export class WorldScene extends Phaser.Scene {
   this.input.on('pointerdown',pointer=>{
    if(pointer.button!==0||this.game.dialogOpen)return;
    const now=this.time.now;
-   if(this.lastMapClick&&now-this.lastMapClick<320&&!this.mapDragDetached){
+   if(this.lastMapClick&&now-this.lastMapClick<320){
     cam.startFollow(this.player.sprite,true,.12,.12);
+    this.mapDragDetached=false;
    }
    this.lastMapClick=now;
   });
