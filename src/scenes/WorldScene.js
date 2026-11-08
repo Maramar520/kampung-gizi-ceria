@@ -358,6 +358,7 @@ export class WorldScene extends Phaser.Scene {
    townHall:{x:1155,y:180,title:'🏛️ BALAI KOTA',yLabel:95},
    festival:{x:1164,y:395,title:'🎉 FESTIVAL · ALUN-ALUN',yLabel:310}
   };
+  if(id==='plaza'||id==='townHall'||id==='festival')return;
   const p=markers[id];if(!p)return;
   this.keysHeld.clear();
   if(this.landmarkCircle){this.tweens.killTweensOf(this.landmarkCircle);this.landmarkCircle.destroy();}
