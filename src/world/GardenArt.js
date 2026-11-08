@@ -1,3 +1,4 @@
+import {CROPS} from '../systems/GardenSystem.js';
 // Lapisan pertumbuhan di WorldScene. Tidak membuat scene atau world terpisah.
 // Tiga petak di sebelah timur rumah pemain sesuai denah SVG: x258..389, y59..138.
 export const GARDEN_PLOTS=[
@@ -5,7 +6,7 @@ export const GARDEN_PLOTS=[
  {x:309,y:74,w:34,h:47},
  {x:351,y:74,w:32,h:47}
 ];
-function elapsedDays(plot){return plot.daysLeft+Math.max(0,plot.plantedDay?0:1)+2;}
+function elapsedDays(plot){return CROPS[plot.crop]?.days||1;}
 export class GardenArt {
  constructor(scene,garden){
   this.scene=scene;this.garden=garden;
