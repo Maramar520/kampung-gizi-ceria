@@ -4,7 +4,7 @@ import {MayorMissionSystem} from '../src/systems/MayorMissionSystem.js';
 function setup(day=3,previous={}){const data={day,coins:20,learning:{stars:0},plazaActivities:{days:[]},festival:{communityDays:[]},...previous};return {data,save(){this.saved=(this.saved||0)+1}};}
 test('old save receives mission defaults without losing fields',()=>{
  const state=setup(3,{inventory:{bayam:2}}),system=new MayorMissionSystem(state);
- assert.deepEqual(state.data.mayorMissions,{claimedMove:[],claimedFestival:[]});
+ assert.deepEqual(state.data.mayorMissions,{claimedMove:[],claimedFestival:[],claimedFarm:[],claimedCoop:[]});
  assert.equal(state.data.inventory.bayam,2);
  assert.equal(system.claim('move'),null);
 });
