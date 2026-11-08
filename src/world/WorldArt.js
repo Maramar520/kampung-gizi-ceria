@@ -12,6 +12,7 @@ export function createTextures(scene){
   chef:{shirt:0xf0eee4,shade:0xc4d7cd,hair:0x665041,skin:0xf1c6a4,accent:0x8abc9d},
   tani:{shirt:0x8fb47b,shade:0x517c56,hair:0x594633,skin:0xeac39e,accent:0xd6b171},
   nia:{shirt:0xe6b4c3,shade:0xb67d9f,hair:0x473746,skin:0xf2caa9,accent:0xf5d78f},
+  mayor:{shirt:0x708ca8,shade:0x4b6586,hair:0x49413c,skin:0xe9c19e,accent:0xe8d58c},
   rani:{shirt:0xa6a9d6,shade:0x747ab3,hair:0x51404c,skin:0xeec7a7,accent:0xf0d595}
  };
  const draw=(name,dir,frame,action=null)=>{
