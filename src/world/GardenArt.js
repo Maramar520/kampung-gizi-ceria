@@ -5,6 +5,7 @@ export const GARDEN_PLOTS=[
  {x:309,y:74,w:34,h:47},
  {x:351,y:74,w:32,h:47}
 ];
+function elapsedDays(plot){return plot.daysLeft+Math.max(0,plot.plantedDay?0:1)+2;}
 export class GardenArt {
  constructor(scene,garden){
   this.scene=scene;this.garden=garden;
@@ -35,7 +36,9 @@ export class GardenArt {
    }else{
     const high=plot.stage==='ready';
     const crop=plot.crop||'bayam';
-    const sprouts=plot.stage==='dry'?7:plot.stage==='growing'?15:24;
+    // Crop height now reflects elapsed growth days, not only a binary growing state.
+    const elapsed=Math.max(0,(this.garden.day||1)-(plot.plantedDay||this.garden.day||1));
+    const sprouts=plot.stage==='dry'?7:plot.stage==='growing'?Math.min(22,12+elapsed*5):24;
     for(const x of [center-12,center,center+12]){
      rect(x-2,a.y+45-sprouts,4,sprouts,0x4d8e52);
      rect(x-11,a.y+37-sprouts,10,8,high?0x80c66f:0x73ac69);
@@ -64,6 +67,11 @@ export class GardenArt {
     if(plot.watered){
      for(const x of [a.x+6,a.x+33])rect(x,a.y+51,5,3,0x8ab7cf);
     }
+   }
+   if(plot.stage==='growing'&&plot.daysLeft>0){
+    // Distinct visible growth progress marker above each occupied plot.
+    const total=Math.max(1,elapsedDays(plot));
+    rect(a.x+5,a.y+a.h-6,Math.max(3,Math.round((a.w-10)*(1-plot.daysLeft/total))),3,0x9cd27c);
    }
    const color=plot.stage==='ready'?0xecc966:plot.stage==='growing'?0x90c2d6:plot.stage==='dry'?0xd6a16e:0xf5d6a4;
    rect(a.x+3,a.y+3,a.w-6,4,color);
