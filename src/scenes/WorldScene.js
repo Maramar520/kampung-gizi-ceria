@@ -8,7 +8,7 @@ import {FarmArt} from '../world/FarmArt.js';
 import {AmbientArt} from '../world/AmbientArt.js';
 import {DailyLifeSystem} from '../systems/DailyLifeSystem.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
-import {SocialSystem} from '../systems/SocialSystem.js';
+import {SocialSystem} from '../systems/SocialSystem.js?v=friends-20261108';
 import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
 import {WeatherArt} from '../world/WeatherArt.js';
