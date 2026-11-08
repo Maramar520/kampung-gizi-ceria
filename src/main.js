@@ -1,6 +1,6 @@
 import {GameState} from './systems/GameState.js';
 import {WorldScene} from './scenes/WorldScene.js?v=v119-life';
-import {UIScene} from './scenes/UIScene.js?v=coast-v118';
+import {UIScene} from './scenes/UIScene.js?v=v119-life';
 const game=new Phaser.Game({type:Phaser.AUTO,parent:'game',width:960,height:600,pixelArt:true,backgroundColor:'#91c881',scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},scene:[WorldScene,UIScene]});
 game.state=new GameState();
 game.dialogOpen=false;
