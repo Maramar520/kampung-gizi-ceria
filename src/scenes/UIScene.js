@@ -649,6 +649,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='garden')return this.gardenMenu();
   if(id==='coop')return this.coopMenu();
   if(id==='pond')return this.pondMenu();
+  if(id==='sea-fishing')return this.seaFishingMenu();
+  if(id==='beach')return this.beachMenu();
   if(id==='tani'||id==='nia')return this.friendMenu(id);
   if(id==='chef')return this.chefMenu();
   if(id==='stove')return this.chooseRecipe();
