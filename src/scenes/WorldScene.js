@@ -133,7 +133,7 @@ export class WorldScene extends Phaser.Scene {
   });
   window.addEventListener('blur',()=>this.keysHeld.clear());
   this.cameras.main.setBackgroundColor('#65bfd0');
-  this.cameras.main.setBounds(0,0,1720,850);
+  this.cameras.main.setBounds(0,0,1720,1200);
   this.cameras.main.startFollow(this.player.sprite,true,.12,.12);
   this.cameras.main.setZoom(1);
   this.game.events.emit('world-ready',this);
