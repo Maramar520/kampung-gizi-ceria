@@ -7,12 +7,12 @@ export const LAYOUT=Object.freeze({
  garden:{x:258,y:59,w:131,h:79},
  coop:{x:264,y:150,w:123,h:88},
  village:{x:500,y:49,w:214,h:190},
- pond:{x:805,y:53,w:126,h:183},
+ school:{x:805,y:53,w:126,h:183},
  market:{x:39,y:339,w:354,h:206},
  restaurant:{x:500,y:339,w:214,h:206},
  store:{x:806,y:339,w:126,h:206},
  townHall:{x:1025,y:65,w:260,h:173},plaza:{x:1005,y:344,w:302,h:200},
- niaHome:{x:1370,y:65,w:100,h:170},arifHome:{x:1480,y:65,w:100,h:170},linaHome:{x:1590,y:65,w:100,h:170},puskesmas:{x:1400,y:345,w:260,h:210},school:{x:1020,y:570,w:270,h:125},
+ niaHome:{x:1370,y:65,w:100,h:170},arifHome:{x:1480,y:65,w:100,h:170},linaHome:{x:1590,y:65,w:100,h:170},puskesmas:{x:1400,y:345,w:260,h:210},
  roads:{crossY:281,leftX:448,rightX:760}
 });
 export const DOORS=Object.freeze({
@@ -20,7 +20,7 @@ export const DOORS=Object.freeze({
  village:{x:608,y:237},
  market:{x:211,y:339},
  restaurant:{x:607,y:339},
- store:{x:869,y:339},townHall:{x:1155,y:238},puskesmas:{x:1530,y:345},school:{x:1155,y:570}
+ store:{x:869,y:339},townHall:{x:1155,y:238},puskesmas:{x:1530,y:345},school:{x:868,y:236}
 });
 const rectangle=(x,y,w,h)=>({x,y,w,h});
 function houseWalls({x,y,w,h},topEntrance=false){
@@ -39,7 +39,7 @@ export const WALLS=[
  ...houseWalls(LAYOUT.home),...houseWalls(LAYOUT.village),
  ...houseWalls(LAYOUT.townHall),...houseWalls(LAYOUT.niaHome),
  ...houseWalls(LAYOUT.arifHome),...houseWalls(LAYOUT.linaHome),
- ...houseWalls(LAYOUT.puskesmas,true),...houseWalls(LAYOUT.school,true),...houseWalls(LAYOUT.market,true),...houseWalls(LAYOUT.restaurant,true),...houseWalls(LAYOUT.store,true)
+ ...houseWalls(LAYOUT.puskesmas,true),...houseWalls(LAYOUT.school),...houseWalls(LAYOUT.market,true),...houseWalls(LAYOUT.restaurant,true),...houseWalls(LAYOUT.store,true)
 ];
 export const FURNITURE=[
  rectangle(68,99,51,81), // kasur
@@ -54,14 +54,13 @@ export const FURNITURE=[
 ];
 export const NEW_WORLD_OBSTACLES=[
  rectangle(292,168,72,42), // bangunan kandang; halamannya tetap dapat dilalui
- rectangle(816,82,105,129), // air kolam (dermaga di sisi bawah)
  rectangle(0,709,734,141), // laut: hanya dermaga yang dapat diinjak
  rectangle(791,709,229,141), // laut di kanan dermaga sebelum pulau
  rectangle(1180,709,540,141) // laut setelah pulau kecil
 ];
 export const OBSTACLES=[...WALLS,...FURNITURE,...NEW_WORLD_OBSTACLES];
 export const INTERACTIONS=[
- {id:'school',x:1155,y:582,r:57,label:'Sekolah Gizi'},
+ {id:'school',x:868,y:215,r:67,label:'Sekolah Gizi'},
  {id:'puskesmas',x:1530,y:360,r:57,label:'Puskesmas'},
  {id:'niaHome',x:1420,y:191,r:44,label:'Rumah Nia'},
  {id:'arifHome',x:1530,y:191,r:44,label:'Rumah Arif'},
@@ -83,7 +82,6 @@ export const INTERACTIONS=[
  {id:'restaurant-kitchen',x:687,y:442,r:33,label:'Dapur Restoran'},
  {id:'garden',x:320,y:142,r:75,label:'Kebun Sayur'},
  {id:'coop',x:325,y:217,r:74,label:'Kandang Ayam'},
- {id:'pond',x:871,y:230,r:75,label:'Kolam Ikan'},
  {id:'store',x:869,y:364,r:65,label:'Rumah Pak Tani & Bu Sari'},
  {id:'village',x:606,y:207,r:67,label:'Perpustakaan'},
  {id:'tani',x:403,y:189,r:45,label:'Pak Tani'},
