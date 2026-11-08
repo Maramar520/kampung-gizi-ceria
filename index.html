@@ -287,17 +287,44 @@ button{touch-action:manipulation}
 <button id="action">✨ AKSI / E</button></div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script type="module" src="./src/main.js?v=1.16-calendar-3"></script>
+<script type="module" src="./src/main.js?v=1.16-calendar-fix"></script>
 <script>
 // v1.13 release diagnostic: visible version, without modifying saved progress.
 document.documentElement.dataset.build='1.16';
 window.addEventListener('DOMContentLoaded',()=>{
  const marker=document.createElement('small');
  marker.id='releaseVersion';
- marker.textContent='Versi terpasang: v1.16 · Kalender & Rumput Baru';
+ marker.textContent='Versi terpasang: v1.16 · Kalender Diperbaiki';
  marker.style.cssText='display:block;text-align:center;color:#476c51;font-weight:700;padding:3px 8px';
  const header=document.querySelector('header');
  if(header)header.appendChild(marker);
+});
+</script>
+<script>
+// Kalender mandiri: tidak bergantung pada kesiapan Phaser atau scene dialog.
+window.addEventListener('DOMContentLoaded',()=>{
+ const button=document.getElementById('calendarButton');
+ if(!button)return;
+ const overlay=document.createElement('div');overlay.id='calendarOverlay';overlay.className='notebook-overlay hidden';
+ overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Kalender Kampung');
+ overlay.innerHTML='<section class="notebook-panel"><div class="notebook-header"><h2>📅 Kalender Kampung</h2><button type="button" id="calendarClose">✕ Tutup</button></div><div class="notebook-content"><p id="calendarSummary" class="notebook-note"></p><div id="calendarGrid" class="calendar-sheet"></div><p class="calendar-legend">🟩 Hari ini · 🎉 Festival di Alun-Alun setiap 4 hari mulai hari ke-3</p></div></section>';
+ document.body.appendChild(overlay);
+ const close=()=>{overlay.classList.add('hidden');button.focus();};
+ const open=()=>{
+  const day=Math.max(1,parseInt(document.getElementById('day')?.textContent,10)||1);
+  const start=Math.floor((day-1)/28)*28+1;
+  const next=day<=3?3:3+Math.ceil((day-3)/4)*4;
+  document.getElementById('calendarSummary').textContent='Hari '+day+' · Festival berikutnya hari '+next+' · Kalender mengikuti hari dalam game.';
+  document.getElementById('calendarGrid').innerHTML=Array.from({length:28},(_,i)=>{
+   const d=start+i,festival=d>=3&&(d-3)%4===0;
+   return '<div class="calendar-day'+(d===day?' today':'')+(festival?' festival':'')+'">'+d+'<small>'+(d===day?'Hari ini':festival?'🎉':'&nbsp;')+'</small></div>';
+  }).join('');
+  overlay.classList.remove('hidden');document.getElementById('calendarClose').focus();
+ };
+ button.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();open();},true);
+ document.getElementById('calendarClose').addEventListener('click',close);
+ overlay.addEventListener('click',event=>{if(event.target===overlay)close();});
+ window.addEventListener('keydown',event=>{if(event.key==='Escape'&&!overlay.classList.contains('hidden')){event.stopImmediatePropagation();close();}},true);
 });
 </script>
 </body>
