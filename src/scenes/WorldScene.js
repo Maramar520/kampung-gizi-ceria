@@ -153,8 +153,10 @@ export class WorldScene extends Phaser.Scene {
    const dx=pointer.x-drag.x,dy=pointer.y-drag.y;
    if(!drag.moved&&Math.hypot(dx,dy)<5)return;
    if(!drag.moved){cam.stopFollow();this.mapDragDetached=true;drag.moved=true;}
-   cam.scrollX-=dx/cam.zoom;
-   cam.scrollY-=dy/cam.zoom;
+   // Batasi geser agar kamera tidak memperlihatkan area di luar peta.
+   const viewW=cam.width/cam.zoom,viewH=cam.height/cam.zoom;
+   cam.scrollX=Phaser.Math.Clamp(cam.scrollX-dx/cam.zoom,0,Math.max(0,1720-viewW));
+   cam.scrollY=Phaser.Math.Clamp(cam.scrollY-dy/cam.zoom,0,Math.max(0,1200-viewH));
    drag.x=pointer.x;drag.y=pointer.y;
   });
   const release=pointer=>{if(this.mapDrag?.id===pointer.id)this.mapDrag=null;};
