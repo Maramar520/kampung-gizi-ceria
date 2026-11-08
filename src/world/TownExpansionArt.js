@@ -40,7 +40,26 @@ export class TownExpansionArt {
   this.banner=scene.add.text(1155,82,'🏛️ BALAI KOTA',{fontFamily:'monospace',fontSize:'15px',fontStyle:'bold',color:'#4c5940',backgroundColor:'#fff1d2',padding:{x:5,y:3}}).setOrigin(.5).setDepth(550);
   this.title=scene.add.text(1155,327,'🌳 ALUN-ALUN KAMPUNG',{fontFamily:'monospace',fontSize:'14px',fontStyle:'bold',color:'#456049',backgroundColor:'#fff1d2',padding:{x:5,y:3}}).setOrigin(.5).setDepth(550);
   this.fest=scene.add.text(1155,370,'🎪 FESTIVAL KAMPUNG SEHAT',{fontFamily:'monospace',fontSize:'12px',color:'#654b39',backgroundColor:'#ffe3ae',padding:{x:4,y:3}}).setOrigin(.5).setDepth(550);
+  this.eventGraphics=scene.add.graphics().setDepth(70);
+  this.eventTitle=scene.add.text(1200,395,'🎤 PANGGUNG FESTIVAL',{fontFamily:'monospace',fontSize:'11px',color:'#674d3c',backgroundColor:'#fff0b6',padding:{x:4,y:2}}).setOrigin(.5).setDepth(750);
   this.update(0);
  }
- update(){this.fest.setVisible(this.festival.active);}
+ update(time=0){
+  const active=this.festival.active;this.fest.setVisible(active);this.eventTitle.setVisible(active);
+  const g=this.eventGraphics;g.clear();if(!active)return;
+  // Panggung, stan makanan sehat dan umbul-umbul muncul pada hari festival.
+  const r=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h);};
+  r(1170,398,94,24,0xa77b55);r(1174,402,86,15,0xd3aa75);
+  for(let i=0;i<5;i++){r(1174+i*17,392,15,8,i%2?0xf5d58e:0xe6a0a0);}
+  for(const [x,y,label] of [[1016,454,'🥕'],[1255,454,'🥗']]){
+   r(x,y,41,28,0xb78c61);r(x-3,y-11,47,13,0xe7a7a2);
+   r(x+4,y+5,32,6,0xf6e1ad);
+  }
+  g.lineStyle(2,0xe5bb85,1);g.lineBetween(1015,351,1296,351);
+  for(let i=0;i<15;i++){const x=1018+i*19;
+   g.fillStyle([0xf0b2b4,0xf6dc96,0x9bc6ab][i%3]);
+   g.fillTriangle(x,353,x+15,353,x+7,363);
+  }
+  g.fillStyle(0xffe2a5,.4+.2*Math.sin(time/400));g.fillCircle(1210,411,11);
+ }
 }
