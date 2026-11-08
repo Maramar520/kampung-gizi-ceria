@@ -38,3 +38,16 @@ test('festival remains exclusive to Alun-Alun',()=>{
  assert.match(ui,/Bantu warga menghias Alun-Alun/);
  assert.doesNotMatch(ui,/menghias pasar/);
 });
+
+test('calendar shows game day and festival, without reintroducing map',()=>{
+ const html=read('index.html'),ui=read('src/scenes/UIScene.js');
+ assert.match(html,/id="calendarButton"/);
+ assert.match(ui,/calendarMenu\(\)/);
+ assert.match(ui,/festival\.next/);
+ assert.doesNotMatch(html,/<canvas id="minimap"/);
+});
+test('new district uses same grass color and tufts as original kampung',()=>{
+ const old=read('src/world/WorldArt.js'),east=read('src/world/TownExpansionArt.js');
+ assert.match(old,/0xa4cd91/);assert.match(east,/0xa4cd91/);
+ assert.match(east,/0x74b075/);assert.match(east,/0xb9d899/);
+});
