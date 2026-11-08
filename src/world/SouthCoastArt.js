@@ -40,6 +40,28 @@ export class SouthCoastArt {
   for(const [x,y] of [[118,765],[331,799],[1040,760],[1218,814]]){
    rect(x,y,13,4,0x4b9da9);rect(x+11,y-2,5,8,0x4b9da9);
   }
+  // Buih ombak putih kecil menyebar hingga laut bagian selatan saat zoom out.
+  // Posisi deterministik agar tidak berkedip saat kamera bergerak.
+  for(let i=0;i<155;i++){
+   const x=17+(i*127+Math.floor(i/13)*43)%1680;
+   const y=732+(i*79+Math.floor(i/11)*31)%452;
+   if(y<845&&x>995&&x<1195)continue; // jangan menutupi pulau kecil
+   const width=8+(i%4)*4;
+   rect(x,y,width,2,i%3===0?0xf3ffff:0xd5f3f1);
+   if(i%4===0)rect(x+4,y+4,Math.max(5,width-9),2,0xb7e8e8);
+  }
+  // Ikan kecil berbentuk pixel, dengan ekor segitiga sederhana.
+  for(let i=0;i<31;i++){
+   const x=38+(i*181+Math.floor(i/7)*29)%1630;
+   const y=750+(i*103+Math.floor(i/5)*19)%427;
+   if(y<850&&x>1005&&x<1195)continue;
+   const c=i%3===0?0x397e94:i%3===1?0x4a9ca7:0x7ab6ba;
+   rect(x,y,11,5,c);
+   rect(x+11,y+1,4,3,c);
+   rect(x-4,y-3,4,4,c);
+   rect(x-4,y+4,4,4,c);
+   rect(x+7,y+1,2,2,0xe7f5e9);
+  }
   // Pulau kecil yang bisa dikunjungi dengan perahu, terpisah dari dermaga.
   g.fillStyle(0xe9d69e);g.fillRoundedRect(1020,723,160,112,36);
   g.fillStyle(0xa7cf8c);g.fillRoundedRect(1040,737,120,76,26);
