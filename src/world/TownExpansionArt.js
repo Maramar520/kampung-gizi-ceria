@@ -9,13 +9,20 @@ export class TownExpansionArt {
   for(let y=9;y<600;y+=17)for(let x=957;x<1340;x+=19){
    if((x*7+y*11)%17<7){rect(x,y,3,5,0x74b075);rect(x+5,y+2,2,3,0xb9d899);}
   }
-  // Jalan kampung dan jalur alun-alun memakai satu palet dan sumbu yang sama.
+  // Jalan utama, akses Balai Kota, dan jalur alun-alun satu garis tengah x=1155.
   const road=0xead5af,roadMark=0xd7b88f,roadHighlight=0xeedbb7;
+  const plazaCX=1155,plazaRoadW=44,plazaTop=344,plazaBottom=544;
+  // Jalan utama mendatar tetap tersambung dengan kampung lama.
   rect(948,261,392,49,road);
-  rect(1133,227,44,317,road); // sambung utuh dari Balai Kota ke selatan alun-alun
+  // Akses utara tepat sejajar dengan jalan vertikal di dalam alun-alun.
+  rect(plazaCX-plazaRoadW/2,227,plazaRoadW,plazaBottom-227,road);
   rect(1125,15,60,50,road);
   for(let x=966;x<1328;x+=58)rect(x,282,25,3,roadMark);
-  for(let y=244;y<544;y+=38){if(y>=261&&y<310)continue;rect(1153,y,4,17,roadHighlight);}
+  // Marka di sumbu tengah, berhenti saat melintasi jalan utama dan simpang alun-alun.
+  for(let y=238;y<plazaBottom-10;y+=38){
+   if((y>=261&&y<310)||(y>=417&&y<461))continue;
+   rect(plazaCX-2,y,4,17,roadHighlight);
+  }
   // Balai Kota: cutaway interior, door open at bottom centre.
   rect(1025,65,260,173,0xf1dec5);
   for(let y=86;y<220;y+=23)rect(1037,y,237,2,0xe2bf9e);
@@ -32,8 +39,9 @@ export class TownExpansionArt {
   // No separate plaza turf layer: the continuous town grass above already
   // covers this area using exactly the same world-grid and palette as the old town.
   // A second lawn rectangle would paint over those tufts and look different.
-  // Jalan internal alun-alun lebar 44px, menyatu di simpang tengah.
-  rect(1005,417,302,44,road);
+  // Jalan horizontal alun-alun simetris kiri-kanan terhadap sumbu jalan masuk.
+  // Lebar kedua ruas 44px, ujung kiri/kanan berjarak sama (151px) dari pusat.
+  rect(plazaCX-151,417,302,plazaRoadW,road);
   for(let x=1016;x<1290;x+=58){if(x>=1120&&x<=1190)continue;rect(x,437,25,3,roadMark);}
   g.fillStyle(0x92b8b4);g.fillCircle(1068,394,29);
   g.fillStyle(0x5e9db7);g.fillCircle(1068,394,23);
