@@ -1,5 +1,5 @@
 import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=v147-school-pond';
-import {createTextures,buildWorld} from '../world/WorldArt.js';
+import {createTextures,buildWorld} from '../world/WorldArt.js?v=v148-character';
 import {Player} from '../entities/Player.js?v=coast-v118';
 import {NPC} from '../entities/NPC.js?v=v126-homes';
 import {GardenSystem} from '../systems/GardenSystem.js';
@@ -38,6 +38,7 @@ import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
  create(){
+  this.createPlayerTextures=()=>createTextures(this,true);
   createTextures(this);
   const obstacles=buildWorld(this);
   this.garden=new GardenSystem(this.game.state);
