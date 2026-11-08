@@ -132,10 +132,10 @@ export class WorldScene extends Phaser.Scene {
   this.mayor.setRoutine(returnRoute,'KEPALA DESA',!raining&&phase!==3);
   // Warga bergerak secara fisik di area terbuka, tidak hanya animasi kaki.
   const sheltered=raining||phase===3;
-  this.wargaA.setRoutine(sheltered?[{x:1155,y:238},{x:1155,y:207},{x:1200,y:180}]:
+  this.wargaA.setRoutine(sheltered?[{x:1155,y:this.wargaA.y},{x:1155,y:345},{x:1155,y:281},{x:1155,y:238},{x:1155,y:207},{x:1200,y:180}]:
    [{x:1200,y:452,activity:this.festival.active?'🎪 Menonton lomba':'🤸 Senam',pause:2},
     {x:1200,y:480},{x:1245,y:480,activity:'🌳 Bersantai',pause:2},{x:1245,y:452}], 'WARGA LINA',!sheltered);
-  this.wargaB.setRoutine(sheltered?[{x:1155,y:238},{x:1155,y:207},{x:1105,y:182}]:
+  this.wargaB.setRoutine(sheltered?[{x:1155,y:this.wargaB.y},{x:1155,y:345},{x:1155,y:281},{x:1155,y:238},{x:1155,y:207},{x:1105,y:182}]:
    [{x:1080,y:471,activity:this.festival.active?'🥗 Menyiapkan stan':'🧹 Merawat taman',pause:2},
     {x:1080,y:500},{x:1110,y:500},{x:1110,y:471}], 'WARGA ARIF',!sheltered);
   const justStoppedRaining=this.lastRaining===true&&!raining&&phase!==3;
@@ -231,7 +231,7 @@ export class WorldScene extends Phaser.Scene {
    pond:{x:869,y:155,title:'🎣 KOLAM · KANAN ATAS',yLabel:263},
    plaza:{x:1164,y:427,title:'🌳 ALUN-ALUN KAMPUNG',yLabel:360},
    townHall:{x:1155,y:180,title:'🏛️ BALAI KOTA',yLabel:95},
-   festival:{x:1164,y:395,title:'🎉 FESTIVAL · PASAR TRADISIONAL',yLabel:310}
+   festival:{x:1164,y:395,title:'🎉 FESTIVAL · ALUN-ALUN',yLabel:310}
   };
   const p=markers[id];if(!p)return;
   this.keysHeld.clear();
