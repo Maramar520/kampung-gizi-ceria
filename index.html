@@ -236,6 +236,7 @@ button{touch-action:manipulation}
 <div class="chip">🥚 <span id="protein"></span><small>Protein</small></div>
 <div class="chip">🥬 <span id="vitamin"></span><small>Vitamin</small></div>
 <button type="button" class="chip calendar-hud" id="calendarHud" title="Buka kalender kampung">📅 Hari <span id="day"></span> · <span id="phase">Pagi</span> · <span id="status"></span><small>Ketuk untuk kalender</small></button>
+<button type="button" class="chip calendar-hud" id="timeSpeedButton" title="Ubah kecepatan waktu permainan" aria-label="Kecepatan waktu permainan">⏩ <span id="timeSpeedLabel">1×</span><small>Kecepatan Waktu</small></button>
 <div class="chip weather-chip" aria-live="polite"><span id="weather">🌤️ Pagi · Cerah</span><small>Cuaca Kampung</small></div>
 </section>
 <nav class="notebook-shortcuts" aria-label="Menu pemain">
@@ -287,7 +288,7 @@ button{touch-action:manipulation}
 <button id="action">✨ AKSI / E</button></div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script type="module" src="./src/main.js?v=1.23-dawn-transition"></script>
+<script type="module" src="./src/main.js?v=1.23-time-speed"></script>
 <script>
 // v1.13 release diagnostic: visible version, without modifying saved progress.
 document.documentElement.dataset.build='1.16';
