@@ -539,4 +539,24 @@ try{
  assert.deepEqual(errors,[],'Uncaught browser errors');
  console.log('PASS desktop full quest + farming/fishing and mobile touch layout');
 }catch(error){console.error('Browser QA failed:',error);process.exitCode=1;}
-finally{await browser.close();server.kill('SIGTERM');}
+finally{await browser.close();server.kill('SIGTERM');}  // v1.20: festival takes place at Alun-Alun, never in the traditional market.
+  await page.evaluate(()=>{
+   const w=window.__kampungQA.scene.getScene('WorldScene');
+   w.game.state.data.day=3;w.clock.startDay();w.updateRoutines();w.townArt.update(w.time.now);
+  });
+  await actionAt(page,1155,395,'Alun-Alun');
+  await page.getByRole('button',{name:/Festival Kampung Sehat/}).click();
+  assert.match(await page.locator('#dialogTitle').textContent(),/Festival Kampung Sehat/);
+  await page.getByRole('button',{name:/Ikut festival/}).click();
+  await page.getByRole('button',{name:/Kuis festival/}).click();
+  const answer=await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').festival.question.correct);
+  await page.locator('#choices button').nth(answer).click();
+  await page.getByRole('button',{name:/Kembali ke festival/}).click();
+  const beforeFestival=(await gameData()).coins;
+  await page.getByRole('button',{name:/Ambil hadiah/}).click();
+  assert.equal((await gameData()).coins,beforeFestival+35);
+  assert.equal((await gameData()).festival.celebratedDays.filter(d=>d===3).length,1);
+  assert.equal(await page.getByRole('button',{name:/Ambil hadiah/}).count(),0);
+  await close(page);
+  await page.screenshot({path:'qa-artifacts/desktop-festival.png',fullPage:true});
+
