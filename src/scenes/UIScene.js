@@ -172,6 +172,18 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    {label:'Tutup',fn:()=>this.close()}
   ]);
  }
+ mayorMissionMenu(){
+  const tasks=this.world.mayorMissions.status;
+  this.show('📋 Misi Kepala Desa','Selesaikan kegiatan warga dan kembali ke Balai Kota untuk mengambil hadiah. Hadiah hanya dapat diambil satu kali per hari.',[
+   ...tasks.map(t=>({label:(t.claimed?'✅ ':t.done?'🎁 ':'▫️ ')+t.name+' · '+t.coins+' KC + '+t.stars+' ⭐',fn:()=>{
+    const prize=this.world.mayorMissions.claim(t.id);
+    if(prize){this.refresh();this.note('Misi selesai! +'+prize.coins+' KC +'+prize.stars+' ⭐');}
+    else this.note(t.claimed?'Hadiah sudah diambil hari ini.':'Selesaikan aktivitasnya dahulu.');
+    this.mayorMissionMenu();
+   }})),
+   {label:'Kembali ke Balai Kota',fn:()=>this.townHallMenu()}
+  ]);
+ }
  mayorMenu(){
   this.show('🏛️ Kepala Desa','Halo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
    {label:'📅 Lihat festival',fn:()=>this.festivalGuide()},
