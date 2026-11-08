@@ -70,7 +70,7 @@ export class SouthCoastArt {
    rect(x,y,7,31,0xa4774d);
    g.fillStyle(0x6caa78);g.fillCircle(x-9,y-6,16);g.fillCircle(x+10,y-12,17);
   }
-  scene.add.text(1054,810,'🏝️ PULAU KECIL',{fontFamily:'monospace',fontSize:'12px',color:'#6e6546',backgroundColor:'#fff1cf',padding:{x:4,y:2}}).setDepth(600);
+  scene.add.text(1054,810,'🏝️ PULAU KECIL',{fontFamily:'monospace',fontSize:'12px',color:'#6e6546',backgroundColor:'#fff1cf',padding:{x:4,y:2}}).setDepth(600).setVisible(false);
   // Perahu menunggu di samping dermaga.
   g.fillStyle(0x8d684b);g.fillEllipse(822,727,42,20);
   rect(820,702,3,23,0x755b45);
@@ -86,8 +86,8 @@ export class SouthCoastArt {
    rect(x,y,9,44,0xa4774d);
    g.fillStyle(0x68ad77);g.fillCircle(x-13,y-5,20);g.fillCircle(x+12,y-10,22);g.fillCircle(x+2,y-24,19);
   }
-  scene.add.text(620,619,'🏖️ PANTAI SELATAN',{fontFamily:'monospace',fontSize:'15px',fontStyle:'bold',color:'#715b43',backgroundColor:'#fff1cf',padding:{x:6,y:4}}).setDepth(600);
+  scene.add.text(620,619,'🏖️ PANTAI SELATAN',{fontFamily:'monospace',fontSize:'15px',fontStyle:'bold',color:'#715b43',backgroundColor:'#fff1cf',padding:{x:6,y:4}}).setDepth(600).setVisible(false);
   scene.add.text(757,764,'🎣',{fontSize:'27px'}).setOrigin(.5).setDepth(600);
-  scene.add.text(813,695,'DERMAGA',{fontFamily:'monospace',fontSize:'12px',color:'#5e5745',backgroundColor:'#fff0c9',padding:{x:4,y:2}}).setDepth(600);
+  scene.add.text(813,695,'DERMAGA',{fontFamily:'monospace',fontSize:'12px',color:'#5e5745',backgroundColor:'#fff0c9',padding:{x:4,y:2}}).setDepth(600).setVisible(false);
  }
 }
