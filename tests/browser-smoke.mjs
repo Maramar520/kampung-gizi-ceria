@@ -66,7 +66,7 @@ async function testDesktop(browser){
  await moveTo(page,1155,198);
  await page.keyboard.press('e');
  assert.match(await page.locator('#dialogTitle').textContent(),/Balai Kota/);
- await page.getByRole('button',{name:/Misi Harian Kepala Desa/}).click();
+ await page.getByRole('button',{name:/Papan Misi Kepala Desa/}).click();
  assert.match(await page.locator('#dialogTitle').textContent(),/Misi Kepala Desa/);
  await page.getByRole('button',{name:/Ikut senam/}).click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.mayorMissions.claimedMove.includes(1)),true);
