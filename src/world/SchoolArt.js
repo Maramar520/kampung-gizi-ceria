@@ -28,13 +28,6 @@ export class SchoolArt{
   }
   rect(899,59,21,33,0xa77c5a);
   for(let i=0;i<3;i++)rect(903+i*5,66,4,19,[0xa9c68c,0xf0bd8a,0xb8b6d8][i]);
-  // Lampu dinding sekolah, cahaya hangat tanpa menghalangi ruang kelas.
-  const lamps=scene.add.graphics().setDepth(640);
-  for(const [lx,ly] of [[820,94],[918,94]]){
-   lamps.fillStyle(0xffe8a0,.13).fillCircle(lx,ly,24);
-   lamps.fillStyle(0xffe8a0,.24).fillCircle(lx,ly,13);
-   lamps.fillStyle(0x745b43).fillRect(lx-6,ly-7,12,4);
-   lamps.fillStyle(0xfff0b5).fillRoundedRect(lx-5,ly-4,10,10,3);
-  }
+  // Lampu fisik dihapus; titik cahaya malam digambar oleh VillageWeatherDetails.
  }
 }
