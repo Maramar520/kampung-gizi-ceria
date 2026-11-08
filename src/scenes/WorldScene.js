@@ -26,6 +26,8 @@ import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108'
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-road-connected-20261108';
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
+import {VillageLifeSystem} from '../systems/VillageLifeSystem.js';
+import {VillageWeatherDetails} from '../world/VillageWeatherDetails.js';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
 export class WorldScene extends Phaser.Scene {
@@ -311,7 +313,7 @@ export class WorldScene extends Phaser.Scene {
  update(_time,delta){
   const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
-  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.townArt.update(this.time.now);this.updateRoutines();
+  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.villageWeatherDetails.update(this.time.now,this.clock.weather,this.clock.phase);this.townArt.update(this.time.now);this.updateRoutines();
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
