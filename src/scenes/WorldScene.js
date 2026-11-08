@@ -133,7 +133,8 @@ export class WorldScene extends Phaser.Scene {
    if(key)this.keysHeld.delete(key);
   });
   window.addEventListener('blur',()=>this.keysHeld.clear());
-  this.cameras.main.setBackgroundColor('#65bfd0');
+  // Area di luar tepi peta saat zoom out menggunakan warna daratan, bukan biru laut.
+   this.cameras.main.setBackgroundColor('#a4cd91');
   this.cameras.main.setBounds(0,0,1720,1200);
   this.cameras.main.startFollow(this.player.sprite,true,.12,.12);
   this.cameras.main.setZoom(1);
