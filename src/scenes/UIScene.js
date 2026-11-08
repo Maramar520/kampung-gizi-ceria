@@ -899,6 +899,12 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id)this.world.playInteraction(id);
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
   if(['niaHome','arifHome','linaHome'].includes(id))return this.residentHomeMenu(id.replace('Home',''));
+  if(id==='puskesmas')return this.show('🏥 Puskesmas Kampung','Selamat datang di Puskesmas! Di sini kamu bisa belajar kebiasaan hidup sehat, pemeriksaan kesehatan dasar, dan pentingnya gizi seimbang.',[
+   {label:'🥗 Belajar Gizi Seimbang',fn:()=>this.show('🥗 Gizi Seimbang','Isi piring dengan sayur, buah, makanan pokok, dan lauk sumber protein. Minum air putih dan aktif bergerak setiap hari.',[{label:'Kembali',fn:()=>this.close()}])},
+   {label:'🩺 Pemeriksaan Kesehatan',fn:()=>this.show('🩺 Pemeriksaan Rutin','Petugas puskesmas membantu memeriksa tinggi badan, berat badan, dan kondisi kesehatan. Sampaikan keluhan kepada petugas kesehatan.',[{label:'Kembali',fn:()=>this.close()}])},
+   {label:'🧼 Hidup Bersih',fn:()=>this.show('🧼 Kebiasaan Sehat','Cuci tangan dengan sabun, jaga kebersihan lingkungan, tidur cukup, dan lakukan aktivitas fisik setiap hari.',[{label:'Kembali',fn:()=>this.close()}])},
+   {label:'Tutup',fn:()=>this.close()}
+  ]);
   if(id==='plaza')return this.plazaMenu();
   if(id==='townHall')return this.townHallMenu();
   if(id==='mayor')return this.mayorMenu();
