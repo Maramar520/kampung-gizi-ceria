@@ -52,11 +52,14 @@ export const NEW_WORLD_OBSTACLES=[
  rectangle(292,168,72,42), // bangunan kandang; halamannya tetap dapat dilalui
  rectangle(816,82,105,129), // air kolam (dermaga di sisi bawah)
  rectangle(0,709,734,141), // laut: hanya dermaga yang dapat diinjak
- rectangle(791,709,549,141) // laut di kanan dermaga
+ rectangle(791,709,229,141), // laut di kanan dermaga sebelum pulau
+ rectangle(1180,709,160,141) // laut setelah pulau kecil
 ];
 export const OBSTACLES=[...WALLS,...FURNITURE,...NEW_WORLD_OBSTACLES];
 export const INTERACTIONS=[
- {id:'sea-fishing',x:761,y:768,r:45,label:'Memancing di Dermaga'},
+ {id:'sea-fishing',x:761,y:768,r:38,label:'Memancing di Dermaga'},
+ {id:'boat',x:761,y:707,r:29,label:'Naik Perahu'},
+ {id:'island',x:1100,y:775,r:60,label:'Pulau Kecil'},
  {id:'beach',x:680,y:651,r:65,label:'Pantai Selatan'},
  {id:'plaza',x:1164,y:427,r:92,label:'Alun-Alun Kampung'},
  {id:'townHall',x:1155,y:198,r:75,label:'Balai Kota'},
