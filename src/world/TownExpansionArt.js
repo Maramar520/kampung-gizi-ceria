@@ -34,30 +34,56 @@ export class TownExpansionArt {
   for(let i=0;i<5;i++)rect(1198+i*10,96,7,14,[0xa1bd91,0xe6b57b,0xa2b5cf][i%3]);
   rect(1054,177,43,22,0xc5a77d);rect(1059,181,32,12,0xf7e9cd);
   rect(1224,174,32,30,0x92b59a);rect(1230,168,20,12,0x76a878);
-  // Alun-alun: fountain, flowerbeds, benches, flag and event space.
-  // Alun-alun lawn matches the old kampung grass; paths and decorations stay in place.
-  // No separate plaza turf layer: the continuous town grass above already
-  // covers this area using exactly the same world-grid and palette as the old town.
-  // A second lawn rectangle would paint over those tufts and look different.
-  // Jalan horizontal alun-alun simetris kiri-kanan terhadap sumbu jalan masuk.
-  // Lebar kedua ruas 44px, ujung kiri/kanan berjarak sama (151px) dari pusat.
-  rect(plazaCX-151,417,302,plazaRoadW,road);
-  for(let x=1016;x<1290;x+=58){if(x>=1120&&x<=1190)continue;rect(x,437,25,3,roadMark);}
-  g.fillStyle(0x92b8b4);g.fillCircle(1068,394,29);
-  g.fillStyle(0x5e9db7);g.fillCircle(1068,394,23);
-  g.fillStyle(0xd4e8df);g.fillCircle(1068,394,9);
-  for(const [x,y] of [[1038,481],[1242,390],[1242,489]]){
-   rect(x-24,y-5,48,10,0xa77e55);rect(x-21,y+5,7,10,0x856448);rect(x+14,y+5,7,10,0x856448);
+  // Renovasi alun-alun hanya dalam footprint lama x=1005..1307, y=344..544.
+  // Rumah Pak Tani & Bu Sari ada di blok barat, tidak disentuh.
+  const path=0xe8cbb0,stone=0xf3dfc7,hedge=0x5e9b63;
+  rect(1012,352,286,185,0x83b77b);
+  // Tepi taman dan lantai ubin, tetap ada pintu masuk dari jalan utara.
+  rect(1020,360,270,168,path);
+  for(let y=365;y<527;y+=17)for(let x=1025;x<1287;x+=18){
+   rect(x,y,16,15,(Math.floor(x/18)+Math.floor(y/17))%2?0xeed7be:stone);
   }
-  for(const [x,y] of [[1028,364],[1282,364],[1028,520],[1282,520]]){
-   g.fillStyle(0x619766);g.fillCircle(x,y,15);
-   g.fillStyle(0x86b979);g.fillCircle(x-3,y-5,12);
+  // Jalan masuk dari simpang utama, tersambung ke tengah taman.
+  rect(1133,310,44,108,road);
+  rect(1133,353,44,175,stone);
+  rect(1020,428,270,32,stone);
+  // Jalur masuk selatan tetap terbuka, tidak ada pagar yang menutupnya.
+  rect(1133,528,44,16,road);
+  // Air mancur bundar di pusat taman.
+  g.fillStyle(0x6b9877);g.fillCircle(1155,444,43);
+  g.fillStyle(0xe9d9ae);g.fillCircle(1155,444,39);
+  g.fillStyle(0x5c9eb8);g.fillCircle(1155,444,32);
+  g.fillStyle(0x8acbda);g.fillCircle(1155,444,24);
+  g.fillStyle(0xe1f5ee);g.fillCircle(1155,444,8);
+  g.fillStyle(0xffffff,.9);g.fillCircle(1153,437,4);
+  // Empat kebun bunga simetris, menyisakan jalur jalan dan tempat duduk.
+  for(const [fx,fy] of [[1064,403],[1246,403],[1064,482],[1246,482]]){
+   rect(fx-28,fy-17,56,34,0x5d9560);
+   rect(fx-24,fy-13,48,26,0x8bc47d);
+   for(let i=0;i<9;i++){
+    const xx=fx-18+(i%3)*17, yy=fy-9+Math.floor(i/3)*9;
+    g.fillStyle([0xf4a5b5,0xffe19b,0xe6b7ef][i%3]);g.fillCircle(xx,yy,4);
+   }
   }
-  for(let i=0;i<16;i++){
-   const x=1018+(i%8)*38,y=356+Math.floor(i/8)*172;
-   g.fillStyle(i%2?0xf2b6ad:0xf4d98a);g.fillCircle(x,y,4);
+  // Bangku di sisi utara dan selatan taman.
+  for(const [bx,by] of [[1076,376],[1234,376],[1076,512],[1234,512]]){
+   rect(bx-22,by-6,44,9,0xa77e55);rect(bx-19,by+3,6,8,0x856448);rect(bx+13,by+3,6,8,0x856448);
   }
-  rect(1268,405,4,61,0x8c826c);rect(1272,405,24,15,0xe8a78e);
+  // Pohon berbunga di sudut, tidak menutup jalan utama.
+  for(const [tx,ty] of [[1037,378],[1272,378],[1037,509],[1272,509]]){
+   g.fillStyle(0x7d694f);g.fillRect(tx-3,ty,6,14);
+   g.fillStyle(0x6eab72);g.fillCircle(tx,ty-7,19);
+   g.fillStyle(0xe9a6c3);g.fillCircle(tx,ty-12,15);
+   g.fillStyle(0xf5c4d8);g.fillCircle(tx-5,ty-17,8);
+  }
+  // Pagar tanaman rendah, dengan bukaan pintu utara dan selatan.
+  for(let x=1012;x<1298;x+=14){
+   if(x>=1128&&x<=1180)continue;
+   rect(x,344,12,7,hedge);rect(x,537,12,7,hedge);
+  }
+  for(let y=355;y<530;y+=15){rect(1006,y,7,12,hedge);rect(1298,y,7,12,hedge);}
+  // Bendera festival dan panggung lama tetap menggunakan mekanisme event.
+  rect(1279,458,4,42,0x8c826c);rect(1283,458,18,11,0xe8a78e);
   // Interactive mayor mission board inside the town hall (access via E at Balai Kota).
   rect(1042,102,94,8,0x7d644d);rect(1046,80,86,31,0xd6b787);
   rect(1052,86,73,3,0xf8eed6);rect(1052,93,61,3,0xf8eed6);
