@@ -1,7 +1,9 @@
 // Pantai selatan: peta lama tidak diubah, kawasan baru dimulai pada y=600.
 export class SouthCoastArt {
  constructor(scene){
-  const g=scene.add.graphics().setDepth(-110);
+  // Tampil di atas tanah kampung (-100), namun tetap di bawah dekorasi (-75).
+  // Dengan begitu sambungan jalan pada y=565–600 tidak tertutup lapisan tanah.
+  const g=scene.add.graphics().setDepth(-90);
   const rect=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h);};
   // Pantai berpasir, batas pantai berlekuk, dan laut biru pastel.
   rect(0,600,1340,112,0xf3dba5);
@@ -18,8 +20,10 @@ export class SouthCoastArt {
    rect(x+12,670+(x%7)*3,3,3,0xffedca);
   }
   // Jalan masuk dari jalan tengah lama menuju pantai dan dermaga.
-  rect(736,585,49,61,0xead5af);
+  // Jalur utama x=736–785 diteruskan tanpa celah hingga bibir dermaga.
+  rect(736,565,49,81,0xead5af);
   rect(735,646,56,54,0xe7cb95);
+  for(let y=574;y<693;y+=24)rect(757,y,4,13,0xf5e3bf);
   // Dermaga kayu panjang, terhubung dari pasir ke laut.
   rect(733,695,60,111,0x896b50);
   rect(739,692,48,113,0xc99566);
