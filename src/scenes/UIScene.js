@@ -364,8 +364,28 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    {label:'⚖️ Mini-game Timbang Berat',fn:()=>this.clinicWeight()},
    {label:'🥗 Belajar Gizi Seimbang',fn:()=>this.clinicQuiz()},
    {label:'🤝 Bantu Perawat',fn:()=>this.clinicHelp()},
+   {label:'🧼 Simulasi Cuci Tangan',fn:()=>this.clinicHandwash(0)},
+   {label:'🩹 Belajar Pertolongan Pertama',fn:()=>this.clinicFirstAid()},
    {label:'🎁 Klaim Hadiah ('+progress+'/3)',fn:()=>this.clinicClaim()},
    {label:'Tutup',fn:()=>this.close()}
+  ]);
+ }
+ clinicHandwash(step=0){
+  const stages=[
+   ['Kapan kita perlu mencuci tangan?','🧼 Sebelum makan dan setelah dari toilet','🚫 Hanya ketika terlihat kotor'],
+   ['Apa yang dipakai untuk mencuci tangan?','🫧 Sabun dan air mengalir','💧 Air saja selalu cukup'],
+   ['Bagian tangan mana yang perlu dibersihkan?','🙌 Telapak, punggung, sela jari, kuku, dan ibu jari','✋ Hanya telapak tangan']
+  ];
+  const [question,correct,wrong]=stages[step];
+  this.show('🧼 Latihan Cuci Tangan '+(step+1)+'/3',question,[
+   {label:correct,fn:()=>step===2?this.show('🌟 Tangan Bersih!','Hebat! Kamu sudah memahami kebiasaan mencuci tangan dengan sabun dan air mengalir.',[{label:'Kembali',fn:()=>this.clinicMenu()}]):this.clinicHandwash(step+1)},
+   {label:wrong,fn:()=>this.show('💡 Coba Lagi','Cuci tangan dengan benar membantu mengurangi penyebaran kuman.',[{label:'Ulangi',fn:()=>this.clinicHandwash(step)}])}
+  ]);
+ }
+ clinicFirstAid(){
+  this.show('🩹 Pertolongan Pertama','Seorang teman terjatuh dan mengalami luka kecil. Apa tindakan paling aman?',[
+   {label:'🧑‍⚕️ Beri tahu orang dewasa dan minta bantuan',fn:()=>this.show('🌟 Tepat!','Tetap tenang, beri tahu guru atau petugas kesehatan, dan jangan mengoleskan bahan sembarangan pada luka.',[{label:'Kembali',fn:()=>this.clinicMenu()}])},
+   {label:'🏃 Biarkan teman tanpa bantuan',fn:()=>this.show('💡 Coba Lagi','Saat ada teman terluka, cari bantuan orang dewasa atau petugas kesehatan.',[{label:'Coba Lagi',fn:()=>this.clinicFirstAid()}])}
   ]);
  }
  clinicHeight(){
