@@ -6,6 +6,7 @@ import {QuestSystem} from '../systems/QuestSystem.js';
 import {CookingMinigame} from '../systems/CookingMinigame.js';
 import {PlayerNotebook} from '../ui/PlayerNotebook.js';
 import {BIRTHDAYS,birthdayToday,GIFT_IDS} from '../systems/FriendEvents.js';
+import {MARINE_LESSONS} from '../systems/MarineEducationSystem.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
@@ -529,6 +530,45 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.show('🐔 Kandang Ayam','Hari '+status.day+' · '+msg+' Telur dapat digunakan untuk memasak.',actions,
    '<div class="farm-preview">🐔 🐔 🥚</div>');
  }
+ marineLessonsMenu(){
+  const lessons=this.world.marineEducation.lessons;
+  this.show('🪸 Belajar Ekosistem Laut','Pelajari penyu, terumbu karang, dan rantai makanan laut. Jawaban benar pertama kali mendapat 10 Koin Ceria.\n\n'+
+   lessons.map(l=>(l.completed?'✓ ':'○ ')+l.title).join('\n'),[
+   ...lessons.map(l=>({label:(l.completed?'✓ ':'📚 ')+l.title,fn:()=>this.marineLessonQuiz(l.index)})),
+   {label:'🏖️ Kembali ke pantai',fn:()=>this.beachMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ]);
+ }
+ marineLessonQuiz(index){
+  const l=MARINE_LESSONS[index];if(!l)return this.marineLessonsMenu();
+  this.show(l.title,l.question,[
+   ...l.answers.map((answer,i)=>({label:(i+1)+'. '+answer,fn:()=>{
+    const result=this.world.marineEducation.answer(index,i);
+    this.refresh();
+    this.show(result.correct?'✅ Jawaban benar!':'💡 Coba pelajari lagi',result.correct?
+     l.explain+(result.reward?'\n\n+'+result.reward+' Koin Ceria!':'\n\nMateri sudah diselesaikan sebelumnya.'):
+     'Jawaban belum tepat. '+l.explain,[
+     {label:'📚 Kembali ke pelajaran',fn:()=>this.marineLessonsMenu()},
+     {label:'Tutup',fn:()=>this.close()}
+    ]);
+   }})),
+   {label:'Kembali',fn:()=>this.marineLessonsMenu()}
+  ]);
+ }
+ bayuHelpMenu(){
+  const education=this.world.marineEducation;
+  this.show('🎣 Bantu Nelayan Bayu',education.canHelpBayu?
+   'Bayu sedang memeriksa jala dan mengumpulkan tali bekas agar tidak membahayakan penyu. Bantu merapikan alat tangkap!':
+   'Terima kasih sudah membantu hari ini! Kembali besok untuk kegiatan baru.',[
+   ...(education.canHelpBayu?[{label:'🧹 Bantu rapikan jala dan tali',fn:()=>{
+    if(education.helpBayu()){this.refresh();this.note('Bayu terbantu! +12 Koin Ceria');}
+    this.bayuHelpMenu();
+   }}]:[]),
+   {label:'📚 Pelajari laut',fn:()=>this.marineLessonsMenu()},
+   {label:'Kembali ke pulau',fn:()=>this.islandMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ]);
+ }
  coastExpeditionMenu(){
   const badges=this.world.coastExpedition.badges;
   this.show('📔 Buku Ekspedisi Pantai','Selesaikan kegiatan di Pantai Selatan, dermaga, dan Pulau Kecil. Setiap lencana hanya dapat ditukar sekali.\n\n'+
@@ -591,6 +631,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    {label:'🎪 Festival Memancing',fn:()=>this.beachFestivalMenu()},
    {label:'📖 Koleksi ikan',fn:()=>this.seaCollectionMenu()},
    {label:'📔 Buku Ekspedisi Pantai',fn:()=>this.coastExpeditionMenu()},
+   {label:'🪸 Belajar Ekosistem Laut',fn:()=>this.marineLessonsMenu()},
    {label:'Tutup',fn:()=>this.close()}
   ],'<div class="farm-preview">🌴 🐚 🏖️ 🌊</div>');
  }
@@ -620,6 +661,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const ready=this.world.coast.status.treasureReady;
   this.show('🏝️ Pulau Kecil','Jelajahi pulau, cari harta karun harian, dan temui Nelayan Bayu. Perahu siap membawamu kembali ke dermaga.',[
    {label:'📔 Buku Ekspedisi Pantai',fn:()=>this.coastExpeditionMenu()},
+   {label:'🎣 Bantu Nelayan Bayu',fn:()=>this.bayuHelpMenu()},
    {label:'🧰 Cari peti harta karun'+(ready?'':' ✓'),fn:()=>{
     const found=this.world.coast.treasure();this.refresh();
     this.show(found?'🪙 Harta karun ditemukan!':'🧰 Peti kosong',found?'+8 Koin Ceria! Coba lagi besok.':'Peti sudah diperiksa hari ini.',[
@@ -784,6 +826,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='island')return this.islandMenu();
   if(id==='bayu')return this.show('🎣 Nelayan Bayu','Halo! Aku menjaga Pulau Kecil. Cobalah memancing di dermaga dan cari peti harta karun setiap hari.',[
    {label:'🏝️ Jelajahi pulau',fn:()=>this.islandMenu()},
+   {label:'🎣 Bantu Bayu',fn:()=>this.bayuHelpMenu()},
+   {label:'🪸 Belajar ekosistem laut',fn:()=>this.marineLessonsMenu()},
    {label:'Sampai jumpa',fn:()=>this.close()}
   ]);
   if(id==='beach')return this.beachMenu();
