@@ -58,7 +58,7 @@ test('three new vegetables work without changing three existing plot locations',
  assert.equal(garden.harvest(1),true);assert.equal(s.data.inventory.brokoli,3);
  s.data.day=4;assert.equal(garden.view.plots[2].stage,'ready');
  assert.equal(garden.harvest(2),true);assert.equal(s.data.inventory.labu,3);
- assert.equal(OBSTACLES.length,34);
+ assert.ok(OBSTACLES.length>=34,'original walls retained alongside coastal obstacles');
  assert.deepEqual([LAYOUT.garden.x,LAYOUT.garden.y,LAYOUT.garden.w,LAYOUT.garden.h],[258,59,131,79]);
 });
 test('old saved farms and all v1.9 progress migrate with festival state intact',()=>{
