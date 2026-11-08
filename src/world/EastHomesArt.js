@@ -33,6 +33,10 @@ export class EastHomesArt{
    rect(roads,cx-18,230,36,33,0xf0d9b7);
    for(let j=0;j<2;j++)rect(roads,cx-13+j*17,243,8,3,0xdfbb91);
    // Bingkai rumah seperti fungsi room() pada kampung lama.
+   // Alas coklat kayu seperti pondasi rumah-rumah kampung lama, di bawah lantai interior.
+   rect(floor,x-7,y-7,w+14,h+14,0x886449);
+   rect(floor,x-4,y-4,w+8,h+8,0xb9885d);
+   rect(floor,x-2,y-2,w+4,h+4,0xd1a576);
    // Lantai wajib digambar di atas SEMUA lapisan rumput dan jalan.
    frame(floor,x,y,w,h,({nia:0xf7e0d6,arif:0xf0dfc3,lina:0xf4e1cf})[id],0x9e7757,3);
    for(let yy=y+23;yy<y+h-10;yy+=22)rect(floor,x+8,yy,w-16,2,0xe8c29c);
@@ -42,6 +46,9 @@ export class EastHomesArt{
    // Dinding selatan sengaja terputus 52px untuk jalur NPC dan pemain.
    rect(deco,x,y+h-11,24,11,trim);rect(deco,x+76,y+h-11,24,11,trim);
    rect(deco,cx-26,y+h-5,52,7,0xe4c28a);
+   // Ambang pintu coklat dan dua anak tangga menuju halaman.
+   rect(deco,cx-25,y+h+2,50,5,0xa67a55);
+   rect(deco,cx-21,y+h+7,42,5,0xc69b6e);
    rect(deco,x+11,y+15,w-22,3,0xfff4d7);
    for(let xx=x+21;xx<x+w-18;xx+=25)rect(deco,xx,y+4,12,4,0xf0c49d);
    // Atap genteng warna khas tiap rumah, bagian interior tetap terbuka.
