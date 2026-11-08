@@ -1,4 +1,4 @@
-import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=v125-east-homes';
+import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=v140-puskesmas';
 import {createTextures,buildWorld} from '../world/WorldArt.js';
 import {Player} from '../entities/Player.js?v=coast-v118';
 import {NPC} from '../entities/NPC.js?v=v126-homes';
@@ -24,7 +24,7 @@ import {RestaurantCustomer} from '../systems/RestaurantCustomer.js?v=v124-custom
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-road-connected-20261108';
-import {EastHomesArt} from '../world/EastHomesArt.js?v=v139-original-walls';
+import {EastHomesArt} from '../world/EastHomesArt.js?v=v140-puskesmas';
 import {residentHomeRoute,residentLeaveHomeRoute,residentHomeActivity,homePosition} from '../world/ResidentHomeRoutes.js';
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
