@@ -399,6 +399,17 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 .gamewrap>.hud>.weather-chip{min-width:0!important}
 .gamewrap:has(>.cozy-drawer.is-open)>.hud{visibility:hidden}
 @media(max-width:700px){.gamewrap>.hud{top:4px;left:4px;right:4px;gap:2px}.gamewrap>.hud>.chip{font-size:9px!important;padding:3px 4px!important}.gamewrap>.hud>.chip small{font-size:8px!important}}
+
+/* v1.71: HUD benar-benar overlay di atas kanvas, tidak ikut alur halaman */
+.gamewrap{position:relative!important;isolation:isolate}
+.gamewrap>#game{position:relative;z-index:0}
+.gamewrap>#game canvas{display:block}
+.gamewrap>section.hud{position:absolute!important;inset:8px 8px auto 8px!important;width:auto!important;height:auto!important;z-index:70!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;align-items:flex-start!important;gap:4px!important;margin:0!important;padding:0!important;background:transparent!important;pointer-events:none}
+.gamewrap>section.hud>.chip{display:block!important;position:relative!important;flex:0 0 auto!important;min-width:0!important;margin:0!important;padding:5px 8px!important;font-size:11px!important;background:#fff9e9ed!important;pointer-events:auto}
+.gamewrap>section.hud>.chip small{display:none!important}
+.gamewrap>section.hud>.chip:nth-child(4),.gamewrap>section.hud>.chip:nth-child(5),.gamewrap>section.hud>.chip:nth-child(6){display:block!important}
+.gamewrap>.toast{top:56px}
+@media(max-width:700px){.gamewrap>section.hud{inset:4px 4px auto 4px!important;gap:2px!important}.gamewrap>section.hud>.chip{font-size:9px!important;padding:3px 4px!important}.gamewrap>.toast{top:66px}}
 </style>
 </head>
 <body>
@@ -426,6 +437,8 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
  <button type="button" id="goWest">🏡 Kembali ke Kampung Lama</button>
 </nav>
 <section class="v127-map"><div><strong>🗺️ Peta Mini Kampung</strong><small>Ketuk titik lokasi untuk melihat arah tujuan. Titik putih = pemain.</small></div><canvas id="villageMiniMap" width="344" height="170" role="img" aria-label="Peta mini seluruh kampung, rumah warga dan pantai"></canvas><select id="mapDestination" aria-label="Pilih lokasi tujuan"><option value="">Pilih tujuan...</option></select><button type="button" id="mapNavigate">📍 Tunjukkan lokasi</button></section><div class="gamewrap">
+
+<div id="game"></div>
 <section class="hud">
 <div class="chip">🪙 <span id="coins"></span><small>Koin</small></div>
 <div class="chip">⭐ <span id="stars">0</span><small>Bintang Belajar</small></div>
@@ -437,7 +450,6 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 <button type="button" class="chip calendar-hud" id="timeSpeedButton" title="Ubah kecepatan waktu permainan" aria-label="Kecepatan waktu permainan">⏩ <span id="timeSpeedLabel">1×</span><small>Kecepatan Waktu</small></button>
 <div class="chip weather-chip" aria-live="polite"><span id="weather">🌤️ Pagi · Cerah</span><small>Cuaca Kampung</small></div>
 </section>
-<div id="game"></div>
 <div class="toast" id="toast">WASD / panah untuk bergerak • E untuk interaksi</div>
 <section id="notebook" class="notebook-overlay hidden" aria-hidden="true" aria-label="Buku pemain">
  <div class="notebook-panel" role="dialog" aria-modal="true" aria-labelledby="notebookTitle">
@@ -488,7 +500,7 @@ document.documentElement.dataset.build='1.29';
 window.addEventListener('DOMContentLoaded',()=>{
  const marker=document.createElement('small');
  marker.id='releaseVersion';
- marker.textContent='Versi terpasang: v1.70 · Status Dalam Game';
+ marker.textContent='Versi terpasang: v1.71 · HUD Overlay';
  marker.style.cssText='display:block;text-align:center;color:#476c51;font-weight:700;padding:3px 8px';
  const header=document.querySelector('header');
  if(header)header.appendChild(marker);
