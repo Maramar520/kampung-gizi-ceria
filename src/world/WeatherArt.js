@@ -35,6 +35,21 @@ export class WeatherArt{
    this.lastSignature=signature;g.clear();
    const tint=TINTS[phase]||TINTS[0];
    g.fillStyle(tint.color,tint.alpha).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+
+   // Warna area di luar batas peta harus sama dengan laut yang terkena
+   // pencahayaan waktu dan cuaca (agar tidak ada garis beda warna saat zoom out).
+   const mix=(rgb,overlay,alpha)=>{
+    const a=[rgb>>16&255,rgb>>8&255,rgb&255];
+    const b=[overlay>>16&255,overlay>>8&255,overlay&255];
+    return (Math.round(a[0]*(1-alpha)+b[0]*alpha)<<16)|
+           (Math.round(a[1]*(1-alpha)+b[1]*alpha)<<8)|
+            Math.round(a[2]*(1-alpha)+b[2]*alpha);
+   };
+   let ocean=mix(0x65bfd0,tint.color,tint.alpha);
+   if(weather==='Berawan')ocean=mix(ocean,0x7f9da8,.10);
+   if(weather==='Hujan')ocean=mix(ocean,0x42668e,.19);
+   this.scene.cameras.main.setBackgroundColor(ocean);
+
    if(weather==='Berawan')g.fillStyle(0x7f9da8,.10).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
    if(weather==='Hujan')g.fillStyle(0x42668e,.19).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
   }
