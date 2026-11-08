@@ -66,6 +66,8 @@ jobs:
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
+      - name: Run focused desktop and Pixel 7 browser regression
+        run: node tests/v120-browser-qa.mjs
       - name: Run end-to-end smoke tests
         run: node tests/browser-smoke.mjs
       - name: Upload desktop and mobile screenshots
