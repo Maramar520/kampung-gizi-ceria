@@ -92,7 +92,7 @@ export class WorldScene extends Phaser.Scene {
   // Staf puskesmas dan warga pasien bergerak sesuai fase waktu.
   this.clinicDoctor=new NPC(this,{x:1520,y:450,name:'DOKTER MAYA',texture:'rani',stops:[{x:1520,y:450}]});
   this.clinicNurse=new NPC(this,{x:1460,y:410,name:'PERAWAT DINA',texture:'sari',stops:[{x:1460,y:410}]});
-  this.clinicPatient=new NPC(this,{x:1420,y:285,name:'PASIEN',texture:'tani',stops:[{x:1530,y:320}]});
+  this.clinicPatient=new NPC(this,{x:1530,y:385,name:'PASIEN',texture:'tani',stops:[{x:1530,y:385}]});
   // Semua petugas/pasien menggunakan collision yang sama dengan pemain.
   for(const npc of [this.clinicDoctor,this.clinicNurse,this.clinicPatient])npc.walkable=(x,y)=>canStand(x,y);
   this.schoolTeacher=new NPC(this,{x:1090,y:620,name:'BU GURU',texture:'rani',stops:[{x:1090,y:620}]});
@@ -405,18 +405,17 @@ export class WorldScene extends Phaser.Scene {
    ]:[{x:1460,y:410,activity:'🌙 Istirahat',pause:3}],'PERAWAT DINA',clinicOpen);
    // Rute wajib melalui pintu utara (1530,345), bukan menembus dinding.
    // Masuk -> daftar -> tunggu -> periksa -> keluar lewat pintu yang sama.
-   this.clinicPatient.setRoutine(clinicOpen?[
-    // Berangkat dari jalan utama timur, belok ke jalan setapak Puskesmas.
-    {x:1420,y:285},{x:1530,y:285},{x:1530,y:320},
-    {x:1530,y:336},{x:1530,y:363},
-    {x:1530,y:385},{x:1530,y:455},{x:1500,y:455},
-    {x:1470,y:475,activity:'🪑 Menunggu giliran',pause:3},
-    {x:1500,y:455},{x:1530,y:455},
-    {x:1565,y:455,activity:'🩺 Diperiksa',pause:3},
-    {x:1530,y:455},{x:1530,y:385},{x:1530,y:363},
-    {x:1530,y:336},{x:1530,y:320},{x:1530,y:285},
-    {x:1420,y:285,activity:'🏡 Pulang',pause:2}
-   ]:[{x:1530,y:285},{x:1420,y:285,activity:'🏡 Pulang',pause:3}],'PASIEN',clinicOpen);
+   // Pasien tetap berada di Puskesmas: antre -> diperiksa -> istirahat.
+   // Tidak lagi berjalan pulang keluar bangunan pada akhir siklus.
+   this.clinicPatient.setRoutine([
+    {x:1530,y:385,activity:'📋 Menunggu pendaftaran',pause:3},
+    {x:1530,y:455},
+    {x:1470,y:475,activity:'🪑 Menunggu giliran',pause:5},
+    {x:1530,y:455},
+    {x:1565,y:455,activity:'🩺 Diperiksa dokter',pause:5},
+    {x:1530,y:455},
+    {x:1530,y:385,activity:'🏥 Menunggu di Puskesmas',pause:4}
+   ],'PASIEN',true);
   }
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
