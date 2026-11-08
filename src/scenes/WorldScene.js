@@ -14,7 +14,7 @@ import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js?v=residents-only-20261108';
 import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
-import {WeatherArt} from '../world/WeatherArt.js';
+import {WeatherArt} from '../world/WeatherArt.js?v=v123-dawn-fade';
 import {rainyRoute,dryReturnRoute,isInsideShelter} from '../world/ShelterRoutes.js';
 import {workRoute,rainWorkRoute} from '../world/NpcWorkRoutes.js?v=v123-rain-workers';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
@@ -141,7 +141,8 @@ export class WorldScene extends Phaser.Scene {
   // Saat hujan, rute tidak direset ketika jam berubah: NPC harus benar-benar
   // mencapai interior, kemudian berhenti di sana sampai hujan usai.
   const niaSheltering=raining||phase===3;
-  const key=day+'-'+(raining?'rain':phase)+'-'+this.clock.weather;
+  // Sertakan fase juga ketika hujan agar transisi malam -> pagi tidak tertahan.
+  const key=day+'-'+phase+'-'+this.clock.weather;
   const leavingNiaShelter=this.niaSheltering===true&&!niaSheltering;
   this.niaSheltering=niaSheltering;
   if(this.routineKey===key)return;
