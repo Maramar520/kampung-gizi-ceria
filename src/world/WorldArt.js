@@ -168,7 +168,7 @@ export function buildWorld(scene) {
  const label=(str,x,y,size=13)=>scene.add.text(x,y,str,{
   fontFamily:'monospace',fontSize:size+'px',fontStyle:'bold',color:'#574d3e',
   backgroundColor:'#fff3d4',padding:{x:5,y:3}
- }).setOrigin(.5).setDepth(550);
+ }).setOrigin(.5).setDepth(550).setVisible(false);
  const tuft=(x,y)=>{r(ground,x,y,3,5,0x74b075);r(ground,x+5,y+2,2,3,0xb9d899);};
  const flower=(x,y,c)=>{r(ground,x,y,2,8,0x5b9867);r(ground,x-4,y-3,10,5,c);r(ground,x-1,y-6,4,9,c);r(ground,x,y-2,2,2,0xf9e39d);};
  const bush=(x,y)=>{r(ground,x-13,y,26,8,0x4f8356);r(ground,x-10,y-9,22,15,0x6fae70);r(ground,x-4,y-14,12,9,0x8fc985);};
