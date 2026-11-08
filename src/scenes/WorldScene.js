@@ -22,7 +22,7 @@ import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js?v=guests-20261108';
 import {RestaurantCustomer} from '../systems/RestaurantCustomer.js?v=v124-customer';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
-import {TownExpansionArt} from '../world/TownExpansionArt.js?v=v194-plaza-roads';
+import {TownExpansionArt} from '../world/TownExpansionArt.js?v=v195-plaza-alignment';
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=v176-clean';
 import {SchoolArt} from '../world/SchoolArt.js?v=v184-night-glow';
 import {EastHomesArt} from '../world/EastHomesArt.js?v=v184-night-glow';
