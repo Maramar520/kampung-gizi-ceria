@@ -101,12 +101,15 @@ export class EastHomesArt{
   rect(houses,hx,hy,hw,hh,0xf6dfbd);
   for(let yy=hy+24;yy<hy+hh-9;yy+=22)rect(houses,hx+10,yy,hw-20,2,0xe8c29c);
   const wall=0xb68168;
-  rect(houses,hx,hy,hw,12,wall);
+  // Pintu utama di UTARA menghadap jalan, celah 52px di tengah.
+  rect(houses,hx,hy,104,12,wall);
+  rect(houses,hx+156,hy,104,12,wall);
   rect(houses,hx,hy,12,hh,wall);
   rect(houses,hx+hw-12,hy,12,hh,wall);
-  rect(houses,hx,hy+hh-12,104,12,wall);
-  rect(houses,hx+156,hy+hh-12,104,12,wall);
-  rect(houses,hx+104,hy+hh-6,52,7,0xe4c28a);
+  // Dinding selatan ditutup: akses pemain dari jalan utama di utara.
+  rect(houses,hx,hy+hh-12,hw,12,wall);
+  rect(houses,hx+104,hy-5,52,7,0xe4c28a);
+  rect(houses,hx+104,hy+2,52,4,0xf3ddba);
   rect(houses,hx-4,hy-19,hw+8,20,0x6f958d);
   rect(houses,hx,hy-16,hw,14,0xbadcd2);
   rect(houses,hx+117,hy-17,26,17,0xfff8ef);
@@ -119,7 +122,9 @@ export class EastHomesArt{
   rect(houses,hx+28,hy+117,58,14,0x8eb9b1);
   for(let xx of [31,64])for(let yy of [91,117])rect(houses,hx+xx,hy+yy+14,5,10,0x876b53);
   // Sekat pemeriksaan dan tempat tidur pasien.
-  rect(houses,hx+126,hy+29,8,127,0xcba88b);
+  // Sekat tidak memblokir lorong tengah menuju ruang pemeriksaan.
+  rect(houses,hx+126,hy+29,8,66,0xcba88b);
+  rect(houses,hx+126,hy+129,8,27,0xcba88b);
   frame(houses,hx+159,hy+55,78,39,0xe8eff0,0x8aaba9,3);
   rect(houses,hx+163,hy+59,21,31,0xffffff);
   rect(houses,hx+159,hy+112,77,13,0x8fb9b2);
@@ -131,8 +136,8 @@ export class EastHomesArt{
   rect(houses,hx+193,hy+25,5,16,0xe38a87);
   rect(houses,hx+187,hy+30,17,5,0xe38a87);
   // Jalur akses dari jalan utama.
-  rect(path,1510,309,42,28,0xead5af);
-  rect(path,1510,337,42,8,0xead5af);
+  rect(path,1504,309,52,35,0xead5af);
+  rect(path,1510,342,40,4,0xe4c28a);
   scene.add.text(hx+hw/2,hy+16,'🏥 PUSKESMAS',{fontFamily:'monospace',
    fontSize:'16px',fontStyle:'bold',color:'#3e655d',
    backgroundColor:'#fff5df',padding:{x:7,y:3}}).setOrigin(.5).setDepth(550);
