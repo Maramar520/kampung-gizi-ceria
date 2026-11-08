@@ -120,26 +120,42 @@ export class EastHomesArt{
   rect(houses,hx+104,hy-9,52,10,0xead5af);
   rect(houses,hx+104,hy+1,52,11,0xf6dfbd);
   rect(houses,hx+106,hy-3,48,3,0xe4c28a);
-  // Resepsionis dan ruang tunggu.
-  frame(houses,hx+18,hy+41,83,32,0xc69b70,0x84624b,3);
-  rect(houses,hx+30,hy+46,54,7,0xfff3d5);
-  rect(houses,hx+28,hy+91,58,14,0x8eb9b1);
-  rect(houses,hx+28,hy+117,58,14,0x8eb9b1);
-  for(let xx of [31,64])for(let yy of [91,117])rect(houses,hx+xx,hy+yy+14,5,10,0x876b53);
-  // Sekat pemeriksaan dan tempat tidur pasien.
-  // Sekat tidak memblokir lorong tengah menuju ruang pemeriksaan.
-  rect(houses,hx+140,hy+29,8,66,0xcba88b);
-  rect(houses,hx+140,hy+129,8,27,0xcba88b);
-  frame(houses,hx+159,hy+55,78,39,0xe8eff0,0x8aaba9,3);
-  rect(houses,hx+163,hy+59,21,31,0xffffff);
-  rect(houses,hx+159,hy+112,77,13,0x8fb9b2);
-  frame(houses,hx+158,hy+143,75,26,0xc9a47c,0x876a51,2);
-  // Lemari obat dan simbol medis.
-  frame(houses,hx+101,hy+35,22,51,0xf9f3dc,0x8e7664,2);
-  for(let yy of [46,61,76])rect(houses,hx+105,hy+yy,14,4,0x91b6a2);
-  rect(houses,hx+184,hy+22,22,22,0xffffff);
-  rect(houses,hx+193,hy+25,5,16,0xe38a87);
-  rect(houses,hx+187,hy+30,17,5,0xe38a87);
+  // v2.1: puskesmas baru, interior cutaway pada footprint lama.
+  // Resepsionis kiri dan antrean: lorong pintu tengah x=1504..1556 tetap lapang.
+  frame(houses,hx+17,hy+39,84,34,0xc69b70,0x84624b,3);
+  rect(houses,hx+23,hy+43,72,9,0xe7c39c);
+  rect(houses,hx+28,hy+35,23,7,0xfaf0da);
+  rect(houses,hx+65,hy+35,16,9,0x92b8ae);
+  for(const y of [hy+100,hy+131]){
+   rect(houses,hx+22,y,63,12,0x8eb9b1);
+   rect(houses,hx+27,y+12,7,9,0x876b53);
+   rect(houses,hx+72,y+12,7,9,0x876b53);
+  }
+  // Poster edukasi cuci tangan dan jadwal pemeriksaan.
+  frame(houses,hx+17,hy+167,77,24,0xf6e9d2,0x9e8065,2);
+  for(let i=0;i<3;i++)rect(houses,hx+24,hy+173+i*5,58-i*11,2,[0x80ac9a,0xe5b47c,0xa3b5cb][i]);
+  // Ruang pemeriksaan kanan: sekat rendah tidak menghalangi pintu.
+  rect(houses,hx+140,hy+39,7,53,0xcba88b);
+  rect(houses,hx+140,hy+131,7,26,0xcba88b);
+  // Tempat tidur pasien, bantal dan selimut.
+  frame(houses,hx+159,hy+57,79,43,0xe9f0ed,0x8aaba9,3);
+  rect(houses,hx+163,hy+61,22,35,0xffffff);
+  rect(houses,hx+187,hy+61,47,35,0xa4d2c4);
+  rect(houses,hx+192,hy+66,37,5,0xd3e9df);
+  // Timbangan, alat ukur tinggi dan meja pemeriksaan.
+  frame(houses,hx+163,hy+123,39,19,0xc4d6d1,0x809f9b,2);
+  rect(houses,hx+169,hy+127,27,9,0xf1f3e9);
+  rect(houses,hx+218,hy+113,5,46,0x9bb9b1);
+  for(let yy=hy+118;yy<hy+154;yy+=7)rect(houses,hx+218,yy,8,2,0x6d958f);
+  frame(houses,hx+159,hy+170,76,25,0xc9a47c,0x876a51,2);
+  rect(houses,hx+169,hy+164,24,8,0xf9efda);
+  rect(houses,hx+205,hy+165,14,7,0x8eb2a1);
+  // Lemari obat dan kotak P3K.
+  frame(houses,hx+104,hy+39,23,51,0xf9f3dc,0x8e7664,2);
+  for(let yy of [hy+49,hy+64,hy+79])rect(houses,hx+108,yy,15,4,0x91b6a2);
+  rect(houses,hx+185,hy+19,23,23,0xffffff);
+  rect(houses,hx+194,hy+23,5,15,0xe38a87);
+  rect(houses,hx+189,hy+28,15,5,0xe38a87);
   // Jalur akses dari jalan utama.
   // Jalan dari tepi selatan jalan utama (y=309) hingga ambang pintu (y=345).
   rect(path,1504,307,52,38,0xead5af);
