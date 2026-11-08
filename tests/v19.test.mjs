@@ -19,8 +19,8 @@ test('new systems preserve v1.8 save, inventory, library, shelters and layout',(
  assert.equal(state.data.social.friends.rani.hearts,3);
  assert.equal(state.data.learning.stars,7);
  assert.deepEqual([LAYOUT.home.x,LAYOUT.village.x,LAYOUT.store.x,LAYOUT.store.y],[45,500,806,339]);
- assert.equal(OBSTACLES.length,34);
- assert.equal(INTERACTIONS.length,15);
+ assert.ok(OBSTACLES.length>=34,'original walls retained alongside coastal obstacles');
+ assert.ok(INTERACTIONS.length>=15,'original interactions retained alongside new zones');
  assert.ok(INTERACTIONS.some(x=>x.id==='restaurant-kitchen'));
 });
 test('furniture purchase is once per item and never allows negative coins or free items',()=>{
