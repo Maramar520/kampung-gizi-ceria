@@ -385,6 +385,11 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 .gamewrap>.cozy-toolbar button span{font-size:clamp(15px,2vw,21px)}
 .gamewrap:has(>.cozy-drawer.is-open)>.cozy-toolbar{visibility:hidden;pointer-events:none}
 @media(max-width:540px){.gamewrap>.cozy-toolbar{bottom:7px;width:35%;gap:2px}.gamewrap>.cozy-toolbar button{min-height:35px;font-size:9px;padding:2px 0;border-radius:7px}.gamewrap>.cozy-toolbar button span{font-size:15px}}
+
+/* v1.69: enam tombol menu satu baris horizontal */
+.gamewrap>.cozy-toolbar{grid-template-columns:repeat(6,minmax(0,1fr))!important;width:min(60%,570px)!important;max-width:570px!important;gap:4px!important}
+.gamewrap>.cozy-toolbar button{min-width:0!important;min-height:46px!important;font-size:clamp(9px,1vw,12px)!important;padding:3px 1px!important}
+@media(max-width:700px){.gamewrap>.cozy-toolbar{width:53%!important;gap:2px!important}.gamewrap>.cozy-toolbar button{font-size:8px!important;min-height:38px!important;padding:2px 0!important}.gamewrap>.cozy-toolbar button span{font-size:14px!important}}
 </style>
 </head>
 <body>
@@ -473,7 +478,7 @@ document.documentElement.dataset.build='1.29';
 window.addEventListener('DOMContentLoaded',()=>{
  const marker=document.createElement('small');
  marker.id='releaseVersion';
- marker.textContent='Versi terpasang: v1.68 · Perbaikan Cache';
+ marker.textContent='Versi terpasang: v1.69 · Menu Satu Baris';
  marker.style.cssText='display:block;text-align:center;color:#476c51;font-weight:700;padding:3px 8px';
  const header=document.querySelector('header');
  if(header)header.appendChild(marker);
