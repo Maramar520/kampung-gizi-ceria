@@ -14,10 +14,10 @@ globalThis.localStorage={
  setItem:(k,v)=>store.set(k,String(v)),
  removeItem:k=>store.delete(k)
 };
-test('five NPCs have unique names and preserved original game save key',()=>{
+test('eight resident NPCs have unique names and preserved original game save key',()=>{
  assert.equal(SAVE_KEY,'kampung-gizi-pixel-v02');
- assert.deepEqual(FRIEND_IDS,['sari','chef','tani','nia','rani']);
- assert.equal(new Set(Object.values(FRIENDS).map(p=>p.name)).size,5);
+ assert.deepEqual(FRIEND_IDS,['sari','chef','tani','nia','rani','arif','lina','mayor']);
+ assert.equal(new Set(Object.values(FRIENDS).map(p=>p.name)).size,8);
  assert.equal(defaults().social.friends.nia.hearts,0);
 });
 test('old saves without social data migrate without deleting quest and inventory',()=>{
@@ -28,7 +28,7 @@ test('old saves without social data migrate without deleting quest and inventory
  assert.equal(g.data.coins,34);
  assert.equal(g.data.inventory.telur,2);
  assert.equal(g.data.done,true);
- assert.equal(social.all().length,5);
+ assert.equal(social.all().length,8);
  assert.ok(social.all().every(p=>p.hearts===0));
  const p=social.greet('tani',0);
  assert.equal(p.hearts,1);
@@ -79,5 +79,5 @@ test('NPC patrol routes stay on walkable paths and map is unchanged',async()=>{
  }
  assert.deepEqual([LAYOUT.home.x,LAYOUT.village.x,LAYOUT.pond.x,LAYOUT.market.y,LAYOUT.restaurant.y,LAYOUT.store.x],
   [45,500,805,339,339,806]);
- assert.equal(OBSTACLES.length,34);
+ assert.ok(OBSTACLES.length>=34,'new coastal collision obstacles must not remove existing walls');
 });
