@@ -1,138 +1,108 @@
-// v1.28: rumah timur menyatu dengan gaya pixel-art kampung lama.
-// Koordinat, pintu, collision, rutinitas NPC, dan penyimpanan tidak berubah.
+// v1.36 — rumah Nia, Arif, Lina dibuat ulang dari nol.
+// Koordinat rumah dan pintu dipertahankan untuk collision serta rute NPC.
 export const EAST_HOMES=Object.freeze({
- nia:{x:1370,y:65,w:100,h:170,name:'RUMAH NIA',emoji:'🌼',color:0xf5d6dc},
- arif:{x:1480,y:65,w:100,h:170,name:'RUMAH ARIF',emoji:'🌿',color:0xd4e5c1},
- lina:{x:1590,y:65,w:100,h:170,name:'RUMAH LINA',emoji:'🌷',color:0xe6d9f2}
+ nia:{x:1370,y:65,w:100,h:170,name:'RUMAH NIA',emoji:'🌼',color:0xe7b3ba},
+ arif:{x:1480,y:65,w:100,h:170,name:'RUMAH ARIF',emoji:'🌿',color:0x9cba8b},
+ lina:{x:1590,y:65,w:100,h:170,name:'RUMAH LINA',emoji:'🌷',color:0xc5a6d5}
 });
 export class EastHomesArt{
  constructor(scene){
   const ground=scene.add.graphics().setDepth(-99);
-  const roads=scene.add.graphics().setDepth(-89);
-  const floor=scene.add.graphics().setDepth(20);
-  const deco=scene.add.graphics().setDepth(21);
-  const rect=(g,x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
-  const frame=(g,x,y,w,h,c,edge=0x88694c,t=3)=>{
-   rect(g,x-t,y-t,w+t*2,h+t*2,edge);rect(g,x,y,w,h,c);
+  const path=scene.add.graphics().setDepth(-88);
+  // Semua isi rumah ada pada SATU graphics foreground: lantai tidak dapat
+  // tertutup oleh tekstur rumput, dekorasi atau objek terrain lain.
+  const houses=scene.add.graphics().setDepth(40);
+  const gardens=scene.add.graphics().setDepth(42);
+  const rect=(g,x,y,w,h,c)=>{g.fillStyle(c,1);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
+  const frame=(g,x,y,w,h,c,edge=0x78583e,t=3)=>{
+   rect(g,x-t,y-t,w+2*t,h+2*t,edge);rect(g,x,y,w,h,c);
   };
-  const tuft=(x,y)=>{rect(ground,x,y,3,5,0x74b075);rect(ground,x+5,y+2,2,3,0xb9d899);};
-  const flower=(x,y,c)=>{rect(deco,x,y,2,8,0x5b9867);rect(deco,x-4,y-3,10,5,c);rect(deco,x-1,y-6,4,9,c);rect(deco,x,y-2,2,2,0xf9e39d);};
-  const bush=(x,y)=>{rect(deco,x-13,y,26,8,0x4f8356);rect(deco,x-10,y-9,22,15,0x6fae70);rect(deco,x-4,y-14,12,9,0x8fc985);};
-  const tree=(x,y)=>{rect(deco,x-5,y,10,19,0x916f4e);frame(deco,x-19,y-26,40,29,0x6d9f65,0x578751,2);rect(deco,x-12,y-33,28,14,0x8cc67d);rect(deco,x-8,y-18,8,3,0xb5dc9b);};
-  const furniture=(x,y,w,h,c,edge=0x88694c)=>frame(deco,x,y,w,h,c,edge,2);
-  // Rumput dan tekstur identik dengan buildWorld() pada enam blok lama.
+  const flower=(g,x,y,c)=>{
+   rect(g,x,y,2,8,0x639463);rect(g,x-3,y-4,8,7,c);
+   rect(g,x-1,y-2,3,3,0xffe8a7);
+  };
+  // Kawasan hijau tetap sama dengan kampung lama, di luar rumah saja.
   rect(ground,1340,0,380,600,0xa4cd91);
-  // Jangan gambar sehelai rumput pun di tapak ketiga rumah.
-  const inHome=(x,y)=>Object.values(EAST_HOMES).some(h=>
-   x>=h.x-12&&x<=h.x+h.w+12&&y>=h.y-14&&y<=h.y+h.h+14);
-  for(let y=9;y<600;y+=17)for(let x=1345;x<1720;x+=19)
-   if(!inHome(x,y)&&(x*7+y*11)%17<7)tuft(x,y);
-  // Jalan lama berlanjut tanpa celah. Tepi, tekstur, dan warna sama.
-  frame(roads,1340,261,380,49,0xead5af,0xd3b18a,2);
-  for(let x=1350;x<1720;x+=58)rect(roads,x,282,25,3,0xd7b88f);
+  const inHouse=(x,y)=>Object.values(EAST_HOMES).some(h=>x>=h.x-13&&x<h.x+h.w+13&&y>=h.y-17&&y<h.y+h.h+13);
+  for(let y=9;y<600;y+=17)for(let x=1345;x<1720;x+=19){
+   if(!inHouse(x,y)&&(x*7+y*11)%17<7){
+    rect(ground,x,y,3,5,0x74b075);rect(ground,x+5,y+2,2,3,0xb9d899);
+   }
+  }
+  // Jalan utama dan jalan masuk tidak berubah.
+  frame(path,1340,261,380,49,0xead5af,0xd3b18a,2);
+  for(let x=1350;x<1720;x+=58)rect(path,x,282,25,3,0xd7b88f);
   for(const [id,h] of Object.entries(EAST_HOMES)){
-   const {x,y,w,emoji,name}=h,cx=x+w/2;
-   // Jalan pendek menuju pintu di sisi selatan, tepat di tengah.
-   rect(roads,cx-18,230,36,33,0xf0d9b7);
-   for(let j=0;j<2;j++)rect(roads,cx-13+j*17,243,8,3,0xdfbb91);
-   // Bingkai rumah seperti fungsi room() pada kampung lama.
-   // Pondasi coklat dibuat sebagai objek solid terpisah, tidak bisa tertutup
-   // tekstur rumput dari Graphics lain atau perubahan urutan rendering.
-   scene.add.rectangle(cx,y+h/2,w+20,h+20,0x76523a).setDepth(17);
-   scene.add.rectangle(cx,y+h/2,w+12,h+12,0xb9885d).setDepth(18);
-   scene.add.rectangle(cx,y+h/2,w,h,({nia:0xc99b72,arif:0xc49a71,lina:0xd0a27c})[id]).setDepth(19);
-   // Alas coklat kayu seperti pondasi rumah-rumah kampung lama, di bawah lantai interior.
-   rect(floor,x-10,y-10,w+20,h+20,0x78543c);
-   rect(floor,x-7,y-7,w+14,h+14,0xb9885d);
-   rect(floor,x-4,y-4,w+8,h+8,0xd1a576);
-   // Lantai kayu solid berada di atas lapisan rumput; tidak boleh transparan.
-   frame(floor,x,y,w,h,({nia:0xc99b72,arif:0xc49a71,lina:0xd0a27c})[id],0x896247,3);
-   for(let yy=y+23;yy<y+h-10;yy+=22)rect(floor,x+8,yy,w-16,2,0x9f7554);
-   const trim=({nia:0xb68168,arif:0x9a7658,lina:0xa27b70})[id];
-   rect(deco,x,y,11,h,trim);rect(deco,x+w-11,y,11,h,trim);
-   rect(deco,x,y,w,11,trim);
-   // Dinding selatan sengaja terputus 52px untuk jalur NPC dan pemain.
-   rect(deco,x,y+h-11,24,11,trim);rect(deco,x+76,y+h-11,24,11,trim);
-   rect(deco,cx-26,y+h-5,52,7,0xe4c28a);
-   // Ambang pintu coklat dan dua anak tangga menuju halaman.
-   rect(deco,cx-25,y+h+2,50,5,0xa67a55);
-   rect(deco,cx-21,y+h+7,42,5,0xc69b6e);
-   rect(deco,x+11,y+15,w-22,3,0xfff4d7);
-   for(let xx=x+21;xx<x+w-18;xx+=25)rect(deco,xx,y+4,12,4,0xf0c49d);
-   // Atap genteng warna khas tiap rumah, bagian interior tetap terbuka.
-   const roof=({nia:0xc87983,arif:0x789b70,lina:0x9b83bb})[id];
-   rect(deco,x-4,y-13,w+8,15,0x735c52);
-   rect(deco,x-2,y-11,w+4,11,roof);
-   for(let xx=x+4;xx<x+w-5;xx+=13){
-    rect(deco,xx,y-8,9,2,0xffe9cb);
-    rect(deco,xx+4,y-2,9,2,0x765c54);
-   }
-   rect(deco,x+33,y+17,34,6,roof);
-   rect(deco,x+37,y+23,26,3,0xffe9cb);
-   // Interior terbuka: tempat tidur, selimut, lemari, rak, meja, kursi.
-   furniture(x+14,y+37,29,51,0xa3bacd,0x718a9b);
-   rect(deco,x+19,y+42,19,12,0xfff9ea);
-   rect(deco,x+18,y+57,21,25,({nia:0xe5b6ca,arif:0xa9c4bc,lina:0xc3b2d8})[id]);
-   rect(deco,x+19,y+63,19,3,0xf3e2cf);
-   furniture(x+57,y+36,25,35,0xc09162,0x87634a);
-   rect(deco,x+60,y+43,19,3,0xf1c999);
-   for(let i=0;i<3;i++)rect(deco,x+61+i*6,y+49,5,14,[0xa1b98b,0xe8b779,0x91b1c7][i]);
-   furniture(x+54,y+96,31,19,0xc39261,0x785941);
-   rect(deco,x+59,y+100,21,4,0xf2c997);
-   furniture(x+64,y+120,14,11,0x9b7658);
-   rect(deco,x+18,y+110,9,13,0xb9885d);
-   rect(deco,x+20,y+106,5,7,0x629961);
-   rect(deco,x+16,y+103,13,6,0x8fc985);
-   // Jendela dengan cahaya dan karpet kecil di ruang tengah.
-   rect(deco,x+47,y+12,24,8,0xfaf0c8);rect(deco,x+58,y+12,2,8,0x9dbaaa);
-   rect(floor,x+39,y+134,24,18,0xe6c9a2);
-   rect(deco,x+42,y+137,18,12,({nia:0xeabac3,arif:0xc0d3a7,lina:0xd5c3e4})[id]);
-   // Interior personal: meja baca Nia, bibit Arif, bunga Lina.
+   const {x,y,w,h:height,name,emoji,color}=h,cx=x+w/2;
+   rect(path,cx-18,235,36,28,0xf0d9b7);
+   // PONDASI dan lantai kayu solid: seluruh persegi panjang rumah tertutup.
+   rect(houses,x-9,y-9,w+18,height+18,0x77523b);
+   rect(houses,x-5,y-5,w+10,height+10,0xb48961);
+   rect(houses,x,y,w,height,0xc99b70);
+   // Papan kayu horizontal, identik gaya rumah lama.
+   for(let yy=y+17;yy<y+height-9;yy+=22)
+    rect(houses,x+6,yy,w-12,2,0xa87b56);
+   // Lis dinding coklat, pintu selatan terbuka 52px.
+   rect(houses,x,y,w,11,0x956b50);
+   rect(houses,x,y,11,height,0x956b50);
+   rect(houses,x+w-11,y,11,height,0x956b50);
+   rect(houses,x,y+height-11,24,11,0x956b50);
+   rect(houses,x+76,y+height-11,24,11,0x956b50);
+   rect(houses,cx-26,y+height-5,52,7,0xe8c391);
+   rect(houses,cx-24,y+height+3,48,5,0x9f7552);
+   // Atap pendek cutaway: interior rumah terlihat seluruhnya.
+   rect(houses,x-5,y-15,w+10,15,0x72533e);
+   rect(houses,x-3,y-13,w+6,11,color);
+   for(let i=0;i<7;i++)rect(houses,x+4+i*14,y-9,9,2,0xfbe9d3);
+   // Jendela dan interior khusus setiap penghuni.
+   frame(houses,x+15,y+38,28,49,0xa7bfcc,0x775f52,2);
+   rect(houses,x+19,y+43,20,11,0xfff5de);
+   rect(houses,x+19,y+58,20,24,id==='nia'?0xe6b4bd:id==='arif'?0xa3bd98:0xc8b3d9);
+   frame(houses,x+58,y+36,24,34,0xc59b70,0x826047,2);
+   rect(houses,x+62,y+43,16,3,0xf2d4a3);
+   for(let i=0;i<3;i++)rect(houses,x+62+i*6,y+51,5,13,[0x9bb98c,0xe6ba7c,0x9ab3ce][i]);
+   frame(houses,x+53,y+95,32,20,0xb98a5e,0x76563e,2);
+   rect(houses,x+58,y+100,22,4,0xf4d3a0);
+   frame(houses,x+62,y+125,15,12,0x9c7856,0x73543c,2);
+   frame(houses,x+16,y+111,12,12,0xb48961,0x78543e,2);
+   rect(houses,x+19,y+105,6,8,0x6c9c65);
+   rect(houses,x+18,y+102,9,5,0x8dbb7b);
+   rect(houses,x+40,y+132,23,18,id==='nia'?0xe4b0b5:id==='arif'?0xb0c99b:0xd3b5d9);
+   // Aksen personal: buku, tanaman, atau vas bunga.
    if(id==='nia'){
-    rect(deco,x+55,y+78,25,13,0xf3d2a0);
-    rect(deco,x+59,y+81,17,3,0xe7a0a7);
-    rect(deco,x+62,y+85,11,3,0x8b9dc7);
+    rect(houses,x+54,y+80,28,11,0xf3d3a0);
+    rect(houses,x+59,y+83,18,3,0xa28ab7);
    }else if(id==='arif'){
-    rect(deco,x+51,y+78,30,13,0x9c7957);
-    for(let i=0;i<3;i++)rect(deco,x+56+i*8,y+75,5,12,[0x80b66b,0xe3c176,0x7aa6bc][i]);
+    for(let i=0;i<3;i++){
+     rect(houses,x+56+i*9,y+79,7,11,0x947050);
+     rect(houses,x+57+i*9,y+75,5,7,0x78a975);
+    }
    }else{
-    rect(deco,x+51,y+77,30,14,0xd9c1e3);
-    for(let i=0;i<3;i++)flower(x+58+i*9,y+84,[0xf2b7a0,0xf4da8d,0xe2acd0][i]);
+    rect(houses,x+56,y+80,26,10,0xd3b6d6);
+    for(let i=0;i<3;i++)flower(houses,x+61+i*8,y+80,[0xeab1ad,0xf5d38e,0xe7b1d7][i]);
    }
-   // Taman depan tanpa menghalangi pintu.
-   flower(x+14,247,({nia:0xf2b7a0,arif:0xf4da8d,lina:0xe2acd0})[id]);
-   flower(x+86,251,0xffd59e);
-   rect(deco,x+3,237,23,7,0xb9885d);
-   rect(deco,x+74,237,23,7,0xb9885d);
-   for(const fx of [x+10,x+20,x+80,x+90]){
-    rect(deco,fx,232,2,8,0x629961);
-    rect(deco,fx-3,230,8,5,id==='nia'?0xf2b7a0:id==='arif'?0xf4da8d:0xe2acd0);
-   }
-   scene.add.text(cx,y+12,emoji+' '+name,{
+   // Bedeng bunga di halaman depan, bukan di lantai rumah.
+   rect(gardens,x+2,241,23,6,0xa67a52);
+   rect(gardens,x+75,241,23,6,0xa67a52);
+   flower(gardens,x+12,239,color);
+   flower(gardens,x+87,239,0xf4d28d);
+   scene.add.text(cx,y+13,emoji+' '+name,{
     fontFamily:'monospace',fontSize:'10px',fontStyle:'bold',color:'#574d3e',
     backgroundColor:'#fff3d4',padding:{x:3,y:2}
    }).setOrigin(.5).setDepth(550);
   }
-  // Tambahan variasi rerumputan di halaman selatan.
-  for(let y=327;y<570;y+=31)for(let x=1375;x<1690;x+=39){
-   if((x+y)%4===0)flower(x,y,(x%3===0)?0xf2b7a0:0xf4da8d);
-   else if((x+y)%3===0){rect(ground,x,y,6,2,0xb9d899);rect(ground,x+3,y-3,2,5,0x74b075);}
-  }
-  // Hiasan mengikuti palet semak, bunga dan pohon dari kawasan lama.
-  for(const [x,y] of [[1356,245],[1710,245],[1356,564],[1710,564]])bush(x,y);
-  for(const [x,y] of [[1363,43],[1701,45],[1363,493],[1701,493]])tree(x,y);
-  for(const [x,y,c] of [[1355,329,0xf2b7a0],[1710,332,0xe2acd0],[1394,565,0xffd59e],[1660,568,0xf8bac3]])flower(x,y,c);
-  // Perpanjangan pantai mengikuti SouthCoastArt, tidak menimpa jalan.
-  rect(roads,1340,600,380,112,0xf3dba5);
-  rect(roads,1340,710,380,140,0x65bfd0);
-  rect(roads,1340,600,380,17,0xa4cd91);
+  // Pantai timur tetap mengikuti sambungan pantai versi sebelumnya.
+  rect(path,1340,600,380,112,0xf3dba5);
+  rect(path,1340,710,380,140,0x65bfd0);
+  rect(path,1340,600,380,17,0xa4cd91);
   for(let x=1340;x<1720;x+=30){
    const y=703+Math.round(Math.sin(x*.035)*5);
-   rect(roads,x,y,30,9,0x9ddcdb);rect(roads,x,y+10,30,3,0xd6f0dc);
+   rect(path,x,y,30,9,0x9ddcdb);
+   rect(path,x,y+10,30,3,0xd6f0dc);
   }
   for(let x=1355;x<1720;x+=47){
-   rect(roads,x,627+(x%5)*9,5,3,0xe3c58e);
-   rect(roads,x+12,670+(x%7)*3,3,3,0xffedca);
+   rect(path,x,627+(x%5)*9,5,3,0xe3c58e);
+   rect(path,x+12,670+(x%7)*3,3,3,0xffedca);
   }
  }
 }
