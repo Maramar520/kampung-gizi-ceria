@@ -15,7 +15,7 @@ export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
  create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.clinic=new HealthClinicSystem(this.state);this.school=new SchoolSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});const destination=$('mapDestination');for(const place of MAP_PLACES){const option=document.createElement('option');option.value=place.id;option.textContent=place.label;destination.appendChild(option);}
 const navigate=place=>{if(!place)return;destination.value=place.id;this.world.highlightPlace?.(place.id);const cam=this.world.cameras.main;cam.stopFollow();cam.centerOn(place.x,place.y);this.note('📍 '+place.label+' ditandai di peta. Bergerak untuk melanjutkan perjalanan.');this.time.delayedCall(2400,()=>cam.startFollow(this.world.player.sprite,true,.12,.12));};
-this.miniMapCleanup=createVillageMiniMap($('villageMiniMap'),this.world,navigate);$('mapNavigate').onclick=()=>navigate(MAP_PLACES.find(p=>p.id===destination.value));this.events.once('shutdown',()=>this.miniMapCleanup?.());this.installCharacterEditor();this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();$('calendarButton').onclick=()=>this.calendarMenu();$('calendarHud').onclick=()=>this.calendarMenu();$('timeSpeedButton').onclick=()=>{const speeds=[1,2,4];const current=this.world.clock.speed;this.world.clock.setSpeed(speeds[(speeds.indexOf(current)+1)%speeds.length]);this.refresh();this.note('Kecepatan waktu '+this.world.clock.speed+'×');};
+this.miniMapCleanup=createVillageMiniMap($('villageMiniMap'),this.world,navigate);$('mapNavigate').onclick=()=>navigate(MAP_PLACES.find(p=>p.id===destination.value));this.events.once('shutdown',()=>this.miniMapCleanup?.());this.installCharacterEditor();this.installZoomControls();this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();$('calendarButton').onclick=()=>this.calendarMenu();$('calendarHud').onclick=()=>this.calendarMenu();$('timeSpeedButton').onclick=()=>{const speeds=[1,2,4];const current=this.world.clock.speed;this.world.clock.setSpeed(speeds[(speeds.indexOf(current)+1)%speeds.length]);this.refresh();this.note('Kecepatan waktu '+this.world.clock.speed+'×');};
 $('townOverview').onclick=()=>{const cam=this.world.cameras.main;const overview=cam.zoom>=.95;if(overview){cam.stopFollow();cam.setZoom(.68);cam.centerOn(670,300);}else{cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);} $('townOverview').textContent=overview?'🔎 Kembali ke Karakter':'🗺️ Lihat Seluruh Peta';this.note(overview?'Mode peta penuh aktif. Tekan kembali untuk mengikuti karakter.':'Kamera kembali mengikuti karakter.');};
 const travel=(x,y,label)=>{this.close();this.world.keysHeld.clear();this.state.data.x=x;this.state.data.y=y;this.world.player.sprite.setPosition(x,y);const cam=this.world.cameras.main;cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);cam.centerOn(x,y);$('townOverview').textContent='🗺️ Lihat Seluruh Peta';this.refresh();this.note(label);};
 $('goEast').onclick=()=>travel(1155,281,'🏛️ Balai Kota di utara, alun-alun di selatan. Ikuti jalan!');
@@ -241,6 +241,32 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     this.state.save();this.refresh();this.plazaMenu();
    }},{label:'Kembali',fn:()=>this.plazaMenu()}
   ]);
+ }
+ installZoomControls(){
+  const wrap=document.createElement('div');
+  wrap.id='gameZoomControls';
+  wrap.style.cssText='display:flex;gap:7px;align-items:center;justify-content:center;margin:8px auto;flex-wrap:wrap';
+  wrap.innerHTML='<button type="button" id="zoomOut" aria-label="Perkecil tampilan">−</button><strong id="zoomLevel" aria-live="polite">100%</strong><button type="button" id="zoomIn" aria-label="Perbesar tampilan">+</button><button type="button" id="zoomReset">↺ 100%</button>';
+  const target=document.querySelector('.controls')||document.querySelector('.bottom')||document.querySelector('.shell')||document.body;
+  target.parentNode.insertBefore(wrap,target);
+  const cam=this.world.cameras.main;
+  const level=wrap.querySelector('#zoomLevel');
+  const update=()=>{level.textContent=Math.round(cam.zoom*100)+'%';};
+  const change=delta=>{
+   const next=Math.min(2,Math.max(.6,Math.round((cam.zoom+delta)*10)/10));
+   cam.zoomTo(next,180);
+   cam.startFollow(this.world.player.sprite,true,.12,.12);
+   level.textContent=Math.round(next*100)+'%';
+  };
+  wrap.querySelector('#zoomOut').onclick=()=>change(-.1);
+  wrap.querySelector('#zoomIn').onclick=()=>change(.1);
+  wrap.querySelector('#zoomReset').onclick=()=>{cam.zoomTo(1,180);cam.startFollow(this.world.player.sprite,true,.12,.12);level.textContent='100%';};
+  // Ctrl/Cmd + roda mouse memperbesar peta tanpa mengganggu scroll halaman biasa.
+  const wheel=e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();change(e.deltaY<0?.1:-.1);};
+  const canvas=this.game.canvas;
+  canvas.addEventListener('wheel',wheel,{passive:false});
+  this.events.once('shutdown',()=>{canvas.removeEventListener('wheel',wheel);wrap.remove();});
+  update();
  }
  installCharacterEditor(){
   const button=document.createElement('button');
