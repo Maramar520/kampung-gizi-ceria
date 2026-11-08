@@ -5,8 +5,14 @@ export class TownExpansionArt {
   const g=scene.add.graphics().setDepth(-85);
   const rect=(x,y,w,h,color)=>{g.fillStyle(color);g.fillRect(x,y,w,h);};
   rect(960,0,380,600,0xa4cd91);
+  // Sambungan jalan: tutup celah 8px antara jalan lama (sampai x=952)
+  // dan kawasan timur; simpang tegak lurus menghubungkan dua tujuan.
+  rect(948,261,392,49,0xead5af);
+  rect(1134,227,42,122,0xead5af);
+  for(let x=966;x<1328;x+=58)rect(x,282,25,3,0xd7b88f);
+  for(let y=244;y<345;y+=32)rect(1152,y,5,14,0xeedbb7);
   // Existing horizontal road continues east; north/south paths join both new places.
-  rect(960,261,380,49,0xead5af);rect(1134,238,42,106,0xead5af);
+  // Jalur utama sudah digambar menyambung di atas, tanpa celah.
   rect(1125,15,60,50,0xead5af);
   // Balai Kota: cutaway interior, door open at bottom centre.
   rect(1025,65,260,173,0xf1dec5);
