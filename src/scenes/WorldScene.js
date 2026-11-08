@@ -20,6 +20,8 @@ import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {FestivalArt} from '../world/FestivalArt.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js';
+import {MiniMap} from '../ui/MiniMap.js';
+import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
 export class WorldScene extends Phaser.Scene {
  constructor(){super('WorldScene');this.keysHeld=new Set();}
@@ -35,6 +37,7 @@ export class WorldScene extends Phaser.Scene {
   this.decor=new HomeDecorSystem(this.game.state);
   this.restaurantOrders=new RestaurantOrderSystem(this.game.state);
   this.festival=new FestivalSystem(this.game.state);
+  this.mayorMissions=new MayorMissionSystem(this.game.state);
   this.decorArt=new HomeDecorArt(this,this.decor);
   this.farmArt=new FarmArt(this);
   this.ambientArt=new AmbientArt(this);
@@ -62,6 +65,8 @@ export class WorldScene extends Phaser.Scene {
   ]});
   this.rani=new NPC(this,{x:692,y:207,name:'KAK RANI',texture:'rani',stops:[{x:692,y:207},{x:692,y:186},{x:692,y:207}]});
   this.mayor=new NPC(this,{x:1204,y:180,name:'KEPALA DESA',texture:'mayor',stops:[{x:1204,y:180}]});
+  this.wargaA=new NPC(this,{x:1200,y:452,name:'WARGA LINA',texture:'nia',stops:[{x:1200,y:452}]});
+  this.wargaB=new NPC(this,{x:1080,y:471,name:'WARGA ARIF',texture:'tani',stops:[{x:1080,y:471}]});
   this.zones=INTERACTIONS;
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
@@ -85,6 +90,7 @@ export class WorldScene extends Phaser.Scene {
   this.cameras.main.setZoom(1);
   this.game.events.emit('world-ready',this);
   this.scene.launch('UIScene');
+  this.minimap=new MiniMap(this);
  }
  playInteraction(kind){
   if(Object.hasOwn(ACTION_DURATION,kind))return this.activity.play(kind);
@@ -124,6 +130,14 @@ export class WorldScene extends Phaser.Scene {
   const returnRoute=mayorReturning?[{x:1155,y:this.mayor.y},{x:1155,y:345},{x:1155,y:281},
    {x:1155,y:238},{x:1155,y:208},{x:1204,y:180}]:mayorRoute;
   this.mayor.setRoutine(returnRoute,'KEPALA DESA',!raining&&phase!==3);
+  // Warga bergerak secara fisik di area terbuka, tidak hanya animasi kaki.
+  const sheltered=raining||phase===3;
+  this.wargaA.setRoutine(sheltered?[{x:1155,y:238},{x:1155,y:207},{x:1200,y:180}]:
+   [{x:1200,y:452,activity:this.festival.active?'🎪 Menonton lomba':'🤸 Senam',pause:2},
+    {x:1200,y:480},{x:1245,y:480,activity:'🌳 Bersantai',pause:2},{x:1245,y:452}], 'WARGA LINA',!sheltered);
+  this.wargaB.setRoutine(sheltered?[{x:1155,y:238},{x:1155,y:207},{x:1105,y:182}]:
+   [{x:1080,y:471,activity:this.festival.active?'🥗 Menyiapkan stan':'🧹 Merawat taman',pause:2},
+    {x:1080,y:500},{x:1110,y:500},{x:1110,y:471}], 'WARGA ARIF',!sheltered);
   const justStoppedRaining=this.lastRaining===true&&!raining&&phase!==3;
   this.lastRaining=raining;
   this.routineKey=key;
@@ -261,12 +275,12 @@ export class WorldScene extends Phaser.Scene {
  update(_time,delta){
   const changed=this.clock.advance(this.game.dialogOpen?0:delta);
   this.gardenArt.render();this.farmArt.update(this.time.now);
-  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.festivalArt.update(this.time.now);this.townArt.update(this.time.now);this.updateRoutines();
+  this.ambientArt.update(this.time.now);this.weatherArt.update(this.time.now,changed);this.festivalArt.update(this.time.now);this.townArt.update(this.time.now);this.minimap?.render();this.updateRoutines();
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
-   this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);
+   this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);this.wargaA.update(dt);this.wargaB.update(dt);
    // Once a villager has exited an interior through its door, begin the
    // normal repeating workday without teleporting or cutting across walls.
    for(const npc of [this.sari,this.tani,this.nia,this.chef,this.rani,this.mayor]){
