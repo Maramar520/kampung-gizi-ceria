@@ -23,7 +23,7 @@ $('goWest').onclick=()=>travel(760,281,'🏡 Kembali ke kawasan enam blok lama.'
  button.addEventListener('click',()=>{
   this.world.highlightPlace(button.dataset.findPlace);
   this.note(button.dataset.findPlace==='coop'?'🐔 Kandang ayam berada di sebelah kebun, dekat rumah pemain.':
-   button.dataset.findPlace==='library'?'📚 Perpustakaan berada di blok tengah atas, masuk dari jalan tengah.':'🎣 Kolam ikan berada di blok kanan atas peta.');
+   button.dataset.findPlace==='library'?'📚 Perpustakaan berada di blok tengah atas, masuk dari jalan tengah.':'🏫 Sekolah Gizi berada di blok kanan atas peta.');
  });
 });$('unstuck').onclick=()=>{this.close();this.world.keysHeld.clear();this.state.data.x=446;this.state.data.y=291;this.world.player.sprite.setPosition(446,291);this.refresh();this.note('Karakter kembali ke jalan. Progres tetap aman!');};$('close').onclick=()=>this.close();document.querySelectorAll('[data-open-notebook]').forEach(button=>button.addEventListener('click',()=>this.openNotebook(button.dataset.openNotebook)));
 this.keyboardNotebookHandler=event=>{
@@ -247,7 +247,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   wrap.id='gameZoomControls';
   wrap.style.cssText='display:flex;gap:7px;align-items:center;justify-content:center;margin:8px auto;flex-wrap:wrap';
   wrap.innerHTML='<button type="button" id="zoomOut" aria-label="Perkecil tampilan">−</button><strong id="zoomLevel" aria-live="polite">100%</strong><button type="button" id="zoomIn" aria-label="Perbesar tampilan">+</button><button type="button" id="zoomReset">↺ 100%</button>';
-  const target=document.querySelector('.controls')||document.querySelector('.bottom')||document.querySelector('.shell')||document.body;
+  const target=document.querySelector('.gamewrap')||document.querySelector('.controls')||document.querySelector('.shell')||document.body;
   target.parentNode.insertBefore(wrap,target);
   const cam=this.world.cameras.main;
   const level=wrap.querySelector('#zoomLevel');
