@@ -16,7 +16,7 @@ import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
 import {WeatherArt} from '../world/WeatherArt.js';
 import {rainyRoute,dryReturnRoute,isInsideShelter} from '../world/ShelterRoutes.js';
-import {workRoute} from '../world/NpcWorkRoutes.js';
+import {workRoute} from '../world/NpcWorkRoutes.js?v=v123-routines';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
 import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js?v=guests-20261108';
