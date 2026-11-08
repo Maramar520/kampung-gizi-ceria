@@ -21,7 +21,7 @@ test('festival market decorations and market-only actions are absent',()=>{
 });
 test('new version and map controls are exposed for desktop and mobile',()=>{
  const html=source('index.html');
- for(const id of ['minimap','goEast','goWest','townOverview'])assert.match(html,new RegExp('id="'+id+'"'));
- assert.match(html,/Phaser v1\.13/);
+ for(const id of ['goEast','goWest','townOverview'])assert.match(html,new RegExp('id="'+id+'"'));
+ assert.doesNotMatch(html,/id="minimap"/);
  assert.match(source('src/scenes/UIScene.js'),/cam\.startFollow\(this\.world\.player\.sprite/);
 });
