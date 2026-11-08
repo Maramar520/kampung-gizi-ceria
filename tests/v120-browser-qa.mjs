@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {chromium,devices} from 'playwright';
 import {mkdir} from 'node:fs/promises';
-const port=8766,url='http://127.0.0.1:'+port+'/';
+const port=8766,url='http://127.0.0.1:'+port+'/?qa=1';
 const server=spawn('python3',['-m','http.server',String(port),'--bind','127.0.0.1'],{stdio:'ignore'});
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 let browser;
