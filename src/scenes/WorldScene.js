@@ -1,4 +1,4 @@
-import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=v142-clinic-door';
+import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=v146-school';
 import {createTextures,buildWorld} from '../world/WorldArt.js';
 import {Player} from '../entities/Player.js?v=coast-v118';
 import {NPC} from '../entities/NPC.js?v=v126-homes';
@@ -25,7 +25,7 @@ import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-road-connected-20261108';
 import {SchoolArt} from '../world/SchoolArt.js';
-import {EastHomesArt} from '../world/EastHomesArt.js?v=v145-road-route';
+import {EastHomesArt} from '../world/EastHomesArt.js?v=v146-school';
 import {residentHomeRoute,residentLeaveHomeRoute,residentHomeActivity,homePosition} from '../world/ResidentHomeRoutes.js';
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
