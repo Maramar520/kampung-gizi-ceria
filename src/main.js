@@ -1,6 +1,6 @@
 import {GameState} from './systems/GameState.js';
-import {WorldScene} from './scenes/WorldScene.js?v=v191-green-edge';
-import {UIScene} from './scenes/UIScene.js?v=v150-responsive';
+import {WorldScene} from './scenes/WorldScene.js?v=v192-camera-limits';
+import {UIScene} from './scenes/UIScene.js?v=v192-camera-limits';
 // Sesuaikan rasio kanvas dengan layar, bukan menyisakan bar biru di samping.
 // Tinggi dunia tetap 600 unit agar ukuran karakter dan kontrol tetap konsisten.
 const viewportSize=()=>({width:Math.max(600,Math.round(600*window.innerWidth/Math.max(1,window.innerHeight))),height:600});
