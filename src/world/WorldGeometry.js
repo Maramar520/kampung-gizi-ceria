@@ -1,6 +1,6 @@
 // Peta v1.3: denah SVG asli (360×270) dipetakan ke world 960×600.
 // Tiga kolom / dua baris dipisahkan jalan x≈448, x≈760, dan y≈282.
-export const WORLD_WIDTH=1340, WORLD_HEIGHT=600;
+export const WORLD_WIDTH=1340, WORLD_HEIGHT=850;
 export const SPAWN={x:446,y:291};
 export const LAYOUT=Object.freeze({
  home:{x:45,y:49,w:197,h:190},
@@ -50,10 +50,14 @@ export const FURNITURE=[
 ];
 export const NEW_WORLD_OBSTACLES=[
  rectangle(292,168,72,42), // bangunan kandang; halamannya tetap dapat dilalui
- rectangle(816,82,105,129) // air kolam (dermaga di sisi bawah)
+ rectangle(816,82,105,129), // air kolam (dermaga di sisi bawah)
+ rectangle(0,709,734,141), // laut: hanya dermaga yang dapat diinjak
+ rectangle(791,709,549,141) // laut di kanan dermaga
 ];
 export const OBSTACLES=[...WALLS,...FURNITURE,...NEW_WORLD_OBSTACLES];
 export const INTERACTIONS=[
+ {id:'sea-fishing',x:761,y:768,r:45,label:'Memancing di Dermaga'},
+ {id:'beach',x:680,y:651,r:65,label:'Pantai Selatan'},
  {id:'plaza',x:1164,y:427,r:92,label:'Alun-Alun Kampung'},
  {id:'townHall',x:1155,y:198,r:75,label:'Balai Kota'},
  {id:'mayor',x:1204,y:180,r:45,label:'Kepala Desa'},
@@ -76,7 +80,7 @@ export const INTERACTIONS=[
  {id:'rani',x:692,y:207,r:39,label:'Kak Rani'}
 ];
 export function canStand(x,y,obstacles=OBSTACLES){
- if(!Number.isFinite(x)||!Number.isFinite(y)||x<15||x>1325||y<35||y>580)return false;
+ if(!Number.isFinite(x)||!Number.isFinite(y)||x<15||x>1325||y<35||y>825)return false;
  return !obstacles.some(o=>x+9>o.x&&x-9<o.x+o.w&&y+5>o.y&&y-5<o.y+o.h);
 }
 export function nearestInteraction(position,zones=INTERACTIONS){
