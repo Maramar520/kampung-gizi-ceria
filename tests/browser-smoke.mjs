@@ -42,7 +42,7 @@ async function testDesktop(browser){
  await waitGame(page);
  // Eastern district must be discoverable through visible navigation controls.
  await page.locator('#townOverview').click();
- assert.ok(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').cameras.main.zoom<.8));
+ assert.ok(await page.evaluate(()=>{const cam=window.__kampungQA.scene.getScene('WorldScene').cameras.main;return cam.zoom<.8&&Math.abs(cam.midPoint.x-670)<25;}));
  await page.locator('#townOverview').click();
  await page.locator('#goEast').click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.x),1155);
