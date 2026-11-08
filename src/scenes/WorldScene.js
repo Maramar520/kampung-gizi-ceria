@@ -1,5 +1,5 @@
 import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=v157-sea-height';
-import {createTextures,buildWorld} from '../world/WorldArt.js?v=v148-character';
+import {createTextures,buildWorld} from '../world/WorldArt.js?v=v176-clean';
 import {Player} from '../entities/Player.js?v=coast-v118';
 import {NPC} from '../entities/NPC.js?v=v126-homes';
 import {GardenSystem} from '../systems/GardenSystem.js';
