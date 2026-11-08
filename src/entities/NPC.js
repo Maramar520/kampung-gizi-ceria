@@ -36,7 +36,10 @@ export class NPC {
    else{
     walking=true;
     const step=Math.min(d,34*dt);
-    this.sprite.setPosition(this.x+dx/d*step,this.y+dy/d*step);
+    // Pindahkan koordinat sprite sungguhan; animasi kaki mengikuti perpindahan.
+    const nx=this.x+dx/d*step,ny=this.y+dy/d*step;
+    if(!this.walkable||this.walkable(nx,ny))this.sprite.setPosition(nx,ny);
+    else {this.finished=true;walking=false;this.activity='🚧 Jalan terhalang';}
     this.facing=Math.abs(dx)>Math.abs(dy)?'side':dy<0?'up':'down';
    }
   }
