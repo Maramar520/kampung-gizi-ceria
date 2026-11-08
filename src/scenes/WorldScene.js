@@ -17,7 +17,7 @@ import {workRoute} from '../world/NpcWorkRoutes.js';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
 import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js?v=guests-20261108';
-import {RestaurantCustomer} from '../systems/RestaurantCustomer.js';
+import {RestaurantCustomer} from '../systems/RestaurantCustomer.js?v=guests-20261108';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
