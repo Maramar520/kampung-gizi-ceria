@@ -55,10 +55,13 @@ export function heartDisplay(value){
  const n=Math.min(MAX_HEARTS,positiveInt(value));
  return '❤️'.repeat(n)+'🤍'.repeat(MAX_HEARTS-n);
 }
-export function dialogueFor(id,day,phase=0){
+export function dialogueFor(id,day,phase=0,weather='Cerah',hearts=0){
  const list=DIALOGUES[id];if(!list)return '';
  const safeDay=Math.max(1,positiveInt(day));
  const safePhase=Math.max(0,Math.min(3,Math.floor(Number(phase)||0)));
+ if(weather==='Hujan'&&safePhase!==3){
+  return ({sari:'Hujan turun! Aku menyiapkan makanan hangat sambil berteduh.',chef:'Saat hujan, sup hangat dan makanan bergizi cocok untuk pelanggan.',tani:'Air hujan membantu menyiram kebun. Kita tunggu cuaca membaik.',nia:'Aku membantu pedagang di dalam pasar agar tidak kehujanan.',rani:'Cuaca hujan paling nyaman untuk membaca buku di perpustakaan.',arif:'Aku berteduh dulu. Kerja bakti dilanjutkan setelah hujan.',lina:'Bunga-bunga mendapat air hujan. Aku menunggu di tempat teduh.',mayor:'Kegiatan luar ruangan ditunda sampai hujan reda.'})[id]||'Ayo berteduh saat hujan!';
+ }
  if(safePhase===3){
   return {sari:'Sudah malam. Besok pagi kita lanjutkan kegiatan sehat, ya!',
    chef:'Dapur sudah tenang. Tidur cukup agar siap memasak besok.',
@@ -69,7 +72,8 @@ export function dialogueFor(id,day,phase=0){
    lina:'Selamat malam! Besok kita rawat taman lagi.',
    mayor:'Balai Desa tutup untuk hari ini. Sampai besok!'}[id]||'Selamat malam!';
  }
- return list[(safeDay-1)%list.length][safePhase];
+ const line=list[(safeDay-1)%list.length][safePhase];
+ return hearts>=4?line+' Senang sekali kita sudah akrab!':line;
 }
 export class SocialSystem {
  constructor(state){
@@ -97,7 +101,7 @@ export class SocialSystem {
    if(entry.hearts<MAX_HEARTS){entry.hearts++;gained=true;}
    this.state.save();
   }
-  return {...this.profile(id),gained,dialogue:dialogueFor(id,day,phase)};
+  return {...this.profile(id),gained,dialogue:dialogueFor(id,day,phase,this.state.data.timeWeather?.weather,p.hearts)};
  }
  all(){return FRIEND_IDS.map(id=>this.profile(id));}
 }
