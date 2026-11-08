@@ -17,6 +17,7 @@ import {workRoute} from '../world/NpcWorkRoutes.js';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
 import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
+import {RestaurantCustomer} from '../systems/RestaurantCustomer.js';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js';
 import {MiniMap} from '../ui/MiniMap.js';
@@ -65,6 +66,7 @@ export class WorldScene extends Phaser.Scene {
   this.mayor=new NPC(this,{x:1204,y:180,name:'KEPALA DESA',texture:'mayor',stops:[{x:1204,y:180}]});
   this.wargaA=new NPC(this,{x:1200,y:452,name:'WARGA LINA',texture:'nia',stops:[{x:1200,y:452}]});
   this.wargaB=new NPC(this,{x:1080,y:471,name:'WARGA ARIF',texture:'tani',stops:[{x:1080,y:471}]});
+  this.restaurantCustomer=new RestaurantCustomer(this);
   this.zones=INTERACTIONS;
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
@@ -295,7 +297,7 @@ export class WorldScene extends Phaser.Scene {
    const dt=Math.min(delta/1000,.05);
    if(!this.activity.active)this.player.update(dt,this.keysHeld);
    this.sari.update(dt);this.chef.update(dt);
-   this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);this.wargaA.update(dt);this.wargaB.update(dt);
+   this.tani.update(dt);this.nia.update(dt);this.rani.update(dt);this.mayor.update(dt);this.wargaA.update(dt);this.wargaB.update(dt);this.restaurantCustomer.update(dt);
    // Once a villager has exited an interior through its door, begin the
    // normal repeating workday without teleporting or cutting across walls.
    for(const npc of [this.sari,this.tani,this.nia,this.chef,this.rani,this.mayor]){
