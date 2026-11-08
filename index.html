@@ -440,10 +440,21 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 .gamewrap>section.hud>.hud-right>.chip:has(#coins){order:1!important}
 .gamewrap>section.hud>.hud-right>.chip:has(#energy){order:2!important}
 .gamewrap>section.hud>.hud-right>.chip:has(#stars){order:3!important}
+
+/* v1.84: permainan memenuhi viewport, tanpa judul di atas kanvas */
+html,body{width:100%;height:100%;margin:0!important;overflow:hidden!important}
+body>.shell{position:fixed!important;inset:0!important;width:100vw!important;max-width:none!important;height:100vh!important;height:100dvh!important;margin:0!important;padding:0!important;overflow:hidden!important}
+.shell>.gamewrap{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#65bfd0!important;overflow:hidden!important}
+.gamewrap>#game{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#65bfd0!important}
+.gamewrap>#game canvas{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;max-width:100%!important;max-height:100%!important;touch-action:none!important}
+.shell>.notebook-shortcuts,.shell>.place-shortcuts,.shell>.v127-map,.shell>.interaction-strip,.shell>.bottom{display:none!important}
+.gamewrap>.controls{position:absolute!important;bottom:8px!important;left:8px!important;right:8px!important;z-index:40!important;pointer-events:none!important;display:flex!important;justify-content:space-between!important;align-items:flex-end!important;margin:0!important}
+.gamewrap>.controls button{pointer-events:auto!important}
+@media(max-width:700px){.gamewrap>.controls{bottom:max(6px,env(safe-area-inset-bottom))!important;left:5px!important;right:5px!important}.gamewrap>.cozy-toolbar{bottom:max(8px,env(safe-area-inset-bottom))!important}}
 </style>
 </head>
 <body>
-<header><h1>🌿 Kampung Gizi Ceria <small>Phaser v1.16</small></h1><p>Game edukasi kampung yang nyaman dimainkan</p></header>
+
 <main class="shell">
 
 <nav class="notebook-shortcuts" aria-label="Menu pemain">
@@ -529,14 +540,14 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script type="module" src="./src/main.js?v=1.83-bright-lights"></script>
+<script type="module" src="./src/main.js?v=1.84-full-viewport"></script>
 <script>
 // v1.13 release diagnostic: visible version, without modifying saved progress.
 document.documentElement.dataset.build='1.29';
 window.addEventListener('DOMContentLoaded',()=>{
  const marker=document.createElement('small');
  marker.id='releaseVersion';
- marker.textContent='Versi terpasang: v1.83 · Lampu Rumah Terang';
+ marker.textContent='Versi terpasang: v1.84 · Layar Penuh';
  marker.style.cssText='display:block;text-align:center;color:#476c51;font-weight:700;padding:3px 8px';
  const header=document.querySelector('header');
  if(header)header.appendChild(marker);
