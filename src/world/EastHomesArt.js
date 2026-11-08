@@ -144,10 +144,13 @@ export class EastHomesArt{
   rect(houses,hx+193,hy+25,5,16,0xe38a87);
   rect(houses,hx+187,hy+30,17,5,0xe38a87);
   // Jalur akses dari jalan utama.
-  rect(path,1504,309,52,35,0xead5af);
+  // Jalan dari tepi selatan jalan utama (y=309) hingga ambang pintu (y=345).
+  rect(path,1504,307,52,38,0xead5af);
+  rect(path,1528,309,4,30,0xd8b68b);
   rect(path,1510,342,40,4,0xe4c28a);
-  scene.add.text(hx+hw/2,hy+16,'🏥 PUSKESMAS',{fontFamily:'monospace',
-   fontSize:'16px',fontStyle:'bold',color:'#3e655d',
+  // Papan nama di samping pintu, bukan tepat di jalur karakter.
+  scene.add.text(hx+55,hy+18,'🏥 PUSKESMAS',{fontFamily:'monospace',
+   fontSize:'12px',fontStyle:'bold',color:'#3e655d',
    backgroundColor:'#fff5df',padding:{x:7,y:3}}).setOrigin(.5).setDepth(550);
   // Pantai timur tetap mengikuti sambungan pantai versi sebelumnya.
   rect(path,1340,600,380,112,0xf3dba5);
