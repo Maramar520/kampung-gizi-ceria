@@ -24,15 +24,15 @@ import {RestaurantCustomer} from '../systems/RestaurantCustomer.js?v=v124-custom
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=v180-remove-labels';
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=v176-clean';
-import {SchoolArt} from '../world/SchoolArt.js?v=v182-school-lights';
-import {EastHomesArt} from '../world/EastHomesArt.js?v=v183-bright-matching-lights';
+import {SchoolArt} from '../world/SchoolArt.js?v=v184-night-glow';
+import {EastHomesArt} from '../world/EastHomesArt.js?v=v184-night-glow';
 import {residentHomeRoute,residentLeaveHomeRoute,residentHomeActivity,homePosition} from '../world/ResidentHomeRoutes.js';
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
 import {VillageLifeSystem} from '../systems/VillageLifeSystem.js';
 import {WeekendVillageSystem} from '../systems/WeekendVillageSystem.js';
 import {CommunitySocialSystem} from '../systems/CommunitySocialSystem.js';
-import {VillageWeatherDetails} from '../world/VillageWeatherDetails.js';
+import {VillageWeatherDetails} from '../world/VillageWeatherDetails.js?v=v184-night-glow';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
 export class WorldScene extends Phaser.Scene {
