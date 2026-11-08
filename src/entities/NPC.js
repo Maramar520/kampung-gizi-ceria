@@ -2,7 +2,7 @@ export class NPC {
  constructor(scene,{x,y,name,texture,stops}){
   this.scene=scene;this.texture=texture;this.name=name;this.facing='down';this.stops=stops||[];this.index=0;this.loop=true;this.finished=false;this.workPause=0;this.activity='';
   this.sprite=scene.add.image(x,y,texture+'-down-0').setOrigin(.5,.76);
-  this.activityText=scene.add.text(x,y-69,'',{fontFamily:'monospace',fontSize:'11px',color:'#315544',backgroundColor:'#fff5d8',padding:{x:4,y:3}}).setOrigin(.5).setDepth(1750).setVisible(false);
+  this.activityText={setText(){return this},setPosition(){return this},setVisible(){return this},setDepth(){return this}}; // Teks kegiatan disembunyikan, rutinitas NPC tetap berjalan.
   this.label=name?scene.add.text(x,y-45,name,{fontFamily:'monospace',fontSize:'13px',color:'#345b43',fontStyle:'bold'}).setOrigin(.5):null;
  }
  get x(){return this.sprite.x}get y(){return this.sprite.y}
