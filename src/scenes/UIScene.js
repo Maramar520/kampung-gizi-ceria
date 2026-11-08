@@ -9,10 +9,11 @@ import {BIRTHDAYS,birthdayToday,GIFT_IDS} from '../systems/FriendEvents.js';
 import {MARINE_LESSONS} from '../systems/MarineEducationSystem.js';
 import {createVillageMiniMap,MAP_PLACES} from '../ui/VillageMiniMap.js';
 import {HealthClinicSystem} from '../systems/HealthClinicSystem.js';
+import {SchoolSystem} from '../systems/SchoolSystem.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
- create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.clinic=new HealthClinicSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});const destination=$('mapDestination');for(const place of MAP_PLACES){const option=document.createElement('option');option.value=place.id;option.textContent=place.label;destination.appendChild(option);}
+ create(){this.state=this.game.state;this.cooking=new CookingSystem(this.state);this.minigame=new CookingMinigame(this);this.quest=new QuestSystem(this.state);this.world=this.scene.get('WorldScene');this.garden=this.world.garden;this.dailyLife=this.world.dailyLife;this.social=this.world.social;this.missions=this.world.missions;this.learning=new LearningSystem(this.state);this.clinic=new HealthClinicSystem(this.state);this.school=new SchoolSystem(this.state);this.game.dialogOpen=false;this.notebook=new PlayerNotebook({state:this.state,onClose:()=>{this.game.dialogOpen=false;this.world.keysHeld.clear();}});const destination=$('mapDestination');for(const place of MAP_PLACES){const option=document.createElement('option');option.value=place.id;option.textContent=place.label;destination.appendChild(option);}
 const navigate=place=>{if(!place)return;destination.value=place.id;this.world.highlightPlace?.(place.id);const cam=this.world.cameras.main;cam.stopFollow();cam.centerOn(place.x,place.y);this.note('📍 '+place.label+' ditandai di peta. Bergerak untuk melanjutkan perjalanan.');this.time.delayedCall(2400,()=>cam.startFollow(this.world.player.sprite,true,.12,.12));};
 this.miniMapCleanup=createVillageMiniMap($('villageMiniMap'),this.world,navigate);$('mapNavigate').onclick=()=>navigate(MAP_PLACES.find(p=>p.id===destination.value));this.events.once('shutdown',()=>this.miniMapCleanup?.());this.refresh();this.game.events.on('action',this.action,this);this.game.events.on('close-dialog',this.close,this);$('action').onclick=()=>this.action();$('friendsButton').onclick=()=>this.socialOverview();$('learningButton').onclick=()=>this.libraryGuide();$('missionsButton').onclick=()=>this.missionsMenu();$('decorButton').onclick=()=>this.decorMenu();$('festivalButton').onclick=()=>this.festivalGuide();$('calendarButton').onclick=()=>this.calendarMenu();$('calendarHud').onclick=()=>this.calendarMenu();$('timeSpeedButton').onclick=()=>{const speeds=[1,2,4];const current=this.world.clock.speed;this.world.clock.setSpeed(speeds[(speeds.indexOf(current)+1)%speeds.length]);this.refresh();this.note('Kecepatan waktu '+this.world.clock.speed+'×');};
 $('townOverview').onclick=()=>{const cam=this.world.cameras.main;const overview=cam.zoom>=.95;if(overview){cam.stopFollow();cam.setZoom(.68);cam.centerOn(670,300);}else{cam.setZoom(1);cam.startFollow(this.world.player.sprite,true,.12,.12);} $('townOverview').textContent=overview?'🔎 Kembali ke Karakter':'🗺️ Lihat Seluruh Peta';this.note(overview?'Mode peta penuh aktif. Tekan kembali untuk mengikuti karakter.':'Kamera kembali mengikuti karakter.');};
@@ -240,6 +241,33 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
     this.state.save();this.refresh();this.plazaMenu();
    }},{label:'Kembali',fn:()=>this.plazaMenu()}
   ]);
+ }
+ schoolMenu(){
+  const d=this.school.data;
+  this.show('🏫 Sekolah Gizi','Bu Guru mengajar gizi, kebersihan, dan lingkungan.\nPelajaran: '+d.lessons.length+'/3. Bekal sehat: '+(d.lunch?'selesai':'belum')+'. Hadiah harian: 45 koin.',[
+   {label:'🥗 Pelajaran Gizi',fn:()=>this.schoolQuiz('gizi','Makanan apa yang sebaiknya ada dalam bekal sehat?','🍚 Nasi, lauk, sayur dan buah','🍬 Permen saja')},
+   {label:'🧼 Pelajaran Kebersihan',fn:()=>this.schoolQuiz('bersih','Kapan perlu mencuci tangan dengan sabun?','🧼 Sebelum makan dan setelah toilet','🚫 Tidak perlu cuci tangan')},
+   {label:'🌱 Pelajaran Lingkungan',fn:()=>this.schoolQuiz('lingkungan','Apa yang bisa dilakukan agar sekolah bersih?','🗑️ Buang sampah pada tempatnya','🍂 Buang sampah ke sungai')},
+   {label:'🍱 Mini-game Bekal Sehat',fn:()=>this.schoolLunch()},
+   {label:'🎁 Ambil Hadiah',fn:()=>this.schoolClaim()},
+   {label:'Tutup',fn:()=>this.close()}
+  ]);
+ }
+ schoolQuiz(id,question,correct,wrong){
+  this.show('📚 Kuis '+id,question,[
+   {label:correct,fn:()=>{this.school.lesson(id);this.show('🌟 Jawaban Benar','Hebat! Kamu telah menyelesaikan pelajaran '+id+'.', [{label:'Kembali',fn:()=>this.schoolMenu()}]);}},
+   {label:wrong,fn:()=>this.show('💡 Coba Lagi','Ayo pilih kebiasaan yang baik untuk kesehatan dan lingkungan.',[{label:'Coba Lagi',fn:()=>this.schoolQuiz(id,question,correct,wrong)}])}
+  ]);
+ }
+ schoolLunch(){
+  this.show('🍱 Susun Bekal Sehat','Pilih bekal yang beragam dan mengandung makanan pokok, lauk, sayur, buah, serta air putih.',[
+   {label:'🍚 Nasi + telur + sayur + buah + air',fn:()=>{const fresh=this.school.lunch();this.show('🍱 Bekal Siap',fresh?'Bekal sehat siap dibagikan kepada murid!':'Bekal hari ini sudah disiapkan.',[{label:'Kembali',fn:()=>this.schoolMenu()}]);}},
+   {label:'🍬 Permen + minuman manis saja',fn:()=>this.show('💡 Coba Lagi','Pilih makanan yang lebih beragam agar kebutuhan gizi terpenuhi.',[{label:'Coba Lagi',fn:()=>this.schoolLunch()}])}
+  ]);
+ }
+ schoolClaim(){
+  const won=this.school.claim();this.refresh();const d=this.school.data;
+  this.show('🎁 Hadiah Sekolah',won?'Selamat! Kamu memperoleh 45 koin. Kembali besok untuk pelajaran baru.':d.rewarded?'Hadiah hari ini sudah diambil.':'Selesaikan ketiga kuis dan mini-game bekal sehat terlebih dahulu.',[{label:'Kembali',fn:()=>this.schoolMenu()}]);
  }
  clinicMenu(){
   const c=this.clinic.ensure(),progress=this.clinic.progress;
@@ -942,6 +970,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id)this.world.playInteraction(id);
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
   if(['niaHome','arifHome','linaHome'].includes(id))return this.residentHomeMenu(id.replace('Home',''));
+  if(id==='school')return this.schoolMenu();
   if(id==='puskesmas')return this.clinicMenu();
   if(id==='plaza')return this.plazaMenu();
   if(id==='townHall')return this.townHallMenu();
