@@ -131,8 +131,8 @@ export class EastHomesArt{
   for(let xx of [31,64])for(let yy of [91,117])rect(houses,hx+xx,hy+yy+14,5,10,0x876b53);
   // Sekat pemeriksaan dan tempat tidur pasien.
   // Sekat tidak memblokir lorong tengah menuju ruang pemeriksaan.
-  rect(houses,hx+126,hy+29,8,66,0xcba88b);
-  rect(houses,hx+126,hy+129,8,27,0xcba88b);
+  rect(houses,hx+140,hy+29,8,66,0xcba88b);
+  rect(houses,hx+140,hy+129,8,27,0xcba88b);
   frame(houses,hx+159,hy+55,78,39,0xe8eff0,0x8aaba9,3);
   rect(houses,hx+163,hy+59,21,31,0xffffff);
   rect(houses,hx+159,hy+112,77,13,0x8fb9b2);
