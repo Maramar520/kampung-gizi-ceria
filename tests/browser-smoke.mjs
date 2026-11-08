@@ -40,6 +40,9 @@ async function testDesktop(browser){
  const context=await browser.newContext({viewport:{width:1280,height:850},deviceScaleFactor:1});
  const page=await context.newPage();
  await waitGame(page);
+ // v1.12: minimap and interactive navigation are visible at desktop size.
+ assert.equal(await page.locator('#minimap').count(),1);
+ assert.ok(await page.locator('#minimap').isVisible());
  // Eastern district must be discoverable through visible navigation controls.
  await page.locator('#townOverview').click();
  assert.ok(await page.evaluate(()=>{const cam=window.__kampungQA.scene.getScene('WorldScene').cameras.main;return cam.zoom<.8&&Math.abs(cam.midPoint.x-670)<25;}));
@@ -56,6 +59,14 @@ async function testDesktop(browser){
  await page.getByRole('button',{name:/Senam dan kegiatan warga/}).click();
  await page.getByRole('button',{name:/Ikut kegiatan/}).click();
  assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.plazaActivities.days.includes(1)),true);
+ await close(page);
+ await moveTo(page,1155,198);
+ await page.keyboard.press('e');
+ assert.match(await page.locator('#dialogTitle').textContent(),/Balai Kota/);
+ await page.getByRole('button',{name:/Misi Harian Kepala Desa/}).click();
+ assert.match(await page.locator('#dialogTitle').textContent(),/Misi Kepala Desa/);
+ await page.getByRole('button',{name:/Ikut senam/}).click();
+ assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.mayorMissions.claimedMove.includes(1)),true);
  await close(page);
  await moveTo(page,1204,180);
  await page.keyboard.press('e');
@@ -418,6 +429,7 @@ async function testMobile(browser){
  assert.match(await page.locator('#dialogTitle').textContent(),/Alun-Alun/);
  await page.locator('#close').tap();
  await moveTo(page,446,291);
+ assert.ok(await page.locator('#minimap').isVisible());
  const dpad=await page.locator('[data-dir="up"]').boundingBox();
  const action=await page.locator('#action').boundingBox();
  assert.ok(dpad.width>=44&&dpad.height>=44,'D-pad touch target too small');
