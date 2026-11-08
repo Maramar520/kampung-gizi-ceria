@@ -16,7 +16,7 @@ import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js';
 import {WeatherArt} from '../world/WeatherArt.js';
 import {rainyRoute,dryReturnRoute,isInsideShelter} from '../world/ShelterRoutes.js';
-import {workRoute} from '../world/NpcWorkRoutes.js?v=v123-routines';
+import {workRoute,rainWorkRoute} from '../world/NpcWorkRoutes.js?v=v123-rain-workers';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
 import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js?v=guests-20261108';
@@ -204,8 +204,8 @@ export class WorldScene extends Phaser.Scene {
     npc.setRoutine([...prefix,...rainyRoute(id)],label,false);
     npc.nextJobRoute=null;
    }
-   this.chef.setRoutine([{x:618,y:468},{x:618,y:476},{x:618,y:468}],'');
-   this.rani.setRoutine([{x:692,y:197},{x:692,y:211}],'KAK RANI');
+   this.chef.setRoutine(rainWorkRoute('chef'),'',false);
+   this.rani.setRoutine(rainWorkRoute('rani'),'KAK RANI',false);
    return;
   }
   if(justStoppedRaining){
@@ -213,8 +213,10 @@ export class WorldScene extends Phaser.Scene {
    this.sari.setRoutine(dryReturnRoute('sari',this.sari),'BU SARI',false);
    this.tani.setRoutine(dryReturnRoute('tani',this.tani),'PAK TANI',false);
    this.nia.setRoutine(dryReturnRoute('nia',this.nia),'NIA',false);
-   this.chef.setRoutine([{x:618,y:468},{x:667,y:468}],'');
-   this.rani.setRoutine([{x:692,y:186},{x:692,y:209}],'KAK RANI');
+   // Setelah hujan, kembali ke rute kerja sesuai fase saat ini.
+   // Jangan mengulang rute pendek yang membuat NPC terlihat mondar-mandir.
+   this.chef.setRoutine(workRoute('chef',phase),'',phase!==3);
+   this.rani.setRoutine(workRoute('rani',phase),'KAK RANI',phase!==3);
    return;
   }
   // Malam tanpa hujan: Nia benar-benar berjalan ke dalam pasar.
