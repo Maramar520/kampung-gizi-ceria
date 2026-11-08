@@ -104,9 +104,9 @@ export class EastHomesArt{
   rect(houses,hx,hy,hw,12,wall);
   rect(houses,hx,hy,12,hh,wall);
   rect(houses,hx+hw-12,hy,12,hh,wall);
-  rect(houses,hx,hy+hh-12,100,12,wall);
-  rect(houses,hx+160,hy+hh-12,100,12,wall);
-  rect(houses,hx+100,hy+hh-6,60,7,0xe4c28a);
+  rect(houses,hx,hy+hh-12,104,12,wall);
+  rect(houses,hx+156,hy+hh-12,104,12,wall);
+  rect(houses,hx+104,hy+hh-6,52,7,0xe4c28a);
   rect(houses,hx-4,hy-19,hw+8,20,0x6f958d);
   rect(houses,hx,hy-16,hw,14,0xbadcd2);
   rect(houses,hx+117,hy-17,26,17,0xfff8ef);
