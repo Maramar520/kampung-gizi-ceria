@@ -70,16 +70,16 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  festivalGuide(){
   const status=this.world.festival.status;
   this.show('🎪 Festival Kampung Sehat',
-   status.active?'Hari ini festival berlangsung di Pasar Tradisional! Datang ke pasar dan tekan E / AKSI.':
-    'Festival berikutnya berlangsung pada hari '+status.next+' di Pasar Tradisional (blok kiri bawah). Tidur untuk berganti hari.',[
-    {label:'📍 Tunjukkan lokasi pasar',fn:()=>{this.close();this.world.highlightPlace('festival');}},
+   status.active?'Hari ini festival berlangsung di Alun-Alun Kampung! Datang ke kawasan timur dan tekan E / AKSI.':
+    'Festival berikutnya berlangsung pada hari '+status.next+' di Alun-Alun Kampung (sebelah timur). Tidur untuk berganti hari.',[
+    {label:'📍 Tunjukkan alun-alun',fn:()=>{this.close();this.world.highlightPlace('festival');}},
     {label:'Kembali bermain',fn:()=>this.close()}
    ],'<div class="festival-banner">🎈 🥕 🥬 🎉 🍅</div>');
  }
  festivalMenu(){
   const f=this.world.festival,info=f.status;
   if(!info.active)return this.festivalGuide();
-  let message='Selamat datang di Festival Kampung Sehat! Ada permainan mengenal makanan dan hiasan pasar. ';
+  let message='Selamat datang di Festival Kampung Sehat! Ada permainan mengenal makanan dan kegiatan warga di alun-alun. ';
   if(info.celebrated)message+='Hadiah festival hari ini sudah kamu ambil. Acara berikutnya hari '+(this.state.data.day+4)+'.';
   else if(info.quizPassed)message+='Kamu sudah menjawab benar! Ambil hadiah festivalmu.';
   else if(info.joined)message+='Ayo jawab tantangan gizi untuk memperoleh hadiah.';
@@ -141,7 +141,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   this.show('🌳 Alun-Alun Kampung',active?
    'Festival Kampung Sehat sedang berlangsung! Warga berkumpul di dekat air mancur dan panggung kegiatan.':
    'Selamat datang di alun-alun! Ada air mancur, bangku taman dan tempat warga berkumpul. Festival diadakan setiap empat hari permainan.',[
-    {label:active?'🎪 Ikut Festival Kampung Sehat':'📅 Jadwal festival',fn:()=>this.festivalGuide()},
+    {label:active?'🎪 Ikut Festival Kampung Sehat':'📅 Jadwal festival',fn:()=>active?this.festivalMenu():this.festivalGuide()},
     {label:'🤸 Senam dan kegiatan warga',fn:()=>this.plazaActivity()},
     {label:'Tutup',fn:()=>this.close()}
    ]);
