@@ -429,7 +429,7 @@ async function testMobile(browser){
  assert.match(await page.locator('#dialogTitle').textContent(),/Alun-Alun/);
  await page.locator('#close').tap();
  await moveTo(page,446,291);
- assert.ok(await page.locator('#minimap').isVisible());
+ assert.equal(await page.locator('#minimap').count(),0);
  const dpad=await page.locator('[data-dir="up"]').boundingBox();
  const action=await page.locator('#action').boundingBox();
  assert.ok(dpad.width>=44&&dpad.height>=44,'D-pad touch target too small');
