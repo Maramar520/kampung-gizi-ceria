@@ -352,6 +352,32 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
  .gamewrap>.controls #action{width:clamp(70px,21vw,90px);height:clamp(70px,21vw,90px);min-width:0;min-height:0;font-size:12px}
 }
 
+
+/* v1.52: Peta dan Menu menjadi panel dalam layar game, seperti Tas */
+.gamewrap>.cozy-drawer{display:none;position:absolute;inset:0;z-index:85;max-width:none;width:100%;height:100%;margin:0;padding:clamp(8px,2vw,18px);border:0;border-radius:0;background:#263d31b8;box-shadow:none;align-items:center;justify-content:center;overflow:auto;overscroll-behavior:contain}
+.gamewrap>.cozy-drawer.is-open{display:flex}
+.gamewrap>.cozy-drawer .cozy-panel{width:min(620px,100%);max-height:94%;display:flex;flex-direction:column;min-height:0;overflow:hidden;background:#fff7e8;border:4px solid #b88561;border-radius:15px;box-shadow:0 12px 30px #152d25a0;padding:12px}
+.gamewrap>.cozy-drawer .cozy-drawer-head{flex:none}
+.gamewrap>.cozy-drawer #cozyMenuContent{overflow-y:auto;overscroll-behavior:contain;min-height:0;padding:3px}
+.gamewrap>.cozy-drawer .v127-map{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:100%;margin:7px 0}
+.gamewrap>.cozy-drawer .v127-map>div,.gamewrap>.cozy-drawer .v127-map canvas{grid-column:1/-1}
+.gamewrap>.cozy-drawer .v127-map canvas{display:block;width:min(344px,100%);max-height:180px;margin:auto}
+.gamewrap>.cozy-drawer .v127-map select,.gamewrap>.cozy-drawer .v127-map button{min-width:0;width:100%;max-width:none}
+.gamewrap>.cozy-drawer .notebook-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.gamewrap>.cozy-drawer .notebook-shortcuts button{min-width:0;font-size:12px;padding:8px 5px}
+.gamewrap>.cozy-drawer .place-shortcuts{display:flex;flex-wrap:wrap}
+.gamewrap>.cozy-drawer .bottom{display:flex;flex-wrap:wrap}
+.gamewrap>.cozy-drawer .bottom .quest{flex-basis:100%}
+.gamewrap>.cozy-drawer #gameZoomControls{max-width:none}
+.gamewrap:has(>.cozy-drawer.is-open)>.controls{visibility:hidden}
+@media(max-width:700px){
+ .gamewrap>.cozy-drawer{padding:5px}
+ .gamewrap>.cozy-drawer .cozy-panel{padding:8px;border-width:3px;max-height:96%}
+ .gamewrap>.cozy-drawer .cozy-drawer-head h2{font-size:16px}
+ .gamewrap>.cozy-drawer .v127-map canvas{max-height:130px}
+ .gamewrap>.cozy-drawer .notebook-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -417,14 +443,14 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 <button id="action">✨ AKSI / E</button></div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script type="module" src="./src/main.js?v=1.51-overlay-controls"></script>
+<script type="module" src="./src/main.js?v=1.52-in-game-panels"></script>
 <script>
 // v1.13 release diagnostic: visible version, without modifying saved progress.
 document.documentElement.dataset.build='1.29';
 window.addEventListener('DOMContentLoaded',()=>{
  const marker=document.createElement('small');
  marker.id='releaseVersion';
- marker.textContent='Versi terpasang: v1.51 · Kontrol Dalam Game';
+ marker.textContent='Versi terpasang: v1.52 · Panel Dalam Game';
  marker.style.cssText='display:block;text-align:center;color:#476c51;font-weight:700;padding:3px 8px';
  const header=document.querySelector('header');
  if(header)header.appendChild(marker);
@@ -472,8 +498,9 @@ window.addEventListener('DOMContentLoaded',()=>{
  const heading=document.createElement('div');heading.className='cozy-drawer-head';
  const title=document.createElement('h2');title.textContent='Menu';
  const close=document.createElement('button');close.type='button';close.textContent='✕ Tutup';close.setAttribute('aria-label','Tutup menu');
- heading.append(title,close);drawer.append(heading);
- const menu=document.createElement('div');menu.id='cozyMenuContent';drawer.append(menu);
+ const panel=document.createElement('div');panel.className='cozy-panel';
+ heading.append(title,close);panel.append(heading);
+ const menu=document.createElement('div');menu.id='cozyMenuContent';panel.append(menu);drawer.append(panel);
  const sections={
   peta:['.place-shortcuts','.v127-map'],
   menu:['.notebook-shortcuts','.bottom','.interaction-strip','#gameZoomControls']
@@ -512,10 +539,11 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(label==='Menu')button.dataset.section='menu';
   button.setAttribute('aria-expanded','false');button.onclick=action;bar.append(button);
  }
- game.insertAdjacentElement('afterend',bar);bar.insertAdjacentElement('afterend',drawer);
+ game.insertAdjacentElement('afterend',bar);game.appendChild(drawer);
  // Elemen navigasi dipindah ke panel, bukan dihapus.
  for(const node of [...moved.peta,...moved.menu])parking.append(node);
  close.onclick=hide;
+ drawer.addEventListener('click',e=>{if(e.target===drawer)hide();});
  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&drawer.classList.contains('is-open'))hide();});
  const observer=new MutationObserver(()=>{
   if(drawer.classList.contains('is-open')&&drawer.dataset.section==='menu')place('menu');
