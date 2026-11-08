@@ -9,8 +9,8 @@ export class EastHomesArt{
  constructor(scene){
   const ground=scene.add.graphics().setDepth(-99);
   const roads=scene.add.graphics().setDepth(-89);
-  const floor=scene.add.graphics().setDepth(-58);
-  const deco=scene.add.graphics().setDepth(-57);
+  const floor=scene.add.graphics().setDepth(20);
+  const deco=scene.add.graphics().setDepth(21);
   const rect=(g,x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
   const frame=(g,x,y,w,h,c,edge=0x88694c,t=3)=>{
    rect(g,x-t,y-t,w+t*2,h+t*2,edge);rect(g,x,y,w,h,c);
@@ -38,9 +38,9 @@ export class EastHomesArt{
    // Bingkai rumah seperti fungsi room() pada kampung lama.
    // Pondasi coklat dibuat sebagai objek solid terpisah, tidak bisa tertutup
    // tekstur rumput dari Graphics lain atau perubahan urutan rendering.
-   scene.add.rectangle(cx,y+h/2,w+20,h+20,0x76523a).setDepth(-61);
-   scene.add.rectangle(cx,y+h/2,w+12,h+12,0xb9885d).setDepth(-60);
-   scene.add.rectangle(cx,y+h/2,w,h,({nia:0xc99b72,arif:0xc49a71,lina:0xd0a27c})[id]).setDepth(-59);
+   scene.add.rectangle(cx,y+h/2,w+20,h+20,0x76523a).setDepth(17);
+   scene.add.rectangle(cx,y+h/2,w+12,h+12,0xb9885d).setDepth(18);
+   scene.add.rectangle(cx,y+h/2,w,h,({nia:0xc99b72,arif:0xc49a71,lina:0xd0a27c})[id]).setDepth(19);
    // Alas coklat kayu seperti pondasi rumah-rumah kampung lama, di bawah lantai interior.
    rect(floor,x-10,y-10,w+20,h+20,0x78543c);
    rect(floor,x-7,y-7,w+14,h+14,0xb9885d);
