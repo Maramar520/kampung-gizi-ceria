@@ -46,10 +46,10 @@ export class SouthCoastArt {
    const x=17+(i*127+Math.floor(i/13)*43)%1680;
    const y=732+(i*79+Math.floor(i/11)*31)%452;
    if(y<845&&x>995&&x<1195)continue; // jangan menutupi pulau kecil
-   const width=8+(i%4)*4;
-   if(x+width>715&&x<812&&y<825)continue; // area dermaga bebas buih putih
-   rect(x,y,width,2,i%3===0?0xf3ffff:0xd5f3f1);
-   if(i%4===0)rect(x+4,y+4,Math.max(5,width-9),2,0xb7e8e8);
+   const foamWidth=8+(i%4)*4;
+   if(x+foamWidth>715&&x<812&&y<825)continue; // area dermaga bebas buih putih
+   rect(x,y,foamWidth,2,i%3===0?0xf3ffff:0xd5f3f1);
+   if(i%4===0)rect(x+4,y+4,Math.max(5,foamWidth-9),2,0xb7e8e8);
   }
   // Ikan kecil berbentuk pixel, dengan ekor segitiga sederhana.
   for(let i=0;i<31;i++){
