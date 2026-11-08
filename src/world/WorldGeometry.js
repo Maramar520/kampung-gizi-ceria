@@ -20,7 +20,7 @@ export const DOORS=Object.freeze({
  village:{x:608,y:237},
  market:{x:211,y:339},
  restaurant:{x:607,y:339},
- store:{x:869,y:339},townHall:{x:1155,y:238}
+ store:{x:869,y:339},townHall:{x:1155,y:238},puskesmas:{x:1530,y:345}
 });
 const rectangle=(x,y,w,h)=>({x,y,w,h});
 function houseWalls({x,y,w,h},topEntrance=false){
@@ -39,7 +39,7 @@ export const WALLS=[
  ...houseWalls(LAYOUT.home),...houseWalls(LAYOUT.village),
  ...houseWalls(LAYOUT.townHall),...houseWalls(LAYOUT.niaHome),
  ...houseWalls(LAYOUT.arifHome),...houseWalls(LAYOUT.linaHome),
- ...houseWalls(LAYOUT.puskesmas),...houseWalls(LAYOUT.market,true),...houseWalls(LAYOUT.restaurant,true),...houseWalls(LAYOUT.store,true)
+ ...houseWalls(LAYOUT.puskesmas,true),...houseWalls(LAYOUT.market,true),...houseWalls(LAYOUT.restaurant,true),...houseWalls(LAYOUT.store,true)
 ];
 export const FURNITURE=[
  rectangle(68,99,51,81), // kasur
@@ -61,7 +61,7 @@ export const NEW_WORLD_OBSTACLES=[
 ];
 export const OBSTACLES=[...WALLS,...FURNITURE,...NEW_WORLD_OBSTACLES];
 export const INTERACTIONS=[
- {id:'puskesmas',x:1530,y:511,r:58,label:'Puskesmas'},
+ {id:'puskesmas',x:1530,y:360,r:57,label:'Puskesmas'},
  {id:'niaHome',x:1420,y:191,r:44,label:'Rumah Nia'},
  {id:'arifHome',x:1530,y:191,r:44,label:'Rumah Arif'},
  {id:'linaHome',x:1640,y:191,r:44,label:'Rumah Lina'},
