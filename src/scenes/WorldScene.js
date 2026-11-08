@@ -24,7 +24,7 @@ import {RestaurantCustomer} from '../systems/RestaurantCustomer.js?v=v124-custom
 import {FestivalSystem} from '../systems/FestivalSystem.js';
 import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
 import {SouthCoastArt} from '../world/SouthCoastArt.js?v=coast-road-connected-20261108';
-import {EastHomesArt} from '../world/EastHomesArt.js?v=v136-new-homes';
+import {EastHomesArt} from '../world/EastHomesArt.js?v=v137-light-brown';
 import {residentHomeRoute,residentLeaveHomeRoute,residentHomeActivity,homePosition} from '../world/ResidentHomeRoutes.js';
 import {MarineWildlifeArt} from '../world/MarineWildlifeArt.js';
 import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
