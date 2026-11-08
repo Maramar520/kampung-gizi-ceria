@@ -51,6 +51,8 @@ export class RestaurantCustomer {
   // Serving while the guest is walking never teleports them through furniture.
   if(this.stage==='arriving'&&this.npc.finished)this.setStage('ordering',null,'🧾 Memesan makanan');
   if(this.stage==='ordering'&&served){this.wait=5;this.setStage('eating',null,'😋 Menikmati makanan');this.meal.setVisible(true);}
+  // A seated guest must stay in their seat while eating and paying.
+  // Do not advance the walking route while seated.
   if(this.stage==='eating'){
    this.wait-=dt;
    if(this.wait<=0){this.meal.setVisible(false);this.wait=1.8;this.setStage('paying',null,'🪙 Membayar pesanan');}
@@ -58,12 +60,14 @@ export class RestaurantCustomer {
    this.wait-=dt;
    if(this.wait<=0)this.setStage('leaving',RESTAURANT_EXIT);
   }
-  this.npc.update(dt);
+  if(!['ordering','eating','paying'].includes(this.stage))this.npc.update(dt);
   if(['ordering','eating','paying'].includes(this.stage)){
    // Seated silhouette: chair behind the guest and reduced sprite height.
    this.npc.sprite.setScale(1,.78).setDepth(RESTAURANT_SEAT.y+1);
    this.npc.sprite.setPosition(RESTAURANT_SEAT.x,RESTAURANT_SEAT.y+6);
-  }else this.npc.sprite.setScale(1,1);
+   this.npc.label?.setPosition(RESTAURANT_SEAT.x,RESTAURANT_SEAT.y-45);
+   this.npc.activityText.setText(this.npc.activity).setPosition(RESTAURANT_SEAT.x,RESTAURANT_SEAT.y-70).setVisible(true);
+  }else {this.npc.sprite.setScale(1,1);this.npc.activityText.setVisible(false);}
   if(this.stage==='leaving'&&this.npc.finished){
    this.stage='done';this.npc.sprite.setVisible(false);this.npc.label?.setVisible(false);this.npc.activityText.setVisible(false);
   }
