@@ -430,6 +430,13 @@ header{padding:7px}header h1{font-size:clamp(19px,2.3vw,26px)}header p{display:n
 .gamewrap>section.hud .hud-right>.chip:nth-child(1){order:1!important}
 .gamewrap>section.hud .hud-right>.chip:nth-child(2){order:2!important}
 .gamewrap>section.hud .hud-right>.chip:nth-child(3){order:3!important}
+
+/* v1.75: status kanan benar-benar bertumpuk di pojok kanan atas */
+.gamewrap>section.hud>.hud-right{position:absolute!important;top:0!important;right:0!important;left:auto!important;bottom:auto!important;display:flex!important;flex-flow:column nowrap!important;align-items:flex-end!important;justify-content:flex-start!important;gap:4px!important;width:max-content!important;max-width:47%!important;transform:none!important}
+.gamewrap>section.hud>.hud-right>.chip{display:block!important;position:static!important;float:none!important;clear:both!important;flex:none!important;align-self:flex-end!important;width:max-content!important;max-width:100%!important;box-sizing:border-box!important;text-align:right!important;transform:none!important}
+.gamewrap>section.hud>.hud-right>.chip:has(#coins){order:1!important}
+.gamewrap>section.hud>.hud-right>.chip:has(#energy){order:2!important}
+.gamewrap>section.hud>.hud-right>.chip:has(#stars){order:3!important}
 </style>
 </head>
 <body>
@@ -526,7 +533,7 @@ document.documentElement.dataset.build='1.29';
 window.addEventListener('DOMContentLoaded',()=>{
  const marker=document.createElement('small');
  marker.id='releaseVersion';
- marker.textContent='Versi terpasang: v1.74 · Urutan HUD';
+ marker.textContent='Versi terpasang: v1.75 · Status Kanan';
  marker.style.cssText='display:block;text-align:center;color:#476c51;font-weight:700;padding:3px 8px';
  const header=document.querySelector('header');
  if(header)header.appendChild(marker);
