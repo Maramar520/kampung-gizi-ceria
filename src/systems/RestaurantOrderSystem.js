@@ -1,10 +1,10 @@
 // v1.9 — customer orders use actual cooking, never duplicate ingredient removal.
 // The order rotates with the game day; only one reward can be claimed per day.
 export const RESTAURANT_ORDERS=Object.freeze([
- {recipe:'sup-wortel-tomat',customer:'Nia',coins:32,stars:2},
- {recipe:'tumis-kangkung',customer:'Bu Sari',coins:36,stars:2},
- {recipe:'ikan-tomat',customer:'Pak Tani',coins:42,stars:3},
- {recipe:'nasi-sayur-warna',customer:'Kak Rani',coins:48,stars:3}
+ {recipe:'sup-wortel-tomat',customer:'Tamu Dita',coins:32,stars:2},
+ {recipe:'tumis-kangkung',customer:'Tamu Riko',coins:36,stars:2},
+ {recipe:'ikan-tomat',customer:'Tamu Maya',coins:42,stars:3},
+ {recipe:'nasi-sayur-warna',customer:'Tamu Beni',coins:48,stars:3}
 ]);
 const safe=(n)=>Number.isSafeInteger(n)&&n>=0?Math.min(n,999999):0;
 export function orderForDay(day){
