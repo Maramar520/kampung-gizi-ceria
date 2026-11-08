@@ -6,16 +6,16 @@ export class SouthCoastArt {
   const g=scene.add.graphics().setDepth(-90);
   const rect=(x,y,w,h,c)=>{g.fillStyle(c);g.fillRect(x,y,w,h);};
   // Pantai berpasir, batas pantai berlekuk, dan laut biru pastel.
-  rect(0,600,1340,112,0xf3dba5);
-  rect(0,710,1340,140,0x65bfd0);
-  for(let x=0;x<1340;x+=30){
+  rect(0,600,1720,112,0xf3dba5);
+  rect(0,710,1720,140,0x65bfd0);
+  for(let x=0;x<1720;x+=30){
    const y=703+Math.round(Math.sin(x*.035)*5);
    rect(x,y,30,9,0x9ddcdb);
    rect(x,y+10,30,3,0xd6f0dc);
   }
   // Pasir dan rumput di tepi kampung.
-  rect(0,600,1340,17,0xa4cd91);
-  for(let x=18;x<1340;x+=47){
+  rect(0,600,1720,17,0xa4cd91);
+  for(let x=18;x<1720;x+=47){
    rect(x,627+(x%5)*9,5,3,0xe3c58e);
    rect(x+12,670+(x%7)*3,3,3,0xffedca);
   }
@@ -33,7 +33,7 @@ export class SouthCoastArt {
   }
   // Ombak lembut, ikan dan buih air di sekitar dermaga.
   for(let i=0;i<36;i++){
-   const x=24+(i*83)%1290,y=731+(i*41)%106;
+   const x=24+(i*83)%1670,y=731+(i*41)%106;
    if(x>711&&x<818)continue;
    rect(x,y,15+(i%3)*6,2,i%2?0xb4e7e6:0x85d5dc);
   }
