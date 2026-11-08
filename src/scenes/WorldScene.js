@@ -32,7 +32,7 @@ import {MarineEducationSystem} from '../systems/MarineEducationSystem.js';
 import {VillageLifeSystem} from '../systems/VillageLifeSystem.js';
 import {WeekendVillageSystem} from '../systems/WeekendVillageSystem.js';
 import {CommunitySocialSystem} from '../systems/CommunitySocialSystem.js';
-import {VillageWeatherDetails} from '../world/VillageWeatherDetails.js?v=v188-no-lights';
+import {VillageWeatherDetails} from '../world/VillageWeatherDetails.js?v=v189-soft-dots';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
 export class WorldScene extends Phaser.Scene {
