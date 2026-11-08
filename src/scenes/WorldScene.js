@@ -463,19 +463,18 @@ export class WorldScene extends Phaser.Scene {
    if(this.beachRoutineOpen!==beachOpen){
     this.beachRoutineOpen=beachOpen;
     this.beachVisitors.forEach((visitor,i)=>{
-     // Pengunjung pantai pertama tetap berlindung di pasar.
+     // Kedua pengunjung pantai berlindung di Balai Kota saat hujan/malam.
      // Pejalan Pantai menuju Balai Kota melalui pintu selatan (1155,238).
      const shelter=i===0?
-      [{x:430,y:585},{x:448,y:585},{x:448,y:319},{x:211,y:319},{x:211,y:355}]:
+      [{x:430,y:585},{x:448,y:585},{x:448,y:281},{x:960,y:281},{x:1155,y:281},{x:1155,y:245},{x:1155,y:210}]:
       [{x:955,y:585},{x:960,y:585},{x:960,y:281},{x:1155,y:281},{x:1155,y:245},{x:1155,y:210}];
      const leisure=i===0?
       [{x:430,y:652},{x:530,y:652,activity:'🏖️ Bermain pasir',pause:2},{x:560,y:684},{x:430,y:652}]:
       [{x:955,y:662},{x:1000,y:682,activity:'🐚 Mengamati kerang',pause:2},{x:935,y:677},{x:955,y:662}];
-     const sheltered=i===0?(visitor.x>45&&visitor.x<393&&visitor.y>339&&visitor.y<545):
-      (visitor.x>1025&&visitor.x<1285&&visitor.y>65&&visitor.y<238);
+     const sheltered=visitor.x>1025&&visitor.x<1285&&visitor.y>65&&visitor.y<238;
      const leave=sheltered?[...shelter.slice(0,-1).reverse(),leisure[0]]:[leisure[0]];
      const route=beachOpen?[...leave,...leisure]:shelter.map((point,j)=>j===shelter.length-1?
-      {...point,activity:i===0?'🏠 Berteduh di pasar':'🏛️ Istirahat / berteduh di Balai Kota',pause:3}:point);
+      {...point,activity:'🏛️ Istirahat / berteduh di Balai Kota',pause:3}:point);
      visitor.setRoutine(route,visitor.name,beachOpen);
     });
    }
