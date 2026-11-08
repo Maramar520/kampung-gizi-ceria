@@ -1,4 +1,4 @@
-import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=coast-v118';
+import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../world/WorldGeometry.js?v=v119-life';
 import {createTextures,buildWorld} from '../world/WorldArt.js';
 import {Player} from '../entities/Player.js?v=coast-v118';
 import {NPC} from '../entities/NPC.js';
