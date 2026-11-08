@@ -37,11 +37,11 @@ export class EastHomesArt{
    rect(path,cx-18,235,36,28,0xf0d9b7);
    // PONDASI dan lantai kayu solid: seluruh persegi panjang rumah tertutup.
    rect(houses,x-9,y-9,w+18,height+18,0x77523b);
-   rect(houses,x-5,y-5,w+10,height+10,0xb48961);
-   rect(houses,x,y,w,height,0xc99b70);
+   rect(houses,x-5,y-5,w+10,height+10,0xc79a71);
+   rect(houses,x,y,w,height,0xe6c49c);
    // Papan kayu horizontal, identik gaya rumah lama.
    for(let yy=y+17;yy<y+height-9;yy+=22)
-    rect(houses,x+6,yy,w-12,2,0xa87b56);
+    rect(houses,x+6,yy,w-12,2,0xcaa17c);
    // Lis dinding coklat, pintu selatan terbuka 52px.
    rect(houses,x,y,w,11,0x956b50);
    rect(houses,x,y,11,height,0x956b50);
