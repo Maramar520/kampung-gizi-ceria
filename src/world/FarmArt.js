@@ -35,7 +35,10 @@ export class FarmArt {
   for(let y=217;y<241;y+=7)rect(851,y,36,2,0x9c7651);
   rect(894,228,13,15,0x9bb8bd);
   rect(897,230,7,5,0xe4e4d3);
+  this.sceneDailyStatus=()=>scene.dailyLife?.status;
   this.graphics=g;
+  this.feedBowl=scene.add.text(331,229,'🥣',{fontSize:'16px'}).setOrigin(.5).setDepth(50).setVisible(false);
+  this.eggBasket=scene.add.text(355,230,'🥚',{fontSize:'18px'}).setOrigin(.5).setDepth(51).setVisible(false);
   this.ripples=scene.add.graphics().setDepth(-57);
   this.chickens=[[278,224],[369,223],[377,188]].map(([x,y])=>
    scene.add.text(x,y,'🐔',{fontSize:'22px'}).setOrigin(.5).setDepth(40)
@@ -45,6 +48,9 @@ export class FarmArt {
   this.pondLabel=scene.add.text(868,67,'KOLAM IKAN',{fontFamily:'monospace',fontSize:'12px',fontStyle:'bold',color:'#3d6770',backgroundColor:'#f8edcb',padding:{x:4,y:2}}).setOrigin(.5).setDepth(600);
  }
  update(time){
+  const farm=this.sceneDailyStatus?.()||null;
+  if(farm){this.feedBowl.setVisible(farm.fedToday);this.eggBasket.setVisible(farm.eggsReady);}
+
   for(let i=0;i<this.chickens.length;i++){
    const c=this.chickens[i];
    c.y=[224,223,188][i]+Math.sin(time/550+i*3)*3;
@@ -61,6 +67,6 @@ export class FarmArt {
  }
  destroy(){
   this.graphics.destroy();this.ripples.destroy();
-  for(const obj of [...this.chickens,this.fish,this.coopLabel,this.pondLabel])obj.destroy();
+  for(const obj of [...this.chickens,this.fish,this.coopLabel,this.pondLabel,this.feedBowl,this.eggBasket])obj.destroy();
  }
 }
