@@ -1,5 +1,5 @@
 // v1.19: hadiah, ulang tahun dan persahabatan memakai save key permainan yang sama.
-export const BIRTHDAYS=Object.freeze({sari:4,chef:9,tani:14,nia:19,rani:24,arif:7,lina:12,mayor:17,riko:22});
+export const BIRTHDAYS=Object.freeze({sari:4,chef:9,tani:14,nia:19,rani:24,arif:7,lina:12,mayor:17});
 export const GIFT_IDS=Object.freeze(['apel','wortel','bayam','tomat','ikan','telur','kerang']);
 const safe=n=>Number.isSafeInteger(n)&&n>=0?n:0;
 export function normalizeFriendEvents(raw){
