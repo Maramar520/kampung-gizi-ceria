@@ -106,7 +106,7 @@ export class WorldScene extends Phaser.Scene {
    ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
  }
  npcById(id){
-  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia,rani:this.rani,mayor:this.mayor})[id]||null;
+  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia,rani:this.rani,mayor:this.mayor,arif:this.wargaB,lina:this.wargaA})[id]||null;
  }
  updateRoutines(){
   const phase=this.clock.phase,day=this.game.state.data.day;
