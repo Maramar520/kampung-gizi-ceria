@@ -483,6 +483,27 @@ export class WorldScene extends Phaser.Scene {
     });
    }
    for(const visitor of this.beachVisitors)visitor.update(dt);
+   // Nelayan Bayu pulang ke Rumah Lina saat hujan atau malam.
+   // Rute melalui jalan kampung, bukan memotong rumah atau laut.
+   const fisherShelter=this.clock.weather==='Hujan'||this.clock.weather==='hujan'||this.clock.weather==='rain'||this.clock.phase===3;
+   if(this.fisherShelter!==fisherShelter){
+    this.fisherShelter=fisherShelter;
+    const atLina=this.fisherman.x>=1590&&this.fisherman.x<=1690&&this.fisherman.y<235;
+    const atCoast=this.fisherman.y>600;
+    const toLina=[
+     ...(atCoast?[{x:1120,y:778},{x:1120,y:600},{x:1155,y:585}]:[]),
+     {x:1155,y:345},{x:1155,y:281},{x:1640,y:281},
+     {x:1640,y:247},{x:1640,y:220},
+     {x:1640,y:201,activity:'🏡 Istirahat / berteduh di Rumah Lina',pause:4}
+    ];
+    const toBeach=[
+     ...(atLina?[{x:1640,y:220},{x:1640,y:247},{x:1640,y:281}]:[]),
+     {x:1155,y:281},{x:1155,y:345},{x:1155,y:585},{x:1120,y:600},
+     {x:1120,y:778,activity:'🎣 Memeriksa jala',pause:2},
+     {x:1080,y:775},{x:1060,y:786,activity:'🐚 Mencari kerang',pause:2},{x:1120,y:778}
+    ];
+    this.fisherman.setRoutine(fisherShelter?(atLina?[toLina[toLina.length-1]]:toLina):toBeach,'NELAYAN BAYU',!fisherShelter);
+   }
    this.fisherman.update(dt);
 
    // Once a villager has exited an interior through its door, begin the
