@@ -19,7 +19,7 @@ import {HomeDecorArt} from '../world/HomeDecorArt.js';
 import {RestaurantOrderSystem} from '../systems/RestaurantOrderSystem.js';
 import {RestaurantCustomer} from '../systems/RestaurantCustomer.js';
 import {FestivalSystem} from '../systems/FestivalSystem.js';
-import {TownExpansionArt} from '../world/TownExpansionArt.js';
+import {TownExpansionArt} from '../world/TownExpansionArt.js?v=terrain-20261108';
 import {MayorMissionSystem} from '../systems/MayorMissionSystem.js';
 
 export class WorldScene extends Phaser.Scene {
