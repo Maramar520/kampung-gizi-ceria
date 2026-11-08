@@ -197,13 +197,20 @@ export class WorldScene extends Phaser.Scene {
   for(const [id,npc,label,loop] of [
    ['lina',this.wargaA,'WARGA LINA',plazaLoopA],
    ['arif',this.wargaB,'WARGA ARIF',plazaLoopB]]){
+   const visitFriend=!sheltered&&phase===2&&((id==='arif'&&day%3===2)||(id==='lina'&&day%3===0));
+   const friend=id==='arif'?'lina':'arif',friendHome=homePosition(friend);
+   const friendVisitRoute=visitFriend?[{x:1155,y:452},{x:1155,y:345},{x:1155,y:281},
+    {x:friendHome.x,y:281},{x:friendHome.x,y:247},{x:friendHome.x,y:220},
+    {...friendHome,activity:'🏡 Berkunjung ke '+(friend==='lina'?'Lina':'Arif'),pause:3},
+    {x:friendHome.x,y:220},{x:friendHome.x,y:247},{x:friendHome.x,y:281},
+    {x:1155,y:281},{x:1155,y:345}]:[];
    const home=homePosition(id),inside=npc.x>home.x-48&&npc.x<home.x+48&&npc.y<235;
    const activity=residentHomeActivity(id,phase,raining);
    if(sheltered){
     npc.setRoutine(inside?[{...home,activity,pause:3}]:residentHomeRoute(id,npc,activity),label,false);
    }else{
     const prefix=inside?residentLeaveHomeRoute(id):toPlaza(npc);
-    npc.setRoutine([...prefix,...loop],label,true);
+    npc.setRoutine([...prefix,...friendVisitRoute,...loop],label,true);
    }
   }
   const justStoppedRaining=this.lastRaining===true&&!raining&&phase!==3;
