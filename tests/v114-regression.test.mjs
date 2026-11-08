@@ -24,3 +24,19 @@ test('customer route and town hall board present',()=>{
  assert.match(ui,/festivalMenu\(\)/);
  assert.doesNotMatch(ui,/menghias pasar/);
 });
+
+test('minimap stays outside game overlay and mobile controls remain available',()=>{
+ const html=read('index.html');
+ const map=html.indexOf('<div class="minimap-wrap">');
+ const game=html.indexOf('<div class="gamewrap">');
+ assert.ok(map>=0&&game>map,'minimap must precede game wrapper');
+ assert.match(html,/\.minimap-wrap\{position:relative/);
+ assert.match(html,/class="dpad"/);
+ assert.match(html,/id="game"/);
+});
+test('customer paths avoid restaurant furniture',()=>{
+ const npc=read('src/systems/RestaurantCustomer.js');
+ assert.match(npc,/x:670,y:351/);
+ assert.match(npc,/x:607,y:319/);
+ assert.match(npc,/this.stage==='arriving'&&served/);
+});
