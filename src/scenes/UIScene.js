@@ -841,18 +841,42 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    this.cookStep(step+1);
   },recipe);
  }
+ residentHomeMenu(id){
+  const p=this.social.profile(id),npc=this.world.npcFor?.(id)||({nia:this.world.nia,arif:this.world.wargaB,lina:this.world.wargaA})[id];
+  const phase=this.world.clock.phase,weather=this.world.clock.weather;
+  const atHome=!!npc&&npc.x>({nia:1370,arif:1480,lina:1590})[id]&&npc.x<({nia:1470,arif:1580,lina:1690})[id]&&npc.y<235;
+  const asleep=phase===3;
+  this.show('🏡 Rumah '+p.name,
+   (atHome?(asleep?p.name+' sedang tidur. Kembali pada pagi hari.':p.name+' sedang beraktivitas di rumah.'):
+    p.name+' sedang berada di luar rumah. Kamu boleh melihat interiornya.')+
+   '\\nCuaca: '+weather+'. Kunjungan dan hadiah menambah persahabatan.',[
+    ...(!asleep&&atHome?[{label:'💬 Mengobrol dengan '+p.name,fn:()=>this.friendMenu(id)},
+      {label:'🎁 Beri hadiah',fn:()=>this.giftMenu(id)},
+      {label:'🏡 Aktivitas bersama',fn:()=>this.residentHomeHelp(id)}]:[]),
+    {label:'🤝 Buku Pertemanan',fn:()=>this.socialOverview()},
+    {label:'Tutup',fn:()=>this.close()}
+   ]);
+ }
+ residentHomeHelp(id){
+  const day=this.state.data.day;
+  this.state.data.residentHomeVisits??={};
+  const previous=this.state.data.residentHomeVisits[id];
+  if(previous===day)return this.show('🏡 Sudah dibantu','Terima kasih! Kamu sudah membantu hari ini.',[
+   {label:'Kembali',fn:()=>this.residentHomeMenu(id)}]);
+  this.state.data.residentHomeVisits[id]=day;
+  const p=this.social.greet(id,this.world.phaseIndex??0);
+  if(p?.gained)this.missions.record('friend');
+  this.state.save();this.refresh();
+  this.show('🌷 Aktivitas Rumah','Kamu membantu '+this.social.profile(id).name+' merapikan rumah dan belajar hidup sehat.'+
+   (p?.gained?' Persahabatan bertambah satu hati!':' Terima kasih sudah berkunjung.'),[
+   {label:'Kembali',fn:()=>this.residentHomeMenu(id)}]);
+ }
  action(){
   if(this.game.dialogOpen)return;
   const id=this.world.getNearest(),s=this.state.data;
   if(id)this.world.playInteraction(id);
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
-  if(['niaHome','arifHome','linaHome'].includes(id)){
-   const who={niaHome:'Nia',arifHome:'Arif',linaHome:'Lina'}[id];
-   return this.show('🏡 Rumah '+who,'Rumah '+who+' berada di kawasan permukiman timur. Interior terbuka, dengan kasur, lemari, meja belajar, dan tanaman. Kamu bisa berkunjung tanpa mengubah progres permainan.',[
-    {label:'🤝 Lihat pertemanan',fn:()=>this.socialOverview()},
-    {label:'Tutup',fn:()=>this.close()}
-   ]);
-  }
+  if(['niaHome','arifHome','linaHome'].includes(id))return this.residentHomeMenu(id.replace('Home',''));
   if(id==='plaza')return this.plazaMenu();
   if(id==='townHall')return this.townHallMenu();
   if(id==='mayor')return this.mayorMenu();
