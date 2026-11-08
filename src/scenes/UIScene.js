@@ -166,6 +166,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  townHallMenu(){
   this.show('🏛️ Balai Kota','Selamat datang di Balai Kota! Ruang pelayanan, meja kerja, dan papan pengumuman terlihat langsung di peta.',[
+   {label:'📋 Papan Misi Kepala Desa',fn:()=>this.mayorMissionMenu()},
    {label:'📋 Pengumuman Festival',fn:()=>this.festivalGuide()},
    {label:'🌳 Kegiatan Alun-Alun',fn:()=>this.plazaMenu()},
    {label:'Tutup',fn:()=>this.close()}
@@ -185,6 +186,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  mayorMenu(){
   this.show('🏛️ Kepala Desa','Halo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
+   {label:'📋 Papan Misi Balai Kota',fn:()=>this.mayorMissionMenu()},
    {label:'📅 Lihat festival',fn:()=>this.festivalGuide()},
    {label:'🌳 Kegiatan warga',fn:()=>this.plazaMenu()},
    {label:'Sampai jumpa',fn:()=>this.close()}
