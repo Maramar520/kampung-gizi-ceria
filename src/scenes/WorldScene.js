@@ -136,6 +136,37 @@ export class WorldScene extends Phaser.Scene {
   this.cameras.main.setBounds(0,0,1720,1200);
   this.cameras.main.startFollow(this.player.sprite,true,.12,.12);
   this.cameras.main.setZoom(1);
+  // Geser peta dengan drag mouse / sentuhan pada area permainan.
+  // Tidak mengubah posisi pemain atau progres yang tersimpan.
+  this.mapDrag=null;
+  this.mapDragDetached=false;
+  const cam=this.cameras.main;
+  this.input.on('pointerdown',pointer=>{
+   if(this.game.dialogOpen||pointer.button!==0)return;
+   this.mapDrag={id:pointer.id,x:pointer.x,y:pointer.y,moved:false};
+  });
+  this.input.on('pointermove',pointer=>{
+   const drag=this.mapDrag;
+   if(!drag||drag.id!==pointer.id||!pointer.isDown)return;
+   const dx=pointer.x-drag.x,dy=pointer.y-drag.y;
+   if(!drag.moved&&Math.hypot(dx,dy)<5)return;
+   if(!drag.moved){cam.stopFollow();this.mapDragDetached=true;drag.moved=true;}
+   cam.scrollX-=dx/cam.zoom;
+   cam.scrollY-=dy/cam.zoom;
+   drag.x=pointer.x;drag.y=pointer.y;
+  });
+  const release=pointer=>{if(this.mapDrag?.id===pointer.id)this.mapDrag=null;};
+  this.input.on('pointerup',release);
+  this.input.on('pointerupoutside',release);
+  // Klik dua kali pada peta untuk kembali mengikuti karakter.
+  this.input.on('pointerdown',pointer=>{
+   if(pointer.button!==0||this.game.dialogOpen)return;
+   const now=this.time.now;
+   if(this.lastMapClick&&now-this.lastMapClick<320&&!this.mapDragDetached){
+    cam.startFollow(this.player.sprite,true,.12,.12);
+   }
+   this.lastMapClick=now;
+  });
   this.game.events.emit('world-ready',this);
   this.scene.launch('UIScene');
  }
