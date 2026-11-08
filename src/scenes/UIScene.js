@@ -5,6 +5,7 @@ import {INGREDIENTS,STEPS,RECIPES,RECIPE_IDS,missingFor,knownRecipe,CookingSyste
 import {QuestSystem} from '../systems/QuestSystem.js';
 import {CookingMinigame} from '../systems/CookingMinigame.js';
 import {PlayerNotebook} from '../ui/PlayerNotebook.js';
+import {BIRTHDAYS,birthdayToday,GIFT_IDS} from '../systems/FriendEvents.js';
 const $=id=>document.getElementById(id);
 export class UIScene extends Phaser.Scene {
  constructor(){super('UIScene')}
@@ -426,12 +427,27 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const greeting=this.friendsLine(id);
   const tip=id==='riko'?'Tips: Riko berkunjung ke restoran pada hari pesanannya.':id==='tani'?'Tips: siram tanaman lalu tidur agar tumbuh.':
    'Tips: cek buku resep dan coba beragam sayur setiap hari.';
-  this.show(p.emoji+' '+p.name,greeting+'\n'+tip,[
+  const birthday=birthdayToday(id,this.state.data.day);
+  this.show(p.emoji+' '+p.name,greeting+'\n'+tip+(birthday?'\n🎂 Hari ini ulang tahunnya!':''),[
+   {label:'🎁 Beri hadiah',fn:()=>this.giftMenu(id)},
    {label:id==='tani'?'🌿 Belajar kelompok sayuran':'🎒 Tantangan bekal bergizi',fn:()=>this.libraryGuide()},
    {label:'🤝 Lihat daftar teman',fn:()=>this.socialOverview()},
    {label:'Sampai jumpa!',fn:()=>this.close()}
   ]);
   this.refresh();
+ }
+ giftMenu(id){
+  const p=this.social.profile(id);
+  const available=GIFT_IDS.filter(item=>(this.state.data.inventory[item]||0)>0);
+  this.show('🎁 Hadiah untuk '+p.name,'Pilih satu bahan makanan dari tas. Hadiah biasa +1 hati, hadiah ulang tahun +2 hati. Maksimal satu hadiah per teman per hari.',[
+   ...available.map(item=>({label:'🎁 '+item+' ('+this.state.data.inventory[item]+')',fn:()=>{
+    const result=this.world.friendEvents.gift(id,item,this.social);
+    this.refresh();this.show(result.ok?'🎉 Hadiah diterima!':'Hadiah belum bisa diberikan',result.ok?
+     p.name+' senang menerima '+item+'! '+(result.birthday?'Bonus ulang tahun! ':'')+'Sekarang '+result.hearts+'/5 hati.':result.reason,
+     [{label:'Kembali',fn:()=>this.friendMenu(id)}]);
+   }})),
+   {label:'Kembali',fn:()=>this.friendMenu(id)}
+  ]);
  }
  socialOverview(){
   if(this.notebook?.visible)return;
@@ -507,17 +523,29 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(!st.fishReady)return this.show('🎣 Dermaga Laut','Kamu sudah memancing hari ini. Lihat koleksi ikan atau kembali besok.',[
    {label:'🐟 Koleksi ikan laut',fn:()=>this.seaCollectionMenu()},
    {label:'Tutup',fn:()=>this.close()}]);
-  this.show('🎣 Memancing di Laut','Lempar kail tiga kali untuk mendapat ikan laut. Jatah ini terpisah dari Kolam Ikan.',[
-   {label:'🎣 Lempar kail ('+st.casts+'/3)',fn:()=>{
+  this.show('🎣 Memancing di Laut','Mini-game: perhatikan arah tarikan ikan. Pilih arah yang tepat tiga kali untuk mendapat ikan. Jatah ini terpisah dari Kolam Ikan.',[
+   {label:'🎣 Mulai menarik kail ('+st.casts+'/3)',fn:()=>this.fishingChallenge()},
+   {label:'📖 Koleksi ikan',fn:()=>this.seaCollectionMenu()},
+   {label:'Tutup',fn:()=>this.close()}
+  ],'<div class="farm-preview">🌊 🎣 🐟 🌊</div>');
+ }
+ fishingChallenge(){
+  const coast=this.world.coast;
+  if(!coast.status.fishReady)return this.seaFishingMenu();
+  const dirs=['⬅️ Kiri','⬆️ Atas','➡️ Kanan'];
+  const correct=(this.state.data.day+coast.status.casts)%3;
+  this.show('🎣 Ikan sedang menarik kail!','Ikuti arah tarikan ikan: '+dirs[correct]+'. Pilih arah yang sama untuk mengendalikan kail.',[
+   ...dirs.map((label,i)=>({label,fn:()=>{
+    if(i!==correct)return this.show('🌊 Ikan menghindar!','Arah belum tepat. Coba lagi, kesempatanmu tidak berkurang.',[
+     {label:'🎣 Coba lagi',fn:()=>this.fishingChallenge()}]);
     const result=coast.cast();this.refresh();this.world.playInteraction('fish');
     if(result.success)this.show('🐟 Tangkapan Laut!',result.fish.emoji+' '+result.fish.name+' · '+result.fish.rarity+'. +1 ikan untuk memasak dan koleksi laut.',[
      {label:'📖 Lihat koleksi',fn:()=>this.seaCollectionMenu()},
      {label:'Selesai',fn:()=>this.close()}]);
     else this.seaFishingMenu();
-   }},
-   {label:'📖 Koleksi ikan',fn:()=>this.seaCollectionMenu()},
-   {label:'Tutup',fn:()=>this.close()}
-  ],'<div class="farm-preview">🌊 🎣 🐟 🌊</div>');
+   }})),
+   {label:'Batalkan',fn:()=>this.close()}
+  ]);
  }
  seaCollectionMenu(){
   const list=this.world.coast.status.collection;
@@ -565,7 +593,13 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ]);
  }
  islandMenu(){
-  this.show('🏝️ Pulau Kecil','Pulau tropis yang tenang. Perahu siap membawamu kembali ke dermaga.',[
+  const ready=this.world.coast.status.treasureReady;
+  this.show('🏝️ Pulau Kecil','Jelajahi pulau, cari harta karun harian, dan temui Nelayan Bayu. Perahu siap membawamu kembali ke dermaga.',[
+   {label:'🧰 Cari peti harta karun'+(ready?'':' ✓'),fn:()=>{
+    const found=this.world.coast.treasure();this.refresh();
+    this.show(found?'🪙 Harta karun ditemukan!':'🧰 Peti kosong',found?'+8 Koin Ceria! Coba lagi besok.':'Peti sudah diperiksa hari ini.',[
+     {label:'Kembali ke pulau',fn:()=>this.islandMenu()}]);
+   }},
    {label:'⛵ Kembali ke dermaga',fn:()=>{
     this.close();this.state.data.x=761;this.state.data.y=697;
     this.world.player.sprite.setPosition(761,697);this.state.save();this.refresh();this.note('Kembali ke dermaga.');
@@ -723,6 +757,10 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='sea-fishing')return this.seaFishingMenu();
   if(id==='boat')return this.boatMenu();
   if(id==='island')return this.islandMenu();
+  if(id==='bayu')return this.show('🎣 Nelayan Bayu','Halo! Aku menjaga Pulau Kecil. Cobalah memancing di dermaga dan cari peti harta karun setiap hari.',[
+   {label:'🏝️ Jelajahi pulau',fn:()=>this.islandMenu()},
+   {label:'Sampai jumpa',fn:()=>this.close()}
+  ]);
   if(id==='beach')return this.beachMenu();
   if(id==='tani'||id==='nia')return this.friendMenu(id);
   if(id==='chef')return this.chefMenu();
