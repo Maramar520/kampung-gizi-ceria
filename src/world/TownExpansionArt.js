@@ -34,7 +34,12 @@ export class TownExpansionArt {
   // No separate plaza turf layer: the continuous town grass above already
   // covers this area using exactly the same world-grid and palette as the old town.
   // A second lawn rectangle would paint over those tufts and look different.
-  rect(1142,344,44,200,0xe9d8b5);rect(1005,417,302,31,0xe9d8b5);
+  // Jalur Alun-Alun menyatu dengan jalan utama (y=261..310), tanpa celah.
+   // Gunakan warna dan lebar yang sama dengan jalan kampung.
+   rect(1142,310,44,234,0xead5af);
+   rect(1005,417,302,31,0xead5af);
+   // Garis kecil menyambung dari simpang utama ke bagian tengah alun-alun.
+   for(let y=323;y<540;y+=38)rect(1162,y,4,17,0xeedbb7);
   g.fillStyle(0x92b8b4);g.fillCircle(1068,394,29);
   g.fillStyle(0x5e9db7);g.fillCircle(1068,394,23);
   g.fillStyle(0xd4e8df);g.fillCircle(1068,394,9);
