@@ -14,6 +14,9 @@ export class WeatherArt{
   this.rain=scene.add.graphics().setDepth(1175);
   this.details=scene.add.graphics().setDepth(1160);
   this.last=-Infinity;this.lastSignature='';
+  this.previousPhase=this.timeWeather.phase;
+  this.dawnStart=null;
+  this.dawnVeil=scene.add.graphics().setDepth(1190);
   this.update(0,true);
  }
  update(ms,force=false){
@@ -23,11 +26,22 @@ export class WeatherArt{
   const signature=phase+'-'+weather;
   const g=this.atmosphere;
   if(force||this.lastSignature!==signature){
+   if(this.previousPhase===3&&phase===0)this.dawnStart=ms;
+   this.previousPhase=phase;
    this.lastSignature=signature;g.clear();
    const tint=TINTS[phase]||TINTS[0];
    g.fillStyle(tint.color,tint.alpha).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
    if(weather==='Berawan')g.fillStyle(0x7f9da8,.10).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
    if(weather==='Hujan')g.fillStyle(0x42668e,.19).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+  }
+  const veil=this.dawnVeil;veil.clear();
+  if(this.dawnStart!==null){
+   const progress=Math.min(1,Math.max(0,(ms-this.dawnStart)/2500));
+   if(progress<1){
+    // Transisi halus dari biru malam ke hangatnya pagi, tanpa layar hitam.
+    veil.fillStyle(0x162c58,.36*(1-progress)).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+    veil.fillStyle(0xffe0a1,.13*Math.sin(Math.PI*progress)).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+   }else this.dawnStart=null;
   }
   const d=this.details;d.clear();
   if(phase===3){
@@ -66,5 +80,5 @@ export class WeatherArt{
    rain.lineBetween(x,y,x-5,y+14);
   }
  }
- destroy(){this.atmosphere.destroy();this.rain.destroy();this.details.destroy();}
+ destroy(){this.atmosphere.destroy();this.rain.destroy();this.details.destroy();this.dawnVeil.destroy();}
 }
