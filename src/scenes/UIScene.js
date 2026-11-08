@@ -424,7 +424,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const p=this.social.profile(id);
   if(!p)return;
   const greeting=this.friendsLine(id);
-  const tip=id==='tani'?'Tips: siram tanaman lalu tidur agar tumbuh.':
+  const tip=id==='riko'?'Tips: Riko berkunjung ke restoran pada hari pesanannya.':id==='tani'?'Tips: siram tanaman lalu tidur agar tumbuh.':
    'Tips: cek buku resep dan coba beragam sayur setiap hari.';
   this.show(p.emoji+' '+p.name,greeting+'\n'+tip,[
    {label:id==='tani'?'🌿 Belajar kelompok sayuran':'🎒 Tantangan bekal bergizi',fn:()=>this.libraryGuide()},
@@ -640,7 +640,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='plaza')return this.plazaMenu();
   if(id==='townHall')return this.townHallMenu();
   if(id==='mayor')return this.mayorMenu();
-  if(id==='arif'||id==='lina')return this.friendMenu(id);
+  if(id==='arif'||id==='lina'||id==='riko')return this.friendMenu(id);
   if(id==='market')return this.market();
   if(id==='store')return this.familyHomeMenu();
   if(id==='village')return this.villageMenu();
