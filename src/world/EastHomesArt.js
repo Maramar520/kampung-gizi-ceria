@@ -92,7 +92,7 @@ export class EastHomesArt{
    scene.add.text(cx,y+13,emoji+' '+name,{
     fontFamily:'monospace',fontSize:'10px',fontStyle:'bold',color:'#574d3e',
     backgroundColor:'#fff3d4',padding:{x:3,y:2}
-   }).setOrigin(.5).setDepth(550);
+   }).setOrigin(.5).setDepth(550).setVisible(false);
   }
   // PUSKESMAS: memanfaatkan lahan kosong di tenggara rumah warga.
   // Interior terbuka dan lantai krem seperti rumah lainnya.
@@ -151,7 +151,7 @@ export class EastHomesArt{
   // Papan nama di samping pintu, bukan tepat di jalur karakter.
   scene.add.text(hx+55,hy+18,'🏥 PUSKESMAS',{fontFamily:'monospace',
    fontSize:'12px',fontStyle:'bold',color:'#3e655d',
-   backgroundColor:'#fff5df',padding:{x:7,y:3}}).setOrigin(.5).setDepth(550);
+   backgroundColor:'#fff5df',padding:{x:7,y:3}}).setOrigin(.5).setDepth(550).setVisible(false);
   // Pantai timur tetap mengikuti sambungan pantai versi sebelumnya.
   rect(path,1340,600,380,112,0xf3dba5);
   rect(path,1340,710,380,140,0x65bfd0);
