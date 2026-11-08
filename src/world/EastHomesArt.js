@@ -42,6 +42,16 @@ export class EastHomesArt{
    rect(deco,cx-26,y+h-5,52,7,0xe4c28a);
    rect(deco,x+11,y+15,w-22,3,0xfff4d7);
    for(let xx=x+21;xx<x+w-18;xx+=25)rect(deco,xx,y+4,12,4,0xf0c49d);
+   // Atap genteng warna khas tiap rumah, bagian interior tetap terbuka.
+   const roof=({nia:0xc87983,arif:0x789b70,lina:0x9b83bb})[id];
+   rect(deco,x-4,y-13,w+8,15,0x735c52);
+   rect(deco,x-2,y-11,w+4,11,roof);
+   for(let xx=x+4;xx<x+w-5;xx+=13){
+    rect(deco,xx,y-8,9,2,0xffe9cb);
+    rect(deco,xx+4,y-2,9,2,0x765c54);
+   }
+   rect(deco,x+33,y+17,34,6,roof);
+   rect(deco,x+37,y+23,26,3,0xffe9cb);
    // Interior terbuka: tempat tidur, selimut, lemari, rak, meja, kursi.
    furniture(x+14,y+37,29,51,0xa3bacd,0x718a9b);
    rect(deco,x+19,y+42,19,12,0xfff9ea);
@@ -60,13 +70,36 @@ export class EastHomesArt{
    rect(deco,x+47,y+12,24,8,0xfaf0c8);rect(deco,x+58,y+12,2,8,0x9dbaaa);
    rect(ground,x+39,y+134,24,18,0xe6c9a2);
    rect(deco,x+42,y+137,18,12,({nia:0xeabac3,arif:0xc0d3a7,lina:0xd5c3e4})[id]);
+   // Interior personal: meja baca Nia, bibit Arif, bunga Lina.
+   if(id==='nia'){
+    rect(deco,x+55,y+78,25,13,0xf3d2a0);
+    rect(deco,x+59,y+81,17,3,0xe7a0a7);
+    rect(deco,x+62,y+85,11,3,0x8b9dc7);
+   }else if(id==='arif'){
+    rect(deco,x+51,y+78,30,13,0x9c7957);
+    for(let i=0;i<3;i++)rect(deco,x+56+i*8,y+75,5,12,[0x80b66b,0xe3c176,0x7aa6bc][i]);
+   }else{
+    rect(deco,x+51,y+77,30,14,0xd9c1e3);
+    for(let i=0;i<3;i++)flower(x+58+i*9,y+84,[0xf2b7a0,0xf4da8d,0xe2acd0][i]);
+   }
    // Taman depan tanpa menghalangi pintu.
    flower(x+14,247,({nia:0xf2b7a0,arif:0xf4da8d,lina:0xe2acd0})[id]);
    flower(x+86,251,0xffd59e);
+   rect(deco,x+3,237,23,7,0xb9885d);
+   rect(deco,x+74,237,23,7,0xb9885d);
+   for(const fx of [x+10,x+20,x+80,x+90]){
+    rect(deco,fx,232,2,8,0x629961);
+    rect(deco,fx-3,230,8,5,id==='nia'?0xf2b7a0:id==='arif'?0xf4da8d:0xe2acd0);
+   }
    scene.add.text(cx,y+12,emoji+' '+name,{
     fontFamily:'monospace',fontSize:'10px',fontStyle:'bold',color:'#574d3e',
     backgroundColor:'#fff3d4',padding:{x:3,y:2}
    }).setOrigin(.5).setDepth(550);
+  }
+  // Tambahan variasi rerumputan di halaman selatan.
+  for(let y=327;y<570;y+=31)for(let x=1375;x<1690;x+=39){
+   if((x+y)%4===0)flower(x,y,(x%3===0)?0xf2b7a0:0xf4da8d);
+   else if((x+y)%3===0){rect(ground,x,y,6,2,0xb9d899);rect(ground,x+3,y-3,2,5,0x74b075);}
   }
   // Hiasan mengikuti palet semak, bunga dan pohon dari kawasan lama.
   for(const [x,y] of [[1356,245],[1710,245],[1356,564],[1710,564]])bush(x,y);
