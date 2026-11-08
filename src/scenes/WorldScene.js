@@ -120,7 +120,10 @@ export class WorldScene extends Phaser.Scene {
    [{x:1204,y:180},{x:1155,y:208},{x:1155,y:238},{x:1155,y:281},
     {x:1155,y:345},{x:1155,y:395,activity:this.festival.active?'🎉 Memimpin festival':'🌳 Menyapa warga',pause:2},
     {x:1155,y:345},{x:1155,y:281},{x:1155,y:238},{x:1155,y:208},{x:1204,y:180}];
-  this.mayor.setRoutine(mayorRoute,'KEPALA DESA',!raining&&phase!==3);
+  const mayorReturning=(raining||phase===3)&&this.mayor.y>238;
+  const returnRoute=mayorReturning?[{x:1155,y:this.mayor.y},{x:1155,y:345},{x:1155,y:281},
+   {x:1155,y:238},{x:1155,y:208},{x:1204,y:180}]:mayorRoute;
+  this.mayor.setRoutine(returnRoute,'KEPALA DESA',!raining&&phase!==3);
   const justStoppedRaining=this.lastRaining===true&&!raining&&phase!==3;
   this.lastRaining=raining;
   this.routineKey=key;
