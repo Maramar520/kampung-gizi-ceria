@@ -1,6 +1,6 @@
 import {LearningSystem,FOOD_GROUPS,FOOD_OPTIONS,PLATE_STEPS,inspectPlate,LEARNING_SOURCE} from '../systems/LearningSystem.js';
 import {DECOR_ITEMS,DECOR_SLOTS} from '../systems/HomeDecorSystem.js';
-import {CROPS,CROP_IDS} from '../systems/GardenSystem.js';
+import {CROPS,CROP_IDS} from '../systems/GardenSystem.js?v=v241-farming';
 import {INGREDIENTS,STEPS,RECIPES,RECIPE_IDS,missingFor,knownRecipe,CookingSystem} from '../systems/CookingSystem.js';
 import {QuestSystem} from '../systems/QuestSystem.js';
 import {CookingMinigame} from '../systems/CookingMinigame.js';
