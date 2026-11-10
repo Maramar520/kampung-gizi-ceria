@@ -44,16 +44,20 @@ async function testDesktop(browser){
  assert.equal(await page.locator('#minimap').count(),0);
  assert.equal(await page.locator('.minimap-wrap').count(),0);
  assert.equal(await page.locator('#townOverview').isVisible(),false);
- await page.locator('#goEast').click();
+ // Navigation buttons are intentionally hidden in the current in-game UI.
+ // Use the existing QA player-position bridge rather than clicking legacy controls.
+ assert.equal(await page.locator('#goEast').isVisible(),false);
+ assert.equal(await page.locator('#goWest').isVisible(),false);
+ await moveTo(page,1155,395);
  assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.x),1155);
- await page.locator('#goWest').click();
+ await moveTo(page,760,395);
  assert.equal(await page.evaluate(()=>window.__kampungQA.state.data.x),760);
  // Eastern district is reachable by the camera, while original save positions remain valid.
  const eastVisual=await page.evaluate(()=>{const w=window.__kampungQA.scene.getScene('WorldScene');return {width:w.cameras.main._bounds.width,weatherPresent:!!w.weatherArt.atmosphere,road:w.townArt!==undefined};});
- assert.equal(eastVisual.width,1340);
+ assert.equal(eastVisual.width,1720);
  assert.equal(eastVisual.road,true);
  await moveTo(page,1155,395);
- assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').cameras.main._bounds.width),1340);
+ assert.equal(await page.evaluate(()=>window.__kampungQA.scene.getScene('WorldScene').cameras.main._bounds.width),1720);
  await page.keyboard.press('e');
  assert.match(await page.locator('#dialogTitle').textContent(),/Alun-Alun/);
  await page.getByRole('button',{name:/Senam dan kegiatan warga/}).click();
