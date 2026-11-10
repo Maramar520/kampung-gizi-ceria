@@ -70,7 +70,7 @@ export class WorldScene extends Phaser.Scene {
   // === JALAN UTAMA TIMUR: lapisan khusus di atas seluruh terrain ===
   // Digambar terakhir sebagai satu ruas x=1340..1720, sejajar jalan Alun-Alun.
   // Depth 35 menjaganya di atas tanah, tetapi di bawah bangunan (depth 40).
-  this.clinicMainRoad=this.add.graphics().setDepth(35);
+  this.clinicMainRoad=this.add.graphics().setDepth(45);
   this.clinicMainRoad.fillStyle(0xead5af,1).fillRect(1340,261,380,49);
   this.clinicMainRoad.fillStyle(0xd7b88f,1);
   for(let x=966;x<1720;x+=58){
