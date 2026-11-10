@@ -6,7 +6,11 @@ export const MISSION_DEFS=Object.freeze([
  {id:'cook',emoji:'🍳',title:'Memasak satu hidangan',target:1,stars:2,coins:12},
  {id:'friend',emoji:'🤝',title:'Menyapa seorang warga',target:1,stars:1,coins:8},
  {id:'help',emoji:'📚',title:'Membantu Kak Rani merapikan buku',target:1,stars:2,coins:10},
- {id:'learn',emoji:'📚',title:'Belajar gizi di perpustakaan',target:1,stars:2,coins:10}
+ {id:'learn',emoji:'📚',title:'Belajar gizi di perpustakaan',target:1,stars:2,coins:10},
+ {id:'plant-more',event:'plant',emoji:'🌾',title:'Menanam 3 bibit untuk kampung',target:3,stars:3,coins:18},
+ {id:'harvest-more',event:'harvest',emoji:'🥕',title:'Panen 3 hasil kebun',target:3,stars:3,coins:20},
+ {id:'cook-more',event:'cook',emoji:'🥗',title:'Memasak 2 hidangan sehat',target:2,stars:3,coins:22},
+ {id:'friend-more',event:'friend',emoji:'💬',title:'Menyapa 3 warga kampung',target:3,stars:3,coins:18}
 ]);
 export const ACHIEVEMENTS=Object.freeze([
  {id:'first-plant',title:'Sahabat Kebun',emoji:'🌿',event:'plant',target:1,stars:3,coins:15},
@@ -15,7 +19,10 @@ export const ACHIEVEMENTS=Object.freeze([
  {id:'first-friend',title:'Teman Baik',emoji:'💞',event:'friend',target:1,stars:3,coins:15},
  {id:'first-help',title:'Penolong Perpustakaan',emoji:'📚',event:'help',target:1,stars:3,coins:15},
  {id:'first-learning',title:'Pembaca Gizi',emoji:'📖',event:'learn',target:1,stars:3,coins:15},
- {id:'daily-hero',title:'Bintang Kampung',emoji:'🏆',event:'claimed',target:5,stars:5,coins:25}
+ {id:'daily-hero',title:'Bintang Kampung',emoji:'🏆',event:'claimed',target:5,stars:5,coins:25},
+ {id:'garden-master',title:'Petani Cilik',emoji:'🌻',event:'plant',target:12,stars:6,coins:35},
+ {id:'healthy-chef',title:'Chef Gizi Ceria',emoji:'🥘',event:'cook',target:8,stars:6,coins:35},
+ {id:'village-friend',title:'Sahabat Semua Warga',emoji:'🤝',event:'friend',target:12,stars:6,coins:35}
 ]);
 const safe=n=>Number.isSafeInteger(n)&&n>=0?Math.min(n,100000):0;
 export function defaultMissions(day=1){
@@ -43,9 +50,9 @@ export class MissionSystem {
  }
  progress(id){return this.data.progress[id]||0;}
  record(id){
-  const def=MISSION_DEFS.find(m=>m.id===id);if(!def)return false;
+  const matching=MISSION_DEFS.filter(m=>(m.event||m.id)===id);if(!matching.length)return false;
   const d=this.data;
-  d.progress[id]=Math.min(def.target,d.progress[id]+1);
+  for(const def of matching)d.progress[def.id]=Math.min(def.target,(d.progress[def.id]||0)+1);
   d.totals[id]=safe((d.totals[id]||0)+1);
   this.state.save();return true;
  }
