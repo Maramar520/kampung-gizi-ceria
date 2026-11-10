@@ -67,6 +67,19 @@ export class WorldScene extends Phaser.Scene {
   this.townArt=new TownExpansionArt(this,this.festival);
   this.southCoastArt=new SouthCoastArt(this);
   this.eastHomesArt=new EastHomesArt(this);this.schoolArt=new SchoolArt(this);
+  // === TITIK TERANG INTERAKSI: Perpustakaan Gizi dan Puskesmas ===
+  // Lingkaran berdenyut seperti penanda interaksi Balai Kota, tanpa mengubah tabrakan atau peta.
+  this.educationEntranceLights=[
+   {x:651,y:136,color:0xffdf86}, // area interaksi perpustakaan
+   {x:1530,y:345,color:0xffdf86} // pintu masuk puskesmas
+  ].map(({x,y,color})=>{
+   const halo=this.add.circle(x,y,17,color,.20).setDepth(800);
+   const ring=this.add.circle(x,y,9,color,.24).setStrokeStyle(2,0xfff8ce,.95).setDepth(801);
+   const core=this.add.circle(x,y,4,0xfff7c9,.95).setDepth(802);
+   this.tweens.add({targets:halo,scale:1.4,alpha:.07,duration:1150,yoyo:true,repeat:-1,ease:'Sine.easeInOut'});
+   this.tweens.add({targets:[ring,core],alpha:.5,duration:850,yoyo:true,repeat:-1,ease:'Sine.easeInOut'});
+   return {halo,ring,core};
+  });
   this.marineWildlifeArt=new MarineWildlifeArt(this);
   this.player=new Player(this,this.game.state,obstacles);this.activity=new ActionAnimator(this,this.player);
   if(!canStand(this.game.state.data.x,this.game.state.data.y)){
