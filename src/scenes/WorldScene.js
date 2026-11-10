@@ -2,7 +2,7 @@ import {INTERACTIONS,nearestInteraction,SPAWN,canStand,LAYOUT,DOORS} from '../wo
 import {createTextures,buildWorld} from '../world/WorldArt.js?v=v223-names';
 import {Player} from '../entities/Player.js?v=coast-v118';
 import {NPC} from '../entities/NPC.js?v=v176-clean';
-import {GardenSystem} from '../systems/GardenSystem.js';
+import {GardenSystem} from '../systems/GardenSystem.js?v=v241-farming';
 import {GardenArt} from '../world/GardenArt.js';
 import {FarmArt} from '../world/FarmArt.js?v=v147-school-pond';
 import {AmbientArt} from '../world/AmbientArt.js';
