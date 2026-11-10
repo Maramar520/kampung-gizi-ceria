@@ -37,6 +37,23 @@ export class EastHomesArt{
   // Jalan utama dan jalan masuk tidak berubah.
   frame(path,1340,261,380,49,0xead5af,0xd3b18a,2);
   for(let x=1350;x<1720;x+=58)rect(path,x,282,25,3,0xd7b88f);
+  // === JALAN PENGHUBUNG ALUN-ALUN → PUSKESMAS ===
+  // Rute membelok alami di luar dinding Puskesmas, lalu tersambung ke pintu utara.
+  // Tanpa menambah collision; seluruh lintasan berada di area yang bisa dilewati.
+  const trail=0xead5af,edge=0xd7b88f,detail=0xf2dfbc;
+  // Keluar dari sisi timur Alun-Alun, menyatu dengan jalur vertikal.
+  rect(path,1298,373,71,28,edge);
+  rect(path,1298,376,71,22,trail);
+  // Tikungan ke utara di antara Alun-Alun dan Puskesmas.
+  rect(path,1340,317,29,81,edge);
+  rect(path,1343,317,23,81,trail);
+  // Cabang mendatar menuju akses pintu Puskesmas di x=1504..1556.
+  rect(path,1355,313,179,27,edge);
+  rect(path,1355,316,179,21,trail);
+  // Sedikit batu pijakan, bukan marka jalan lurus yang kaku.
+  for(const [x,y] of [[1315,384],[1353,358],[1353,331],[1391,326],[1434,327],[1477,325]]){
+   rect(path,x,y,8,3,detail);
+  }
   for(const [id,h] of Object.entries(EAST_HOMES)){
    const {x,y,w,h:height,name,emoji,color}=h,cx=x+w/2;
    rect(path,cx-18,235,36,28,0xf0d9b7);
