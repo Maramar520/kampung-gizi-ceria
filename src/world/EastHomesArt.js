@@ -37,23 +37,6 @@ export class EastHomesArt{
   // Jalan utama dan jalan masuk tidak berubah.
   frame(path,1340,261,380,49,0xead5af,0xd3b18a,2);
   for(let x=1350;x<1720;x+=58)rect(path,x,282,25,3,0xd7b88f);
-  // === JALAN PENGHUBUNG ALUN-ALUN → PUSKESMAS ===
-  // Rute membelok alami di luar dinding Puskesmas, lalu tersambung ke pintu utara.
-  // Tanpa menambah collision; seluruh lintasan berada di area yang bisa dilewati.
-  const trail=0xead5af,edge=0xd7b88f,detail=0xf2dfbc;
-  // Keluar dari sisi timur Alun-Alun, menyatu dengan jalur vertikal.
-  rect(path,1298,373,71,28,edge);
-  rect(path,1298,376,71,22,trail);
-  // Tikungan ke utara di antara Alun-Alun dan Puskesmas.
-  rect(path,1340,317,29,81,edge);
-  rect(path,1343,317,23,81,trail);
-  // Cabang mendatar menuju akses pintu Puskesmas di x=1504..1556.
-  rect(path,1355,313,179,27,edge);
-  rect(path,1355,316,179,21,trail);
-  // Sedikit batu pijakan, bukan marka jalan lurus yang kaku.
-  for(const [x,y] of [[1315,384],[1353,358],[1353,331],[1391,326],[1434,327],[1477,325]]){
-   rect(path,x,y,8,3,detail);
-  }
   for(const [id,h] of Object.entries(EAST_HOMES)){
    const {x,y,w,h:height,name,emoji,color}=h,cx=x+w/2;
    rect(path,cx-18,235,36,28,0xf0d9b7);
@@ -189,14 +172,8 @@ export class EastHomesArt{
   // Pantai timur tetap mengikuti sambungan pantai versi sebelumnya.
   rect(path,1340,600,380,112,0xf3dba5);
   rect(path,1340,710,380,140,0x65bfd0);
-  // Alun-Alun berakhir di y=544, rumput ke pantai y=600 = 56 px.
-  // Puskesmas berakhir di y=555; agar lebarnya juga 56 px, batas pasir di y=611.
-  // Hamparan tambahan menggunakan warna dan pola rumput Alun-Alun yang sama.
-  rect(path,1340,600,380,11,0xa4cd91);
-  for(let y=604;y<611;y+=17)for(let x=957;x<1720;x+=19){
-   if(x<1340)continue;
-   if((x*7+y*11)%17<7){rect(path,x,y,3,5,0x74b075);rect(path,x+5,y+2,2,3,0xb9d899);}
-  }
+  // Pantai dimulai di y=600, sesuai v2.33.
+  rect(path,1340,600,380,17,0xf3dba5);
   for(let x=1340;x<1720;x+=30){
    const y=703+Math.round(Math.sin(x*.035)*5);
    rect(path,x,y,30,9,0x9ddcdb);
