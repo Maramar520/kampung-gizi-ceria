@@ -1,5 +1,5 @@
 import {GameState} from './systems/GameState.js';
-import {WorldScene} from './scenes/WorldScene.js?v=v241-grass-under-road';
+import {WorldScene} from './scenes/WorldScene.js?v=v242-brown-road';
 import {UIScene} from './scenes/UIScene.js?v=v229-education';
 // Sesuaikan rasio kanvas dengan layar, bukan menyisakan bar biru di samping.
 // Tinggi dunia tetap 600 unit agar ukuran karakter dan kontrol tetap konsisten.
