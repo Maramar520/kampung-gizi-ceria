@@ -22,11 +22,11 @@ export class EastHomesArt{
    rect(g,x-1,y-2,3,3,0xffe8a7);
   };
   // Kawasan hijau tetap sama dengan kampung lama, di luar rumah saja.
-  // Samakan batas rumput dengan sisi barat pantai: pasir mulai pada y=565.
-  rect(ground,1340,0,380,565,0xa4cd91);
-  rect(ground,1340,565,380,35,0xf3dba5);
+  // Batas rumput sama persis dengan Alun-Alun dan seluruh pantai: y=600.
+  // Jangan membuat pita pasir/rumput tersendiri di bawah Puskesmas.
+  rect(ground,1340,0,380,600,0xa4cd91);
   const inHouse=(x,y)=>Object.values(EAST_HOMES).some(h=>x>=h.x-13&&x<h.x+h.w+13&&y>=h.y-17&&y<h.y+h.h+13);
-  for(let y=9;y<565;y+=17)for(let x=1345;x<1720;x+=19){
+  for(let y=9;y<600;y+=17)for(let x=1345;x<1720;x+=19){
    if(!inHouse(x,y)&&(x*7+y*11)%17<7){
     rect(ground,x,y,3,5,0x74b075);rect(ground,x+5,y+2,2,3,0xb9d899);
    }
