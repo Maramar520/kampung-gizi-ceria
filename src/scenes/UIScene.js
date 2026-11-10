@@ -323,6 +323,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    {label:'🌱 Pelajaran Lingkungan',fn:()=>this.schoolQuiz('lingkungan','Apa yang bisa dilakukan agar sekolah bersih?','🗑️ Buang sampah pada tempatnya','🍂 Buang sampah ke sungai')},
    {label:'🍱 Mini-game Bekal Sehat',fn:()=>this.schoolLunch()},
    {label:'🎯 Tantangan Isi Piringku',fn:()=>this.schoolPlateChallenge(0)},
+   {label:'🤝 Berteman dengan Bu Guru Lia',fn:()=>this.friendMenu('lia')},
+   {label:'🤝 Berteman dengan Sela',fn:()=>this.friendMenu('sela')},
+   {label:'🤝 Berteman dengan Refal',fn:()=>this.friendMenu('refal')},
    {label:'🎁 Ambil Hadiah',fn:()=>this.schoolClaim()},
    {label:'Tutup',fn:()=>this.close()}
   ]);
@@ -366,6 +369,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
    {label:'🤝 Bantu Perawat',fn:()=>this.clinicHelp()},
    {label:'🧼 Simulasi Cuci Tangan',fn:()=>this.clinicHandwash(0)},
    {label:'🩹 Belajar Pertolongan Pertama',fn:()=>this.clinicFirstAid()},
+   {label:'🤝 Berteman dengan Perawat Maya',fn:()=>this.friendMenu('nurse')},
+   {label:'🤝 Berteman dengan Dokter Maya',fn:()=>this.friendMenu('doctor')},
+   {label:'🤝 Berteman dengan Dimas',fn:()=>this.friendMenu('dimas')},
    {label:'🎁 Klaim Hadiah ('+progress+'/3)',fn:()=>this.clinicClaim()},
    {label:'Tutup',fn:()=>this.close()}
   ]);
