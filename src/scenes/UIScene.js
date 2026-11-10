@@ -124,7 +124,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ],'<div class="calendar-sheet" aria-label="Kalender 28 hari permainan">'+cells+'</div><div class="calendar-legend">🟩 Hari ini · 🎉 Hari festival · 🎈 Akhir pekan · Satu halaman = 28 hari permainan</div>');
  }
  birthdayCalendarMenu(){
-  const names={sari:'Bu Sari',chef:'Chef Bimo',tani:'Pak Yanto',nia:'Nia',rani:'Kak Rani',arif:'Warga Arif',lina:'Warga Lina',mayor:'Kepala Desa'};
+  const names={sari:'Bu Sari',chef:'Chef Bimo',tani:'Pak Yanto',nia:'Nia',rani:'Kak Rani',arif:'Arif',lina:'Lina',mayor:'Kepala Desa Arif'};
   const lines=Object.entries(BIRTHDAYS).filter(([id])=>names[id]).sort((a,b)=>a[1]-b[1]).map(([id,day])=>'🎂 Hari '+day+' · '+names[id]);
   this.show('🎂 Ulang Tahun Warga','Kalender berulang setiap 28 hari permainan. Berikan hadiah saat ulang tahun untuk bonus hati.\\n'+lines.join('\\n'),[
    {label:'Kembali ke kalender',fn:()=>this.calendarMenu()}
@@ -359,7 +359,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  clinicMenu(){
   const c=this.clinic.ensure(),progress=this.clinic.progress;
-  this.show('🏥 Puskesmas Kampung','Dokter Maya dan Perawat Dina melayani warga pada pagi hingga sore.\nMisi harian: '+progress+'/3 kegiatan. Hadiah: 35 koin dan 10 energi.\nPemeriksaan hanya simulasi edukasi, bukan diagnosis.',[
+  this.show('🏥 Puskesmas Kampung','Dokter Maya dan Perawat Maya melayani warga pada pagi hingga sore.\nMisi harian: '+progress+'/3 kegiatan. Hadiah: 35 koin dan 10 energi.\nPemeriksaan hanya simulasi edukasi, bukan diagnosis.',[
    {label:'📏 Mini-game Ukur Tinggi',fn:()=>this.clinicHeight()},
    {label:'⚖️ Mini-game Timbang Berat',fn:()=>this.clinicWeight()},
    {label:'🥗 Belajar Gizi Seimbang',fn:()=>this.clinicQuiz()},
@@ -409,7 +409,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  clinicHelp(){
   this.show('🤝 Membantu Perawat','Pasien sedang menunggu. Apa yang sebaiknya kamu lakukan?',[
-   {label:'📋 Membantu antre tertib dan cuci tangan',fn:()=>{this.clinic.mark('helped');this.show('🌟 Terima Kasih!','Kamu membantu Perawat Dina mengatur antrean dan mengingatkan kebersihan tangan. Warga bisa menunggu dengan nyaman.',[{label:'Kembali',fn:()=>this.clinicMenu()}]);}},
+   {label:'📋 Membantu antre tertib dan cuci tangan',fn:()=>{this.clinic.mark('helped');this.show('🌟 Terima Kasih!','Kamu membantu Perawat Maya mengatur antrean dan mengingatkan kebersihan tangan. Warga bisa menunggu dengan nyaman.',[{label:'Kembali',fn:()=>this.clinicMenu()}]);}},
    {label:'🏃 Menyerobot antrean',fn:()=>this.show('💡 Coba Lagi','Bantu pasien mengantre dengan tertib dan menjaga kebersihan.',[{label:'Coba Lagi',fn:()=>this.clinicHelp()}])}
   ]);
  }
@@ -421,7 +421,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  townHallMenu(){
   this.show('🏛️ Balai Kota','Selamat datang di Balai Kota! Ruang pelayanan, meja kerja, dan papan pengumuman terlihat langsung di dalam Balai Kota.',[
-   {label:'📋 Papan Misi Kepala Desa',fn:()=>this.mayorMissionMenu()},
+   {label:'📋 Papan Misi Kepala Desa Arif',fn:()=>this.mayorMissionMenu()},
    {label:'📋 Pengumuman Festival',fn:()=>this.festivalGuide()},
    {label:'🌳 Kegiatan Alun-Alun',fn:()=>this.plazaMenu()},
    {label:'Tutup',fn:()=>this.close()}
@@ -429,7 +429,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  mayorMissionMenu(){
   const tasks=this.world.mayorMissions.status;
-  this.show('📋 Misi Kepala Desa','Selesaikan kegiatan warga dan kembali ke Balai Kota untuk mengambil hadiah. Hadiah hanya dapat diambil satu kali per hari.',[
+  this.show('📋 Misi Kepala Desa Arif','Selesaikan kegiatan warga dan kembali ke Balai Kota untuk mengambil hadiah. Hadiah hanya dapat diambil satu kali per hari.',[
    ...tasks.map(t=>({label:(t.claimed?'✅ ':t.done?'🎁 ':'▫️ ')+t.name+' · '+t.coins+' KC + '+t.stars+' ⭐',fn:()=>{
     const prize=this.world.mayorMissions.claim(t.id);
     if(prize){this.refresh();this.note('Misi selesai! +'+prize.coins+' KC +'+prize.stars+' ⭐');}
@@ -441,7 +441,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  mayorMenu(){
   const greeting=this.friendsLine('mayor');
-  this.show('🏛️ Kepala Desa',greeting+'\nHalo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
+  this.show('🏛️ Kepala Desa Arif',greeting+'\nHalo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
    {label:'🤝 Buku Pertemanan',fn:()=>this.socialOverview()},
    {label:'📋 Papan Misi Balai Kota',fn:()=>this.mayorMissionMenu()},
    {label:'📅 Lihat festival',fn:()=>this.festivalGuide()},
@@ -1091,6 +1091,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id)this.world.playInteraction(id);
   if(!id)return this.note('Dekati tempat atau NPC lalu tekan E / AKSI.');
   if(['niaHome','arifHome','linaHome'].includes(id))return this.residentHomeMenu(id.replace('Home',''));
+  if(['lia','sela','refal','dino','nurse','doctor','dimas'].includes(id))return this.friendMenu(id);
   if(id==='school')return this.schoolMenu();
   if(id==='puskesmas')return this.clinicMenu();
   if(id==='plaza')return this.plazaMenu();
