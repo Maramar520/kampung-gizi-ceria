@@ -8,7 +8,7 @@ export const FRIENDS=Object.freeze({
  rani:{name:'Kak Rani',emoji:'👩‍🏫',place:'Perpustakaan gizi di Rumah Warga'},
  arif:{name:'Arif',emoji:'👨',place:'Alun-Alun Kampung'},
  lina:{name:'Lina',emoji:'👩',place:'Alun-Alun Kampung'},
- mayor:{name:'Kepala Desa Arif',emoji:'🏛️',place:'Balai Desa'},
+ mayor:{name:'Kepala Desa Ardi',emoji:'🏛️',place:'Balai Desa'},
  lia:{name:'Bu Guru Lia',emoji:'👩‍🏫',place:'Sekolah Gizi'},
  sela:{name:'Sela',emoji:'👧',place:'Sekolah Gizi'},
  refal:{name:'Refal',emoji:'👦',place:'Sekolah Gizi'},
