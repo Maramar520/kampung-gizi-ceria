@@ -7,8 +7,9 @@ export const EAST_HOMES=Object.freeze({
 });
 export class EastHomesArt{
  constructor(scene){
-  // Lapisan tanah setara dengan TownExpansionArt (rumput Alun-Alun).
-  const ground=scene.add.graphics().setDepth(-85);
+  // Tanah timur berada DI BAWAH jalan utama TownExpansionArt (depth -85).
+  // Jika keduanya depth -85, tanah yang dibuat belakangan menutup jalan di atas Puskesmas.
+  const ground=scene.add.graphics().setDepth(-90);
   const path=scene.add.graphics().setDepth(-84);
   // Semua isi rumah ada pada SATU graphics foreground: lantai tidak dapat
   // tertutup oleh tekstur rumput, dekorasi atau objek terrain lain.
