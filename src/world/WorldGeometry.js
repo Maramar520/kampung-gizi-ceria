@@ -71,7 +71,7 @@ export const INTERACTIONS=[
  {id:'beach',x:680,y:651,r:65,label:'Pantai Selatan'},
  {id:'plaza',x:1164,y:427,r:92,label:'Alun-Alun Kampung'},
  {id:'townHall',x:1155,y:198,r:75,label:'Balai Kota'},
- {id:'mayor',x:1204,y:180,r:45,label:'Kepala Desa'},
+ {id:'mayor',x:1204,y:180,r:45,label:'Kepala Desa Ardi'},
  {id:'arif',x:1080,y:471,r:37,label:'Warga Arif'},
  {id:'lina',x:1200,y:452,r:37,label:'Warga Lina'},
  {id:'bed',x:99,y:161,r:49,label:'Kasur'},
