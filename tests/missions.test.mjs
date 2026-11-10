@@ -11,10 +11,10 @@ const {canStand,LAYOUT,OBSTACLES,INTERACTIONS,SPAWN}=await load('src/world/World
 const db=new Map();
 globalThis.localStorage={getItem:k=>db.get(k)||null,setItem:(k,v)=>db.set(k,String(v)),removeItem:k=>db.delete(k)};
 const fresh=()=>{db.clear();const state=new GameState();return{state,mission:new MissionSystem(state)};};
-test('six different daily tasks and seven one-off achievements',()=>{
- assert.deepEqual(MISSION_DEFS.map(x=>x.id),['plant','harvest','cook','friend','help','learn']);
- assert.equal(ACHIEVEMENTS.length,7);
- assert.equal(new Set(ACHIEVEMENTS.map(a=>a.id)).size,7);
+test('ten daily tasks and ten one-off achievements',()=>{
+ assert.deepEqual(MISSION_DEFS.map(x=>x.id),['plant','harvest','cook','friend','help','learn','plant-more','harvest-more','cook-more','friend-more']);
+ assert.equal(ACHIEVEMENTS.length,10);
+ assert.equal(new Set(ACHIEVEMENTS.map(a=>a.id)).size,10);
 });
 test('mission progress only increments when actual event is recorded; daily claim cannot be farmed',()=>{
  const {state,mission}=fresh(),coins=state.data.coins;
@@ -49,7 +49,7 @@ test('new day refreshes mission progress but keeps lifelong achievements',()=>{
 });
 test('achievement once only and cumulative five claimed missions unlock hero badge',()=>{
  const {state,mission}=fresh();
- for(const x of MISSION_DEFS){mission.record(x.id);assert.ok(mission.claim(x.id));}
+ for(const x of MISSION_DEFS.filter(x=>!x.event)){mission.record(x.id);assert.ok(mission.claim(x.id));}
  assert.equal(mission.data.totals.claimed,6);
  assert.equal(mission.badges().find(x=>x.id==='daily-hero').ready,true);
  const before=state.data.learning.stars;
@@ -104,7 +104,7 @@ test('malformed legacy mission state never creates invalid rewards',()=>{
 });
 test('library and librarian in existing house; original walls remain unchanged',()=>{
  assert.ok(OBSTACLES.length>=34,'original walls retained alongside coastal obstacles');
- assert.deepEqual([LAYOUT.home.x,LAYOUT.village.x,LAYOUT.pond.x,LAYOUT.market.y,LAYOUT.restaurant.y,LAYOUT.store.x],
+ assert.deepEqual([LAYOUT.home.x,LAYOUT.village.x,LAYOUT.school.x,LAYOUT.market.y,LAYOUT.restaurant.y,LAYOUT.store.x],
   [45,500,805,339,339,806]);
  assert.ok(INTERACTIONS.length>=15,'original interactions retained alongside new zones');
  assert.ok(INTERACTIONS.find(z=>z.id==='library'&&z.x>LAYOUT.village.x&&z.x<LAYOUT.village.x+LAYOUT.village.w));
