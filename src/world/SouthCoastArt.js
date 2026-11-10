@@ -82,10 +82,30 @@ export class SouthCoastArt {
    rect(x-20,y-3,44,5,0xffd3b2);
    rect(x+31,y+15,42,8,0xb98c61);
   }
-  for(const [x,y] of [[74,639],[1273,638]]){
-   rect(x,y,9,44,0xa4774d);
-   g.fillStyle(0x68ad77);g.fillCircle(x-13,y-5,20);g.fillCircle(x+12,y-10,22);g.fillCircle(x+2,y-24,19);
-  }
+  // v2.22: pohon kelapa pantai kiri diperbaiki menjadi siluet pixel-art rapi.
+  // Daun tidak lagi berupa tiga bulatan besar; batang dan pelepah terlihat jelas.
+  const coconutPalm=(x,y)=>{
+   // Bayangan lembut di pasir, batang miring dan garis tekstur kayu.
+   g.fillStyle(0xdac38f);g.fillEllipse(x+7,y+40,54,11);
+   rect(x-1,y+5,10,39,0x9a704e);
+   rect(x+2,y+15,3,6,0xc69a6a);rect(x+2,y+29,3,6,0xc69a6a);
+   rect(x-5,y-1,12,13,0xa87a50);
+   // Pelepah menyebar kiri-kanan, tiap helai memiliki ujung meruncing.
+   g.fillStyle(0x5c9c68);
+   g.fillTriangle(x+1,y-9,x-35,y-20,x-29,y+2);
+   g.fillTriangle(x+1,y-10,x+35,y-24,x+30,y+1);
+   g.fillTriangle(x+1,y-11,x-19,y-38,x-5,y-29);
+   g.fillTriangle(x+1,y-12,x+21,y-41,x+11,y-25);
+   g.fillStyle(0x7fbd7c);
+   g.fillTriangle(x+1,y-13,x-36,y-24,x-18,y-12);
+   g.fillTriangle(x+1,y-14,x+37,y-28,x+18,y-14);
+   g.fillTriangle(x+1,y-14,x-13,y-43,x+1,y-29);
+   g.fillTriangle(x+1,y-14,x+15,y-45,x+9,y-27);
+   // Dua buah kelapa kecil di pangkal daun.
+   g.fillStyle(0x8a6745);g.fillCircle(x-4,y-7,5);g.fillCircle(x+6,y-5,5);
+  };
+  coconutPalm(74,639);
+  coconutPalm(1273,638);
   scene.add.text(620,619,'🏖️ PANTAI SELATAN',{fontFamily:'monospace',fontSize:'15px',fontStyle:'bold',color:'#715b43',backgroundColor:'#fff1cf',padding:{x:6,y:4}}).setDepth(600).setVisible(false);
   scene.add.text(757,764,'🎣',{fontSize:'27px'}).setOrigin(.5).setDepth(600);
   scene.add.text(813,695,'DERMAGA',{fontFamily:'monospace',fontSize:'12px',color:'#5e5745',backgroundColor:'#fff0c9',padding:{x:4,y:2}}).setDepth(600).setVisible(false);
