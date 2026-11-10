@@ -77,11 +77,11 @@ export class WorldScene extends Phaser.Scene {
   this.sari=new NPC(this,{x:448,y:281,name:'BU SARI',texture:'sari',stops:[
    {x:448,y:281},{x:410,y:281},{x:410,y:313},{x:448,y:313}
   ]});
-  this.chef=new NPC(this,{x:618,y:468,name:'',texture:'chef',stops:[
+  this.chef=new NPC(this,{x:618,y:468,name:'CHEF BIMO',texture:'chef',stops:[
    {x:618,y:468},{x:668,y:468},{x:668,y:505},{x:616,y:505}
   ]});
   // Dua warga baru, hanya berjalan pada jalan setapak yang sudah ada.
-  this.tani=new NPC(this,{x:403,y:189,name:'PAK TANI',texture:'tani',stops:[
+  this.tani=new NPC(this,{x:403,y:189,name:'PAK YANTO',texture:'tani',stops:[
    {x:403,y:189},{x:402,y:230},{x:407,y:247},{x:400,y:201}
   ]});
   this.nia=new NPC(this,{x:405,y:317,name:'NIA',texture:'nia',stops:[
@@ -94,24 +94,24 @@ export class WorldScene extends Phaser.Scene {
   // Staf puskesmas dan warga pasien bergerak sesuai fase waktu.
   this.clinicDoctor=new NPC(this,{x:1520,y:450,name:'DOKTER MAYA',texture:'rani',stops:[{x:1520,y:450}]});
   this.clinicNurse=new NPC(this,{x:1460,y:410,name:'PERAWAT DINA',texture:'sari',stops:[{x:1460,y:410}]});
-  this.clinicPatient=new NPC(this,{x:1530,y:385,name:'PASIEN',texture:'tani',stops:[{x:1530,y:385}]});
+  this.clinicPatient=new NPC(this,{x:1530,y:385,name:'DIMAS',texture:'tani',stops:[{x:1530,y:385}]});
   // Semua petugas/pasien menggunakan collision yang sama dengan pemain.
   for(const npc of [this.clinicDoctor,this.clinicNurse,this.clinicPatient])npc.walkable=(x,y)=>canStand(x,y);
-  this.schoolTeacher=new NPC(this,{x:839,y:106,name:'BU GURU',texture:'rani',stops:[{x:839,y:106}]});
+  this.schoolTeacher=new NPC(this,{x:839,y:106,name:'BU GURU MAYA',texture:'rani',stops:[{x:839,y:106}]});
   this.schoolStudents=[
-   new NPC(this,{x:1420,y:247,name:'MURID A',texture:'nia',stops:[{x:1420,y:247}]}),
-   new NPC(this,{x:1530,y:247,name:'MURID B',texture:'tani',stops:[{x:1530,y:247}]})
+   new NPC(this,{x:1420,y:247,name:'SELA',texture:'nia',stops:[{x:1420,y:247}]}),
+   new NPC(this,{x:1530,y:247,name:'REFAL',texture:'tani',stops:[{x:1530,y:247}]})
   ];
   for(const npc of [this.schoolTeacher,...this.schoolStudents])npc.walkable=(x,y)=>canStand(x,y);
   this.schoolRoutineKey='';
   this.clinicRoutineKey='';
   this.restaurantCustomer=new RestaurantCustomer(this);
   this.beachVisitors=[
-   new NPC(this,{x:430,y:652,name:'PENGUNJUNG PANTAI',texture:'nia',stops:[{x:430,y:652},{x:530,y:652},{x:560,y:684},{x:430,y:652}]}),
+   new NPC(this,{x:430,y:652,name:'MAWAR',texture:'nia',stops:[{x:430,y:652},{x:530,y:652},{x:560,y:684},{x:430,y:652}]}),
    new NPC(this,{x:955,y:662,name:'PEJALAN PANTAI',texture:'tani',stops:[{x:955,y:662},{x:1000,y:682},{x:935,y:677},{x:955,y:662}]})
   ];
   for(const visitor of this.beachVisitors)visitor.walkable=(x,y)=>canStand(x,y);
-  this.fisherman=new NPC(this,{x:1120,y:778,name:'NELAYAN BAYU',texture:'tani',stops:[
+  this.fisherman=new NPC(this,{x:1120,y:778,name:'NELAYAN DINO',texture:'tani',stops:[
    {x:1120,y:778,activity:'🎣 Memeriksa jala',pause:2},{x:1080,y:775},{x:1060,y:786,activity:'🐚 Mencari kerang',pause:2},{x:1120,y:778}
   ]});
   this.fisherman.walkable=(x,y)=>canStand(x,y);
@@ -287,7 +287,7 @@ export class WorldScene extends Phaser.Scene {
    // A villager already inside a shelter stays inside; villagers at work
    // leave through their current building's door before taking the road.
    for(const [id,npc,label] of [['sari',this.sari,'BU SARI'],
-    ['tani',this.tani,'PAK TANI']]){
+    ['tani',this.tani,'PAK YANTO']]){
     let prefix=[];
     if(isInsideShelter(id,npc)){
      npc.setRoutine([{x:npc.x,y:npc.y}],label,false);
@@ -310,7 +310,7 @@ export class WorldScene extends Phaser.Scene {
   if(justStoppedRaining){
    this.sari.nextJobRoute=null;this.tani.nextJobRoute=null;this.nia.nextJobRoute=null;
    this.sari.setRoutine(dryReturnRoute('sari',this.sari),'BU SARI',false);
-   this.tani.setRoutine(dryReturnRoute('tani',this.tani),'PAK TANI',false);
+   this.tani.setRoutine(dryReturnRoute('tani',this.tani),'PAK YANTO',false);
    if(niaInside)this.nia.setRoutine([...residentLeaveHomeRoute('nia'),...workRoute('nia',phase)],'NIA',false);
    // Setelah hujan, kembali ke rute kerja sesuai fase saat ini.
    // Jangan mengulang rute pendek yang membuat NPC terlihat mondar-mandir.
@@ -340,7 +340,7 @@ export class WorldScene extends Phaser.Scene {
    }else if(id==='nia'&&npc.x>500&&npc.x<714&&npc.y<239){
     prefix=[{x:608,y:208},{x:608,y:237},{x:608,y:281},{x:448,y:281},{x:405,y:317}];
    }
-   const label=({sari:'BU SARI',tani:'PAK TANI',nia:'NIA',chef:'',rani:'KAK RANI'})[id];
+   const label=({sari:'BU SARI',tani:'PAK YANTO',nia:'NIA',chef:'CHEF BIMO',rani:'KAK RANI'})[id];
    if(prefix.length){
     npc.setRoutine([...prefix,...route],label,false);
     npc.nextJobRoute={route,label};
@@ -418,13 +418,13 @@ export class WorldScene extends Phaser.Scene {
     {x:839,y:106,activity:'📚 Mengajar gizi',pause:3},
     {x:854,y:106,activity:'🧼 Mengajar kebersihan',pause:3},
     {x:839,y:106}
-   ]:[{x:839,y:106,activity:'📚 Menyiapkan materi',pause:3}],'BU GURU',schoolOpen);
+   ]:[{x:839,y:106,activity:'📚 Menyiapkan materi',pause:3}],'BU GURU MAYA',schoolOpen);
    this.schoolStudents.forEach((npc,i)=>{
     const homeX=i===0?1420:1530;
     const schoolRoute=[{x:homeX,y:247},{x:homeX,y:281},{x:1340,y:281},{x:960,y:281},{x:868,y:281},{x:868,y:250},{x:868,y:222},{x:868,y:195},{x:850+i*36,y:169,activity:'✏️ Belajar',pause:3},{x:868,y:195},{x:868,y:250},{x:868,y:281},{x:960,y:281},{x:1340,y:281},{x:homeX,y:281},{x:homeX,y:247}];
-    // Berteduh dan istirahat di dalam rumah Pak Tani dan Bu Sari saat hujan/sore/malam.
+    // Berteduh dan istirahat di dalam rumah Pak Yanto dan Bu Sari saat hujan/sore/malam.
     const shelterRoute=[{x:868,y:250},{x:868,y:281},{x:868,y:322},{x:869,y:353},{x:848+i*38,y:374,activity:'🏡 Istirahat / berteduh',pause:3}];
-    npc.setRoutine(schoolOpen?schoolRoute:shelterRoute,i===0?'MURID A':'MURID B',schoolOpen);
+    npc.setRoutine(schoolOpen?schoolRoute:shelterRoute,i===0?'SELA':'REFAL',schoolOpen);
    });;
   }
   const clinicOpen=this.clock.phase!==3;
@@ -453,7 +453,7 @@ export class WorldScene extends Phaser.Scene {
     {x:1565,y:455,activity:'🩺 Diperiksa dokter',pause:5},
     {x:1530,y:455},
     {x:1530,y:385,activity:'🏥 Menunggu di Puskesmas',pause:4}
-   ],'PASIEN',true);
+   ],'DIMAS',true);
   }
   if(!this.game.dialogOpen){
    const dt=Math.min(delta/1000,.05);
@@ -483,7 +483,7 @@ export class WorldScene extends Phaser.Scene {
     });
    }
    for(const visitor of this.beachVisitors)visitor.update(dt);
-   // Nelayan Bayu pulang ke Rumah Lina saat hujan atau malam.
+   // Nelayan Dino pulang ke Rumah Lina saat hujan atau malam.
    // Rute melalui jalan kampung, bukan memotong rumah atau laut.
    const fisherShelter=this.clock.weather==='Hujan'||this.clock.weather==='hujan'||this.clock.weather==='rain'||this.clock.phase===3;
    if(this.fisherShelter!==fisherShelter){
@@ -502,7 +502,7 @@ export class WorldScene extends Phaser.Scene {
      {x:1120,y:778,activity:'🎣 Memeriksa jala',pause:2},
      {x:1080,y:775},{x:1060,y:786,activity:'🐚 Mencari kerang',pause:2},{x:1120,y:778}
     ];
-    this.fisherman.setRoutine(fisherShelter?(atLina?[toLina[toLina.length-1]]:toLina):toBeach,'NELAYAN BAYU',!fisherShelter);
+    this.fisherman.setRoutine(fisherShelter?(atLina?[toLina[toLina.length-1]]:toLina):toBeach,'NELAYAN DINO',!fisherShelter);
    }
    this.fisherman.update(dt);
 
@@ -518,7 +518,7 @@ export class WorldScene extends Phaser.Scene {
   const id=this.getNearest();
   this.prompt.setVisible(!!id&&!this.game.dialogOpen);
   if(id){
-   const z=this.zones.find(q=>q.id===id)||{id:'bayu',label:'Nelayan Bayu',x:this.fisherman.x,y:this.fisherman.y};
+   const z=this.zones.find(q=>q.id===id)||{id:'bayu',label:'Nelayan Dino',x:this.fisherman.x,y:this.fisherman.y};
    const npc=id==='bayu'?this.fisherman:this.npcById(id);
    this.prompt.setPosition(npc?npc.x:z.x,(npc?npc.y:z.y)-63);
    this.prompt.setText('E / AKSI · '+z.label);
