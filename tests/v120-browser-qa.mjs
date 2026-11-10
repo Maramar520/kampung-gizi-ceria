@@ -15,6 +15,16 @@ async function run(name,opts,mobile){
  const context=await browser.newContext(opts),page=await context.newPage(),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  await boot(page);
+ // Pastikan jalan Alun-Alun → Puskesmas benar-benar dibuat di scene.
+ const road=await page.evaluate(()=>{
+  const w=window.__kampungQA.scene.getScene('WorldScene'),g=w.clinicMainRoad;
+  return {exists:!!g,visible:g?.visible,depth:g?.depth,width:w.cameras.main._bounds?.width};
+ });
+ assert.ok(road.exists&&road.visible&&road.depth>=0,'Jalan utama Puskesmas tidak ter-render');
+ assert.ok(road.width>=1720,'Peta timur harus mencakup Puskesmas');
+ await mkdir('qa-artifacts',{recursive:true});
+ await setPosition(page,1500,290);
+ await page.screenshot({path:'qa-artifacts/v120-'+name+'-puskesmas-road.png',fullPage:true});
  await setPosition(page,650,135);
  if(mobile)await page.locator('#action').tap();else await page.keyboard.press('e');
  await page.locator('#dialog:not(.hidden)').waitFor({timeout:5000});
