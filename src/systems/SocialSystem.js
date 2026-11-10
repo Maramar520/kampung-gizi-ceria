@@ -13,7 +13,7 @@ export const FRIENDS=Object.freeze({
  sela:{name:'Sela',emoji:'👧',place:'Sekolah Gizi'},
  refal:{name:'Refal',emoji:'👦',place:'Sekolah Gizi'},
  dino:{name:'Nelayan Dino',emoji:'🎣',place:'Pantai dan Rumah Lina'},
- nurse:{name:'Perawat Maya',emoji:'👩‍⚕️',place:'Puskesmas'},
+ nurse:{name:'Perawat Dina',emoji:'👩‍⚕️',place:'Puskesmas'},
  doctor:{name:'Dokter Maya',emoji:'🩺',place:'Puskesmas'},
  dimas:{name:'Dimas',emoji:'🧑',place:'Puskesmas'}
 });
