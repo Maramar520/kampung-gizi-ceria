@@ -7,8 +7,9 @@ export const EAST_HOMES=Object.freeze({
 });
 export class EastHomesArt{
  constructor(scene){
-  const ground=scene.add.graphics().setDepth(-99);
-  const path=scene.add.graphics().setDepth(-88);
+  // Lapisan tanah setara dengan TownExpansionArt (rumput Alun-Alun).
+  const ground=scene.add.graphics().setDepth(-85);
+  const path=scene.add.graphics().setDepth(-84);
   // Semua isi rumah ada pada SATU graphics foreground: lantai tidak dapat
   // tertutup oleh tekstur rumput, dekorasi atau objek terrain lain.
   const houses=scene.add.graphics().setDepth(40);
@@ -26,7 +27,9 @@ export class EastHomesArt{
   // Jangan membuat pita pasir/rumput tersendiri di bawah Puskesmas.
   rect(ground,1340,0,380,600,0xa4cd91);
   const inHouse=(x,y)=>Object.values(EAST_HOMES).some(h=>x>=h.x-13&&x<h.x+h.w+13&&y>=h.y-17&&y<h.y+h.h+13);
-  for(let y=9;y<600;y+=17)for(let x=1345;x<1720;x+=19){
+  // Gunakan grid rumput yang menerus dari Alun-Alun (awal x=957, langkah 19).
+  for(let y=9;y<600;y+=17)for(let x=957;x<1720;x+=19){
+   if(x<1340)continue;
    if(!inHouse(x,y)&&(x*7+y*11)%17<7){
     rect(ground,x,y,3,5,0x74b075);rect(ground,x+5,y+2,2,3,0xb9d899);
    }
