@@ -12,7 +12,7 @@ import {CoastExpeditionSystem} from '../systems/CoastExpeditionSystem.js';
 import {FriendEvents} from '../systems/FriendEvents.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js?v=v226-mayor';
-import {MissionSystem} from '../systems/MissionSystem.js';
+import {MissionSystem} from '../systems/MissionSystem.js?v=v242-new-missions';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js?v=v123-time-speed';
 import {WeatherArt} from '../world/WeatherArt.js?v=v158-weather-sea-height';
 import {rainyRoute,dryReturnRoute,isInsideShelter} from '../world/ShelterRoutes.js';
