@@ -66,6 +66,25 @@ export class GardenSystem{
   garden.seedsByCrop[crop]+=1;garden.plots[index]=null;
   this.sync();this.save();return true;
  }
+ // Aksi massal tetap memakai metode per petak agar save lama, bibit dan inventori konsisten.
+ waterAll(){
+  let count=0;
+  for(let i=0;i<PLOT_COUNT;i++)if(this.water(i))count++;
+  return count;
+ }
+ harvestAll(){
+  const harvested=[];
+  for(let i=0;i<PLOT_COUNT;i++){
+   const plot=this.plot(i);
+   if(plot&&plotStage(plot,this.day)==='ready'&&this.harvest(i))harvested.push(plot.crop);
+  }
+  return harvested;
+ }
+ plantAll(crop='bayam'){
+  let count=0;
+  for(let i=0;i<PLOT_COUNT;i++)if(this.plant(i,crop))count++;
+  return count;
+ }
  buySeeds(count=1,crop='bayam'){
   const s=this.state.data;
   if(!CROPS[crop]||!Number.isInteger(count)||count<1||s.coins<CROPS[crop].price*count)return false;
