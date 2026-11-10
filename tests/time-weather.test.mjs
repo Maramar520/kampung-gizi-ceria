@@ -69,7 +69,7 @@ test('clock persists phase through reload and reset clears it',()=>{
  saved.reset();again.startDay();assert.equal(again.phase,0);
 });
 test('NPC daily routines and visual layers do not change original map or collisions',()=>{
- assert.deepEqual([LAYOUT.home.x,LAYOUT.village.x,LAYOUT.pond.x,LAYOUT.market.y,LAYOUT.restaurant.y,LAYOUT.store.x],
+ assert.deepEqual([LAYOUT.home.x,LAYOUT.village.x,LAYOUT.school.x,LAYOUT.market.y,LAYOUT.restaurant.y,LAYOUT.store.x],
  [45,500,805,339,339,806]);
  assert.ok(INTERACTIONS.length>=15,'original interactions retained alongside new zones');
  assert.ok(OBSTACLES.length>=34,'original walls retained alongside coastal obstacles');
