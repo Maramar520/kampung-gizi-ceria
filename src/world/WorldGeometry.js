@@ -50,7 +50,7 @@ export const FURNITURE=[
  rectangle(533,395,102,36), // meja restoran
  rectangle(1082,114,46,25),
  rectangle(819,393,34,51),
- ...[1370,1480,1590].map(x=>rectangle(x+12,99,26,48))  // kasur rumah Pak Tani dan Bu Sari
+ ...[1370,1480,1590].map(x=>rectangle(x+12,99,26,48))  // kasur rumah Pak Yanto dan Bu Sari
 ];
 export const NEW_WORLD_OBSTACLES=[
  rectangle(292,168,72,42), // bangunan kandang; halamannya tetap dapat dilalui
@@ -82,9 +82,9 @@ export const INTERACTIONS=[
  {id:'restaurant-kitchen',x:687,y:442,r:33,label:'Dapur Restoran'},
  {id:'garden',x:320,y:142,r:75,label:'Kebun Sayur'},
  {id:'coop',x:325,y:217,r:74,label:'Kandang Ayam'},
- {id:'store',x:869,y:364,r:65,label:'Rumah Pak Tani & Bu Sari'},
+ {id:'store',x:869,y:364,r:65,label:'Rumah Pak Yanto & Bu Sari'},
  {id:'village',x:606,y:207,r:67,label:'Perpustakaan'},
- {id:'tani',x:403,y:189,r:45,label:'Pak Tani'},
+ {id:'tani',x:403,y:189,r:45,label:'Pak Yanto'},
  {id:'nia',x:405,y:317,r:43,label:'Nia'},
  {id:'library',x:651,y:136,r:53,label:'Perpustakaan Gizi'},
  {id:'rani',x:692,y:207,r:39,label:'Kak Rani'}
