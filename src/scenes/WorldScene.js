@@ -88,7 +88,7 @@ export class WorldScene extends Phaser.Scene {
    {x:405,y:317},{x:414,y:282},{x:484,y:282},{x:483,y:315}
   ]});
   this.rani=new NPC(this,{x:692,y:207,name:'KAK RANI',texture:'rani',stops:[{x:692,y:207},{x:692,y:186},{x:692,y:207}]});
-  this.mayor=new NPC(this,{x:1204,y:180,name:'KEPALA DESA ARIF',texture:'mayor',stops:[{x:1204,y:180}]});
+  this.mayor=new NPC(this,{x:1204,y:180,name:'KEPALA DESA ARDI',texture:'mayor',stops:[{x:1204,y:180}]});
   this.wargaA=new NPC(this,{x:1200,y:452,name:'LINA',texture:'nia',stops:[{x:1200,y:452}]});
   this.wargaB=new NPC(this,{x:1080,y:471,name:'ARIF',texture:'tani',stops:[{x:1080,y:471}]});
   // Staf puskesmas dan warga pasien bergerak sesuai fase waktu.
@@ -225,7 +225,7 @@ export class WorldScene extends Phaser.Scene {
     [...squareToHall,{x:1204,y:180,activity:'🏛️ Administrasi',pause:2}]):
    [{x:1204,y:180},...hallToSquare.map((p,i)=>i===4?{...p,activity:this.festival.active?'🎉 Memimpin festival':'🌳 Menyapa warga',pause:2}:p),
     ...squareToHall];
-  this.mayor.setRoutine(mayorRoute,'KEPALA DESA ARIF',!raining&&phase!==3);
+  this.mayor.setRoutine(mayorRoute,'KEPALA DESA ARDI',!raining&&phase!==3);
   const sheltered=raining||phase===3;
   const socialVisit=!sheltered&&phase===2&&day%3===1;
   const weekend=this.weekendVillage.event;
