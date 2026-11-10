@@ -79,7 +79,7 @@ export function createTextures(scene,onlyPlayer=false){
    rect(22,29+bounce,3,3,p.accent);
    rect(22,35+bounce,3,3,p.accent);
   }else if(name==='tani'){
-   // Topi jerami dan sepatu bot Pak Tani, unik dari karakter pemain.
+   // Topi jerami dan sepatu bot Pak Yanto, unik dari karakter pemain.
    rect(3,4+bounce,33,5,0xc5a36f);
    rect(10,-1+bounce,18,8,0xe5c58b);
    rect(13,1+bounce,12,3,0xf8e0a2);
@@ -334,10 +334,10 @@ export function buildWorld(scene) {
  frame(deco,634,364,64,22,0x638677,0x87664c,2);
  for(let i=0;i<3;i++)r(deco,641,370+i*5,43-i*7,2,0xf8ead1);
  flowerBox(505,524,73);flowerBox(646,524,52);
- // RUMAH PAK TANI & BU SARI, blok kanan bawah.
+ // RUMAH PAK YANTO & BU SARI, blok kanan bawah.
  // Denah luar dan pintu masuk tidak berubah; interior terbuka seperti rumah pemain.
  room('store',0xf1dec4,0xa17f67,true);
- label('RUMAH PAK TANI',869,319,11);
+ label('RUMAH PAK YANTO',869,319,11);
  label('& BU SARI',869,334,11);
  // Tempat tidur di kiri, kursi dan tanaman di kanan. Tengah kosong agar NPC bisa masuk.
  frame(deco,819,393,34,51,0xa7c9bb,0x6e938b,3);
