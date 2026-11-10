@@ -11,6 +11,8 @@ export class EastHomesArt{
   const ground=scene.add.graphics().setDepth(-85);
   // Jalan harus di atas SEMUA lapisan rumput/dekorasi tanah, termasuk distrik timur.
   const path=scene.add.graphics().setDepth(-60);
+  // Jalan utama timur berada di lapisan depan agar tidak tertutup terrain.
+  const mainRoad=scene.add.graphics().setDepth(43);
   // Semua isi rumah ada pada SATU graphics foreground: lantai tidak dapat
   // tertutup oleh tekstur rumput, dekorasi atau objek terrain lain.
   const houses=scene.add.graphics().setDepth(40);
@@ -37,9 +39,9 @@ export class EastHomesArt{
   }
   // Lanjutkan jalan utama di ATAS lapisan rumput Puskesmas, tanpa bingkai.
   // Sambungan tepat x=1340; tidak ada tumpang tindih atau garis vertikal.
-  rect(path,1340,261,380,49,0xead5af);
+  rect(mainRoad,1340,261,380,49,0xead5af);
   for(let x=966;x<1720;x+=58){
-   if(x>=1340)rect(path,x,282,25,3,0xd7b88f);
+   if(x>=1340)rect(mainRoad,x,282,25,3,0xd7b88f);
   }
   for(const [id,h] of Object.entries(EAST_HOMES)){
    const {x,y,w,h:height,name,emoji,color}=h,cx=x+w/2;
