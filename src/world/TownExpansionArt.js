@@ -12,13 +12,15 @@ export class TownExpansionArt {
   // Jalan utama, akses Balai Kota, dan jalur alun-alun satu garis tengah x=1155.
   const road=0xead5af,roadMark=0xd7b88f,roadHighlight=0xeedbb7;
   const plazaCX=1155,plazaRoadW=44,plazaTop=344,plazaBottom=544;
-  // Jalan utama mendatar tetap tersambung dengan kampung lama.
-  // Satu bidang jalan utuh melintasi Alun-Alun sampai Puskesmas, tanpa seam antar layer.
-  rect(948,261,772,49,road);
+  // Jalan utama satu lapisan terpisah DI ATAS seluruh rumput dan jalur masuk
+  // (termasuk grafis tanah/jalan kawasan Puskesmas), tanpa sambungan hijau.
+  const mainRoad=scene.add.graphics().setDepth(-83);
+  const roadRect=(x,y,w,h,color)=>{mainRoad.fillStyle(color,1);mainRoad.fillRect(x,y,w,h);};
+  roadRect(948,261,772,49,road);
   // Akses utara tepat sejajar dengan jalan vertikal di dalam alun-alun.
   rect(plazaCX-plazaRoadW/2,227,plazaRoadW,plazaBottom-227,road);
   rect(1125,15,60,50,road);
-  for(let x=966;x<1720;x+=58)rect(x,282,25,3,roadMark);
+  for(let x=966;x<1720;x+=58)roadRect(x,282,25,3,roadMark);
   // Marka di sumbu tengah, berhenti saat melintasi jalan utama dan simpang alun-alun.
   for(let y=238;y<plazaBottom-10;y+=38){
    if((y>=261&&y<310)||(y>=417&&y<461))continue;
