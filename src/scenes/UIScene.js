@@ -124,7 +124,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ],'<div class="calendar-sheet" aria-label="Kalender 28 hari permainan">'+cells+'</div><div class="calendar-legend">🟩 Hari ini · 🎉 Hari festival · 🎈 Akhir pekan · Satu halaman = 28 hari permainan</div>');
  }
  birthdayCalendarMenu(){
-  const names={sari:'Bu Sari',chef:'Chef Bimo',tani:'Pak Tani',nia:'Nia',rani:'Kak Rani',arif:'Warga Arif',lina:'Warga Lina',mayor:'Kepala Desa'};
+  const names={sari:'Bu Sari',chef:'Chef Bimo',tani:'Pak Yanto',nia:'Nia',rani:'Kak Rani',arif:'Warga Arif',lina:'Warga Lina',mayor:'Kepala Desa'};
   const lines=Object.entries(BIRTHDAYS).filter(([id])=>names[id]).sort((a,b)=>a[1]-b[1]).map(([id,day])=>'🎂 Hari '+day+' · '+names[id]);
   this.show('🎂 Ulang Tahun Warga','Kalender berulang setiap 28 hari permainan. Berikan hadiah saat ulang tahun untuk bonus hati.\\n'+lines.join('\\n'),[
    {label:'Kembali ke kalender',fn:()=>this.calendarMenu()}
@@ -451,16 +451,16 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  familyHomeMenu(){
   const rain=this.world.clock.weather==='Hujan';
-  this.show('🏡 Rumah Pak Tani & Bu Sari',
-   'Ini rumah keluarga Pak Tani dan Bu Sari di blok kanan bawah. Interiornya terlihat langsung dari peta. '+
-   (rain?'Sekarang hujan, Pak Tani dan Bu Sari berteduh di sini.':'Saat hujan, Pak Tani dan Bu Sari pulang ke rumah ini.')+
+  this.show('🏡 Rumah Pak Yanto & Bu Sari',
+   'Ini rumah keluarga Pak Yanto dan Bu Sari di blok kanan bawah. Interiornya terlihat langsung dari peta. '+
+   (rain?'Sekarang hujan, Pak Yanto dan Bu Sari berteduh di sini.':'Saat hujan, Pak Yanto dan Bu Sari pulang ke rumah ini.')+
    ' Nia akan berteduh di Pasar Tradisional saat hujan.',[
-    {label:'👨‍🌾 Cari Pak Tani dan Bu Sari',fn:()=>{
+    {label:'👨‍🌾 Cari Pak Yanto dan Bu Sari',fn:()=>{
      this.close();
      this.note(rain?'Keduanya sedang berjalan menuju atau berada di dalam rumah.':'Temui mereka saat berjalan di kampung; mereka pulang saat hujan.');
     }},
     {label:'🎁 Berkunjung dan memberi hadiah Bu Sari',fn:()=>this.giftMenu('sari')},
-    {label:'🥕 Berkunjung dan memberi hadiah Pak Tani',fn:()=>this.giftMenu('tani')},
+    {label:'🥕 Berkunjung dan memberi hadiah Pak Yanto',fn:()=>this.giftMenu('tani')},
     {label:'Kembali ke kampung',fn:()=>this.close()}
    ],'<div class="farm-preview">🏠 🛏️ 🪴</div>');
  }
@@ -808,11 +808,11 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  bayuHelpMenu(){
   const education=this.world.marineEducation;
-  this.show('🎣 Bantu Nelayan Bayu',education.canHelpBayu?
-   'Bayu sedang memeriksa jala dan mengumpulkan tali bekas agar tidak membahayakan penyu. Bantu merapikan alat tangkap!':
+  this.show('🎣 Bantu Nelayan Dino',education.canHelpBayu?
+   'Dino sedang memeriksa jala dan mengumpulkan tali bekas agar tidak membahayakan penyu. Bantu merapikan alat tangkap!':
    'Terima kasih sudah membantu hari ini! Kembali besok untuk kegiatan baru.',[
    ...(education.canHelpBayu?[{label:'🧹 Bantu rapikan jala dan tali',fn:()=>{
-    if(education.helpBayu()){this.refresh();this.note('Bayu terbantu! +12 Koin Ceria');}
+    if(education.helpBayu()){this.refresh();this.note('Dino terbantu! +12 Koin Ceria');}
     this.bayuHelpMenu();
    }}]:[]),
    {label:'📚 Pelajari laut',fn:()=>this.marineLessonsMenu()},
@@ -910,9 +910,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  islandMenu(){
   const ready=this.world.coast.status.treasureReady;
-  this.show('🏝️ Pulau Kecil','Jelajahi pulau, cari harta karun harian, dan temui Nelayan Bayu. Perahu siap membawamu kembali ke dermaga.',[
+  this.show('🏝️ Pulau Kecil','Jelajahi pulau, cari harta karun harian, dan temui Nelayan Dino. Perahu siap membawamu kembali ke dermaga.',[
    {label:'📔 Buku Ekspedisi Pantai',fn:()=>this.coastExpeditionMenu()},
-   {label:'🎣 Bantu Nelayan Bayu',fn:()=>this.bayuHelpMenu()},
+   {label:'🎣 Bantu Nelayan Dino',fn:()=>this.bayuHelpMenu()},
    {label:'🧰 Cari peti harta karun'+(ready?'':' ✓'),fn:()=>{
     const found=this.world.coast.treasure();this.refresh();
     this.show(found?'🪙 Harta karun ditemukan!':'🧰 Peti kosong',found?'+8 Koin Ceria! Coba lagi besok.':'Peti sudah diperiksa hari ini.',[
@@ -1108,9 +1108,9 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='sea-fishing')return this.seaFishingMenu();
   if(id==='boat')return this.boatMenu();
   if(id==='island')return this.islandMenu();
-  if(id==='bayu')return this.show('🎣 Nelayan Bayu','Halo! Aku menjaga Pulau Kecil. Cobalah memancing di dermaga dan cari peti harta karun setiap hari.',[
+  if(id==='bayu')return this.show('🎣 Nelayan Dino','Halo! Aku menjaga Pulau Kecil. Cobalah memancing di dermaga dan cari peti harta karun setiap hari.',[
    {label:'🏝️ Jelajahi pulau',fn:()=>this.islandMenu()},
-   {label:'🎣 Bantu Bayu',fn:()=>this.bayuHelpMenu()},
+   {label:'🎣 Bantu Dino',fn:()=>this.bayuHelpMenu()},
    {label:'🪸 Belajar ekosistem laut',fn:()=>this.marineLessonsMenu()},
    {label:'Sampai jumpa',fn:()=>this.close()}
   ]);
