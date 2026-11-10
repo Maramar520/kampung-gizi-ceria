@@ -34,11 +34,7 @@ export class EastHomesArt{
     rect(ground,x,y,3,5,0x74b075);rect(ground,x+5,y+2,2,3,0xb9d899);
    }
   }
-  // Jalan horizontal dari Alun-Alun menuju Puskesmas, seperti denah referensi.
-  // Tanpa bingkai yang menimbulkan garis vertikal pada sambungan x=1340.
-  rect(path,1340,261,380,49,0xead5af);
-  // Marka menerus dengan grid jalan Alun-Alun (x=966 + kelipatan 58).
-  for(let x=966;x<1720;x+=58){if(x>=1340)rect(path,x,282,25,3,0xd7b88f);}
+  // Jalan mendatar digambar SATU KALI di TownExpansionArt agar tidak bertumpuk.
   for(const [id,h] of Object.entries(EAST_HOMES)){
    const {x,y,w,h:height,name,emoji,color}=h,cx=x+w/2;
    rect(path,cx-18,235,36,28,0xf0d9b7);
