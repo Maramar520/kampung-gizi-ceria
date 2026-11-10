@@ -124,7 +124,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ],'<div class="calendar-sheet" aria-label="Kalender 28 hari permainan">'+cells+'</div><div class="calendar-legend">🟩 Hari ini · 🎉 Hari festival · 🎈 Akhir pekan · Satu halaman = 28 hari permainan</div>');
  }
  birthdayCalendarMenu(){
-  const names={sari:'Bu Sari',chef:'Chef Bimo',tani:'Pak Yanto',nia:'Nia',rani:'Kak Rani',arif:'Arif',lina:'Lina',mayor:'Kepala Desa Arif'};
+  const names={sari:'Bu Sari',chef:'Chef Bimo',tani:'Pak Yanto',nia:'Nia',rani:'Kak Rani',arif:'Arif',lina:'Lina',mayor:'Kepala Desa Ardi'};
   const lines=Object.entries(BIRTHDAYS).filter(([id])=>names[id]).sort((a,b)=>a[1]-b[1]).map(([id,day])=>'🎂 Hari '+day+' · '+names[id]);
   this.show('🎂 Ulang Tahun Warga','Kalender berulang setiap 28 hari permainan. Berikan hadiah saat ulang tahun untuk bonus hati.\\n'+lines.join('\\n'),[
    {label:'Kembali ke kalender',fn:()=>this.calendarMenu()}
@@ -427,7 +427,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  townHallMenu(){
   this.show('🏛️ Balai Kota','Selamat datang di Balai Kota! Ruang pelayanan, meja kerja, dan papan pengumuman terlihat langsung di dalam Balai Kota.',[
-   {label:'📋 Papan Misi Kepala Desa Arif',fn:()=>this.mayorMissionMenu()},
+   {label:'📋 Papan Misi Kepala Desa Ardi',fn:()=>this.mayorMissionMenu()},
    {label:'📋 Pengumuman Festival',fn:()=>this.festivalGuide()},
    {label:'🌳 Kegiatan Alun-Alun',fn:()=>this.plazaMenu()},
    {label:'Tutup',fn:()=>this.close()}
@@ -435,7 +435,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  mayorMissionMenu(){
   const tasks=this.world.mayorMissions.status;
-  this.show('📋 Misi Kepala Desa Arif','Selesaikan kegiatan warga dan kembali ke Balai Kota untuk mengambil hadiah. Hadiah hanya dapat diambil satu kali per hari.',[
+  this.show('📋 Misi Kepala Desa Ardi','Selesaikan kegiatan warga dan kembali ke Balai Kota untuk mengambil hadiah. Hadiah hanya dapat diambil satu kali per hari.',[
    ...tasks.map(t=>({label:(t.claimed?'✅ ':t.done?'🎁 ':'▫️ ')+t.name+' · '+t.coins+' KC + '+t.stars+' ⭐',fn:()=>{
     const prize=this.world.mayorMissions.claim(t.id);
     if(prize){this.refresh();this.note('Misi selesai! +'+prize.coins+' KC +'+prize.stars+' ⭐');}
@@ -447,7 +447,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  mayorMenu(){
   const greeting=this.friendsLine('mayor');
-  this.show('🏛️ Kepala Desa Arif',greeting+'\nHalo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
+  this.show('🏛️ Kepala Desa Ardi',greeting+'\nHalo! Mari menjaga kampung tetap bersih, aktif bergerak, dan makan makanan beragam. Festival Kampung Sehat diadakan di alun-alun!',[
    {label:'🤝 Buku Pertemanan',fn:()=>this.socialOverview()},
    {label:'📋 Papan Misi Balai Kota',fn:()=>this.mayorMissionMenu()},
    {label:'📅 Lihat festival',fn:()=>this.festivalGuide()},
