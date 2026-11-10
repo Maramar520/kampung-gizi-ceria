@@ -67,14 +67,14 @@ export class WorldScene extends Phaser.Scene {
   this.townArt=new TownExpansionArt(this,this.festival);
   this.southCoastArt=new SouthCoastArt(this);
   this.eastHomesArt=new EastHomesArt(this);this.schoolArt=new SchoolArt(this);
-  // === JALAN UTAMA TIMUR: lapisan khusus di atas seluruh terrain ===
-  // Digambar terakhir sebagai satu ruas x=1340..1720, sejajar jalan Alun-Alun.
-  // Depth 35 menjaganya di atas tanah, tetapi di bawah bangunan (depth 40).
-  this.clinicMainRoad=this.add.graphics().setDepth(45);
-  this.clinicMainRoad.fillStyle(0xead5af,1).fillRect(1340,261,380,49);
+  // === JALAN UTAMA UTUH: ALUN-ALUN → PUSKESMAS ===
+  // Gambar SATU jalur horizontal kontinu seperti referensi v1.80.
+  // Lapisan 39 berada di atas seluruh terrain, tetapi di bawah interior bangunan.
+  this.clinicMainRoad=this.add.graphics().setDepth(39);
+  this.clinicMainRoad.fillStyle(0xead5af,1).fillRect(948,261,772,49);
   this.clinicMainRoad.fillStyle(0xd7b88f,1);
   for(let x=966;x<1720;x+=58){
-   if(x>=1340)this.clinicMainRoad.fillRect(x,282,Math.min(25,1720-x),3);
+   this.clinicMainRoad.fillRect(x,282,Math.min(25,1720-x),3);
   }
   // === TITIK TERANG INTERAKSI: Perpustakaan Gizi dan Puskesmas ===
   // Lingkaran berdenyut seperti penanda interaksi Balai Kota, tanpa mengubah tabrakan atau peta.
