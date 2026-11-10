@@ -1,14 +1,21 @@
 // v1.5: persahabatan sederhana. Tidak membuat save key baru dan tidak memengaruhi quest utama.
-export const FRIEND_IDS=Object.freeze(['sari','chef','tani','nia','rani','arif','lina','mayor']);
+export const FRIEND_IDS=Object.freeze(['sari','chef','tani','nia','rani','arif','lina','mayor','lia','sela','refal','dino','nurse','doctor','dimas']);
 export const FRIENDS=Object.freeze({
  sari:{name:'Bu Sari',emoji:'👩',place:'Jalan kampung; pulang ke rumah kanan bawah saat hujan'},
  chef:{name:'Chef Bimo',emoji:'👨‍🍳',place:'Restoran sehat'},
- tani:{name:'Pak Tani',emoji:'👨‍🌾',place:'Kebun dan kandang; pulang ke rumah kanan bawah saat hujan'},
+ tani:{name:'Pak Yanto',emoji:'👨‍🌾',place:'Kebun dan kandang; pulang ke rumah kanan bawah saat hujan'},
  nia:{name:'Nia',emoji:'👧',place:'Jalan kampung; berteduh di pasar saat hujan'},
  rani:{name:'Kak Rani',emoji:'👩‍🏫',place:'Perpustakaan gizi di Rumah Warga'},
- arif:{name:'Warga Arif',emoji:'👨',place:'Alun-Alun Kampung'},
- lina:{name:'Warga Lina',emoji:'👩',place:'Alun-Alun Kampung'},
- mayor:{name:'Kepala Desa',emoji:'🏛️',place:'Balai Desa'}
+ arif:{name:'Arif',emoji:'👨',place:'Alun-Alun Kampung'},
+ lina:{name:'Lina',emoji:'👩',place:'Alun-Alun Kampung'},
+ mayor:{name:'Kepala Desa Arif',emoji:'🏛️',place:'Balai Desa'},
+ lia:{name:'Bu Guru Lia',emoji:'👩‍🏫',place:'Sekolah Gizi'},
+ sela:{name:'Sela',emoji:'👧',place:'Sekolah Gizi'},
+ refal:{name:'Refal',emoji:'👦',place:'Sekolah Gizi'},
+ dino:{name:'Nelayan Dino',emoji:'🎣',place:'Pantai dan Rumah Lina'},
+ nurse:{name:'Perawat Maya',emoji:'👩‍⚕️',place:'Puskesmas'},
+ doctor:{name:'Dokter Maya',emoji:'🩺',place:'Puskesmas'},
+ dimas:{name:'Dimas',emoji:'🧑',place:'Puskesmas'}
 });
 export const MAX_HEARTS=5;
 export const DIALOGUES=Object.freeze({
@@ -31,6 +38,13 @@ export const DIALOGUES=Object.freeze({
  arif:[['Halo! Ayo olahraga ringan di alun-alun.','Berjalan kaki membantu tubuh tetap aktif.','Sore ini enak untuk menyapa tetangga!']],
  lina:[['Halo! Aku suka menanam bunga di alun-alun.','Jangan lupa makan sayuran berwarna-warni.','Ayo menjaga kebersihan kampung bersama!']],
  mayor:[['Selamat datang di Balai Desa!','Terima kasih sudah membantu warga.','Kampung sehat dibangun bersama-sama!']],
+ lia:[['Selamat pagi! Ayo belajar bekal sehat.','Apa manfaat sayur dan buah?','Terima kasih sudah rajin belajar!']],
+ sela:[['Halo! Ayo belajar bersama.','Aku suka membaca buku gizi.','Sampai jumpa besok!']],
+ refal:[['Pagi! Siap belajar?','Ayo bermain sambil belajar sehat.','Sampai besok!']],
+ dino:[['Pagi! Aku mau memeriksa jala.','Laut bersih membuat ikan sehat.','Aku akan beristirahat di Rumah Lina.']],
+ nurse:[['Selamat datang di Puskesmas.','Cuci tangan sebelum pemeriksaan, ya.','Terima kasih sudah membantu pasien.']],
+ doctor:[['Halo! Yuk belajar menjaga kesehatan.','Makan beragam dan cukup istirahat.','Jangan ragu meminta bantuan petugas.']],
+ dimas:[['Halo, aku Dimas.','Aku sedang menunggu pemeriksaan.','Terima kasih sudah menyapa!']],
  rani:[
   ['Selamat pagi! Buku gizi sedang menunggu.','Kita bisa belajar Isi Piringku bersama.','Bacalah satu hal baru sebelum pulang!'],
   ['Ayo membaca tentang sayur dan buah.','Coba jawab kuis makanan sehat di rak buku.','Buku gizi bisa dibaca lagi besok.']
