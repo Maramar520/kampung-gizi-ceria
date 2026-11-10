@@ -11,7 +11,7 @@ import {CoastSystem} from '../systems/CoastSystem.js?v=v121-expedition';
 import {CoastExpeditionSystem} from '../systems/CoastExpeditionSystem.js';
 import {FriendEvents} from '../systems/FriendEvents.js';
 import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
-import {SocialSystem} from '../systems/SocialSystem.js?v=v124-dialogue';
+import {SocialSystem} from '../systems/SocialSystem.js?v=v224-friends';
 import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js?v=v123-time-speed';
 import {WeatherArt} from '../world/WeatherArt.js?v=v158-weather-sea-height';
