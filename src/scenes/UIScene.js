@@ -362,14 +362,14 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  clinicMenu(){
   const c=this.clinic.ensure(),progress=this.clinic.progress;
-  this.show('🏥 Puskesmas Kampung','Dokter Maya dan Perawat Maya melayani warga pada pagi hingga sore.\nMisi harian: '+progress+'/3 kegiatan. Hadiah: 35 koin dan 10 energi.\nPemeriksaan hanya simulasi edukasi, bukan diagnosis.',[
+  this.show('🏥 Puskesmas Kampung','Dokter Maya dan Perawat Dina melayani warga pada pagi hingga sore.\nMisi harian: '+progress+'/3 kegiatan. Hadiah: 35 koin dan 10 energi.\nPemeriksaan hanya simulasi edukasi, bukan diagnosis.',[
    {label:'📏 Mini-game Ukur Tinggi',fn:()=>this.clinicHeight()},
    {label:'⚖️ Mini-game Timbang Berat',fn:()=>this.clinicWeight()},
    {label:'🥗 Belajar Gizi Seimbang',fn:()=>this.clinicQuiz()},
    {label:'🤝 Bantu Perawat',fn:()=>this.clinicHelp()},
    {label:'🧼 Simulasi Cuci Tangan',fn:()=>this.clinicHandwash(0)},
    {label:'🩹 Belajar Pertolongan Pertama',fn:()=>this.clinicFirstAid()},
-   {label:'🤝 Berteman dengan Perawat Maya',fn:()=>this.friendMenu('nurse')},
+   {label:'🤝 Berteman dengan Perawat Dina',fn:()=>this.friendMenu('nurse')},
    {label:'🤝 Berteman dengan Dokter Maya',fn:()=>this.friendMenu('doctor')},
    {label:'🤝 Berteman dengan Dimas',fn:()=>this.friendMenu('dimas')},
    {label:'🎁 Klaim Hadiah ('+progress+'/3)',fn:()=>this.clinicClaim()},
@@ -415,7 +415,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  clinicHelp(){
   this.show('🤝 Membantu Perawat','Pasien sedang menunggu. Apa yang sebaiknya kamu lakukan?',[
-   {label:'📋 Membantu antre tertib dan cuci tangan',fn:()=>{this.clinic.mark('helped');this.show('🌟 Terima Kasih!','Kamu membantu Perawat Maya mengatur antrean dan mengingatkan kebersihan tangan. Warga bisa menunggu dengan nyaman.',[{label:'Kembali',fn:()=>this.clinicMenu()}]);}},
+   {label:'📋 Membantu antre tertib dan cuci tangan',fn:()=>{this.clinic.mark('helped');this.show('🌟 Terima Kasih!','Kamu membantu Perawat Dina mengatur antrean dan mengingatkan kebersihan tangan. Warga bisa menunggu dengan nyaman.',[{label:'Kembali',fn:()=>this.clinicMenu()}]);}},
    {label:'🏃 Menyerobot antrean',fn:()=>this.show('💡 Coba Lagi','Bantu pasien mengantre dengan tertib dan menjaga kebersihan.',[{label:'Coba Lagi',fn:()=>this.clinicHelp()}])}
   ]);
  }
