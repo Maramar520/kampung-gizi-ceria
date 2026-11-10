@@ -172,8 +172,14 @@ export class EastHomesArt{
   // Pantai timur tetap mengikuti sambungan pantai versi sebelumnya.
   rect(path,1340,600,380,112,0xf3dba5);
   rect(path,1340,710,380,140,0x65bfd0);
-  // Jangan menambah pita rumput di tepi pantai bawah Puskesmas.
-  rect(path,1340,600,380,17,0xf3dba5);
+  // Alun-Alun berakhir di y=544, rumput ke pantai y=600 = 56 px.
+  // Puskesmas berakhir di y=555; agar lebarnya juga 56 px, batas pasir di y=611.
+  // Hamparan tambahan menggunakan warna dan pola rumput Alun-Alun yang sama.
+  rect(path,1340,600,380,11,0xa4cd91);
+  for(let y=604;y<611;y+=17)for(let x=957;x<1720;x+=19){
+   if(x<1340)continue;
+   if((x*7+y*11)%17<7){rect(path,x,y,3,5,0x74b075);rect(path,x+5,y+2,2,3,0xb9d899);}
+  }
   for(let x=1340;x<1720;x+=30){
    const y=703+Math.round(Math.sin(x*.035)*5);
    rect(path,x,y,30,9,0x9ddcdb);
