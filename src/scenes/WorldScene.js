@@ -93,7 +93,7 @@ export class WorldScene extends Phaser.Scene {
   this.wargaB=new NPC(this,{x:1080,y:471,name:'ARIF',texture:'tani',stops:[{x:1080,y:471}]});
   // Staf puskesmas dan warga pasien bergerak sesuai fase waktu.
   this.clinicDoctor=new NPC(this,{x:1520,y:450,name:'DOKTER MAYA',texture:'rani',stops:[{x:1520,y:450}]});
-  this.clinicNurse=new NPC(this,{x:1460,y:410,name:'PERAWAT MAYA',texture:'sari',stops:[{x:1460,y:410}]});
+  this.clinicNurse=new NPC(this,{x:1460,y:410,name:'PERAWAT DINA',texture:'sari',stops:[{x:1460,y:410}]});
   this.clinicPatient=new NPC(this,{x:1530,y:385,name:'DIMAS',texture:'tani',stops:[{x:1530,y:385}]});
   // Semua petugas/pasien menggunakan collision yang sama dengan pemain.
   for(const npc of [this.clinicDoctor,this.clinicNurse,this.clinicPatient])npc.walkable=(x,y)=>canStand(x,y);
@@ -116,7 +116,7 @@ export class WorldScene extends Phaser.Scene {
   ]});
   this.fisherman.walkable=(x,y)=>canStand(x,y);
   this.zones=[...INTERACTIONS,
-   ...[['lia','Bu Guru Lia'],['sela','Sela'],['refal','Refal'],['nurse','Perawat Maya'],['doctor','Dokter Maya'],['dimas','Dimas']].map(([id,label])=>({id,x:0,y:0,r:30,label}))
+   ...[['lia','Bu Guru Lia'],['sela','Sela'],['refal','Refal'],['nurse','Perawat Dina'],['doctor','Dokter Maya'],['dimas','Dimas']].map(([id,label])=>({id,x:0,y:0,r:30,label}))
   ];
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
@@ -442,7 +442,7 @@ export class WorldScene extends Phaser.Scene {
     {x:1460,y:410,activity:'📋 Pendaftaran',pause:2},
     {x:1480,y:410},{x:1480,y:460,activity:'💊 Menyiapkan obat',pause:2},
     {x:1460,y:460}
-   ]:[{x:1460,y:410,activity:'🌙 Istirahat',pause:3}],'PERAWAT MAYA',clinicOpen);
+   ]:[{x:1460,y:410,activity:'🌙 Istirahat',pause:3}],'PERAWAT DINA',clinicOpen);
    // Rute wajib melalui pintu utara (1530,345), bukan menembus dinding.
    // Masuk -> daftar -> tunggu -> periksa -> keluar lewat pintu yang sama.
    // Pasien tetap berada di Puskesmas: antre -> diperiksa -> istirahat.
