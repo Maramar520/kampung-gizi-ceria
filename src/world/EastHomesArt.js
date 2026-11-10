@@ -9,7 +9,8 @@ export class EastHomesArt{
  constructor(scene){
   // Lapisan tanah setara dengan TownExpansionArt (rumput Alun-Alun).
   const ground=scene.add.graphics().setDepth(-85);
-  const path=scene.add.graphics().setDepth(-84);
+  // Jalan harus di atas SEMUA lapisan rumput/dekorasi tanah, termasuk distrik timur.
+  const path=scene.add.graphics().setDepth(-60);
   // Semua isi rumah ada pada SATU graphics foreground: lantai tidak dapat
   // tertutup oleh tekstur rumput, dekorasi atau objek terrain lain.
   const houses=scene.add.graphics().setDepth(40);
