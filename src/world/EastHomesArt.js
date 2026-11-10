@@ -11,8 +11,7 @@ export class EastHomesArt{
   const ground=scene.add.graphics().setDepth(-85);
   // Jalan harus di atas SEMUA lapisan rumput/dekorasi tanah, termasuk distrik timur.
   const path=scene.add.graphics().setDepth(-60);
-  // Jalan utama timur berada di lapisan depan agar tidak tertutup terrain.
-  const mainRoad=scene.add.graphics().setDepth(-59);
+  // Jalan utama dan akses Puskesmas digambar sekali oleh WorldScene.
   // Semua isi rumah ada pada SATU graphics foreground: lantai tidak dapat
   // tertutup oleh tekstur rumput, dekorasi atau objek terrain lain.
   const houses=scene.add.graphics().setDepth(40);
@@ -37,10 +36,6 @@ export class EastHomesArt{
     rect(ground,x,y,3,5,0x74b075);rect(ground,x+5,y+2,2,3,0xb9d899);
    }
   }
-  // Satu jalan utama BARU dari Alun-Alun hingga Puskesmas (sesuai screenshot).
-  // Dibuat dalam satu graphics, di atas kedua area rumput: tidak terpotong atau ditumpuk.
-  rect(mainRoad,948,261,772,49,0xead5af);
-  for(let x=966;x<1720;x+=58)rect(mainRoad,x,282,25,3,0xd7b88f);
   for(const [id,h] of Object.entries(EAST_HOMES)){
    const {x,y,w,h:height,name,emoji,color}=h,cx=x+w/2;
    rect(path,cx-18,235,36,28,0xf0d9b7);
@@ -167,7 +162,7 @@ export class EastHomesArt{
   rect(houses,hx+189,hy+28,15,5,0xe38a87);
   // Jalur akses dari jalan utama.
   // Jalan dari tepi selatan jalan utama (y=309) hingga ambang pintu (y=345).
-  rect(path,1504,307,52,38,0xead5af);
+  // Jalan masuk ditangani WorldScene agar tidak ada lapisan yang menumpuk.
   rect(path,1528,309,4,30,0xd8b68b);
   rect(path,1510,342,40,4,0xe4c28a);
   // Papan nama di samping pintu, bukan tepat di jalur karakter.
