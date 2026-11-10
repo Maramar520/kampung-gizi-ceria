@@ -738,6 +738,29 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   const names={empty:'Kosong',dry:'Belum disiram',growing:'Sedang tumbuh',ready:'Siap panen'};
   const icons=view.plots.map(p=>'<div class="garden-plot '+p.stage+'"><span>'+p.emoji+'</span><b>Petak '+(p.index+1)+'</b><small>'+(p.name||'Tanah kosong')+'</small><small>'+names[p.stage]+(p.daysLeft?' · '+p.daysLeft+' hari':'')+'</small></div>').join('');
   const actions=[];
+  // Tombol ringkas di HP maupun laptop: satu aksi untuk semua petak yang memenuhi syarat.
+  const empty=view.plots.filter(p=>p.stage==='empty').length;
+  const dry=view.plots.filter(p=>p.stage==='dry').length;
+  const ready=view.plots.filter(p=>p.stage==='ready').length;
+  if(ready)actions.push({label:'🧺 Panen semua yang matang ('+ready+')',fn:()=>{
+   const crops=this.garden.harvestAll();
+   for(const crop of crops){this.missions.record('harvest');this.world.festival.harvest(crop);}
+   if(crops.length){this.world.playInteraction('harvest');this.note('🧺 Panen '+crops.length+' petak masuk ke tas!');}
+   this.refresh();this.gardenMenu();
+  }});
+  if(dry)actions.push({label:'💧 Siram semua tanaman ('+dry+')',fn:()=>{
+   const count=this.garden.waterAll();
+   if(count){this.world.playInteraction('water');this.note('💧 '+count+' petak berhasil disiram.');}
+   this.refresh();this.gardenMenu();
+  }});
+  if(empty)for(const id of CROP_IDS){
+   if(view.seedsByCrop[id]>0)actions.push({label:CROPS[id].emoji+' Tanam semua petak kosong · '+CROPS[id].name,fn:()=>{
+    const count=this.garden.plantAll(id);
+    for(let i=0;i<count;i++)this.missions.record('plant');
+    if(count){this.world.playInteraction('plant');this.note('🌱 '+count+' petak ditanami '+CROPS[id].name+'.');}
+    this.refresh();this.gardenMenu();
+   }});
+  }
   for(const p of view.plots){
    if(p.stage==='empty'){
     for(const id of CROP_IDS)if(view.seedsByCrop[id]>0){
