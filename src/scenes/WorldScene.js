@@ -67,11 +67,13 @@ export class WorldScene extends Phaser.Scene {
   this.townArt=new TownExpansionArt(this,this.festival);
   this.southCoastArt=new SouthCoastArt(this);
   this.eastHomesArt=new EastHomesArt(this);this.schoolArt=new SchoolArt(this);
-  // === JALAN UTAMA UTUH: ALUN-ALUN → PUSKESMAS ===
-  // Gambar SATU jalur horizontal kontinu seperti referensi v1.80.
-  // Lapisan 39 berada di atas seluruh terrain, tetapi di bawah interior bangunan.
+  // === SATU JALAN UTAMA DAN AKSES PUSKESMAS ===
+  // Semua jalan digambar pada satu lapisan, tanpa tumpang tindih atau celah.
   this.clinicMainRoad=this.add.graphics().setDepth(39);
-  this.clinicMainRoad.fillStyle(0xead5af,1).fillRect(948,261,772,49);
+  this.clinicMainRoad.fillStyle(0xead5af,1);
+  this.clinicMainRoad.fillRect(948,261,772,49);
+  // Sambungan pintu Puskesmas: dari tepi jalan y=310 ke pintu y=345.
+  this.clinicMainRoad.fillRect(1504,310,52,35);
   this.clinicMainRoad.fillStyle(0xd7b88f,1);
   for(let x=966;x<1720;x+=58){
    this.clinicMainRoad.fillRect(x,282,Math.min(25,1720-x),3);
