@@ -1,5 +1,5 @@
 import {GameState} from './systems/GameState.js';
-import {WorldScene} from './scenes/WorldScene.js?v=v235-clinic-path';
+import {WorldScene} from './scenes/WorldScene.js?v=v238-restore-v233';
 import {UIScene} from './scenes/UIScene.js?v=v229-education';
 // Sesuaikan rasio kanvas dengan layar, bukan menyisakan bar biru di samping.
 // Tinggi dunia tetap 600 unit agar ukuran karakter dan kontrol tetap konsisten.
