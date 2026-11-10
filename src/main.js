@@ -1,5 +1,5 @@
 import {GameState} from './systems/GameState.js';
-import {WorldScene} from './scenes/WorldScene.js?v=v221-fisher-lina';
+import {WorldScene} from './scenes/WorldScene.js?v=v222-beach-palm';
 import {UIScene} from './scenes/UIScene.js?v=v220-library';
 // Sesuaikan rasio kanvas dengan layar, bukan menyisakan bar biru di samping.
 // Tinggi dunia tetap 600 unit agar ukuran karakter dan kontrol tetap konsisten.
