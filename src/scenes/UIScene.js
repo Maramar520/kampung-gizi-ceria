@@ -1112,6 +1112,7 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   if(id==='bayu')return this.show('🎣 Nelayan Dino','Halo! Aku menjaga Pulau Kecil. Cobalah memancing di dermaga dan cari peti harta karun setiap hari.',[
    {label:'🏝️ Jelajahi pulau',fn:()=>this.islandMenu()},
    {label:'🎣 Bantu Dino',fn:()=>this.bayuHelpMenu()},
+   {label:'🤝 Berteman dengan Dino',fn:()=>this.friendMenu('dino')},
    {label:'🪸 Belajar ekosistem laut',fn:()=>this.marineLessonsMenu()},
    {label:'Sampai jumpa',fn:()=>this.close()}
   ]);
