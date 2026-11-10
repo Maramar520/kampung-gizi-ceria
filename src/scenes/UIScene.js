@@ -332,8 +332,8 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  schoolQuiz(id,question,correct,wrong){
   this.show('📚 Kuis '+id,question,[
-   {label:correct,fn:()=>{this.school.lesson(id);this.show('🌟 Jawaban Benar','Hebat! Kamu telah menyelesaikan pelajaran '+id+'.', [{label:'Kembali',fn:()=>this.schoolMenu()}]);}},
-   {label:wrong,fn:()=>this.show('💡 Coba Lagi','Ayo pilih kebiasaan yang baik untuk kesehatan dan lingkungan.',[{label:'Coba Lagi',fn:()=>this.schoolQuiz(id,question,correct,wrong)}])}
+   {label:correct,fn:()=>{this.school.lesson(id);this.show('🌟 Jawaban Benar','Hebat! '+({gizi:'Bekal bergizi bisa dibuat dari bahan lokal seperti nasi, tempe, telur, sayuran, dan buah. Pilih yang beragam sesuai kebutuhan.',bersih:'Cuci tangan dengan sabun dan air mengalir sebelum makan, setelah dari toilet, dan ketika tangan kotor.',lingkungan:'Buang sampah pada tempatnya dan jaga air serta lingkungan sekolah tetap bersih.'}[id]||'Kebiasaan baik membantu menjaga kesehatan.'), [{label:'Kembali',fn:()=>this.schoolMenu()}]);}},
+   {label:wrong,fn:()=>this.show('💡 Coba Lagi','Petunjuk: '+({gizi:'Pilih makanan pokok, lauk, sayur, dan buah. Makanan lokal seperti tempe dan telur juga bergizi.',bersih:'Sabun dan air mengalir membantu membersihkan kuman dari tangan.',lingkungan:'Sampah dibuang di tempat sampah, bukan ke sungai.'}[id]||'Pilih kebiasaan sehat.'),[{label:'Coba Lagi',fn:()=>this.schoolQuiz(id,question,correct,wrong)}])}
   ]);
  }
  schoolPlateChallenge(step=0){
@@ -384,13 +384,13 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
   ];
   const [question,correct,wrong]=stages[step];
   this.show('🧼 Latihan Cuci Tangan '+(step+1)+'/3',question,[
-   {label:correct,fn:()=>step===2?this.show('🌟 Tangan Bersih!','Hebat! Kamu sudah memahami kebiasaan mencuci tangan dengan sabun dan air mengalir.',[{label:'Kembali',fn:()=>this.clinicMenu()}]):this.clinicHandwash(step+1)},
+   {label:correct,fn:()=>step===2?this.show('🌟 Tangan Bersih!','Hebat! Gunakan sabun dan air mengalir, gosok telapak, punggung tangan, sela jari, ibu jari, ujung jari dan kuku, lalu bilas dan keringkan. Cuci tangan sebelum makan, setelah dari toilet, setelah batuk atau bersin, dan saat tangan kotor.',[{label:'Kembali',fn:()=>this.clinicMenu()}]):this.clinicHandwash(step+1)},
    {label:wrong,fn:()=>this.show('💡 Coba Lagi','Cuci tangan dengan benar membantu mengurangi penyebaran kuman.',[{label:'Ulangi',fn:()=>this.clinicHandwash(step)}])}
   ]);
  }
  clinicFirstAid(){
   this.show('🩹 Pertolongan Pertama','Seorang teman terjatuh dan mengalami luka kecil. Apa tindakan paling aman?',[
-   {label:'🧑‍⚕️ Beri tahu orang dewasa dan minta bantuan',fn:()=>this.show('🌟 Tepat!','Tetap tenang, beri tahu guru atau petugas kesehatan, dan jangan mengoleskan bahan sembarangan pada luka.',[{label:'Kembali',fn:()=>this.clinicMenu()}])},
+   {label:'🧑‍⚕️ Beri tahu orang dewasa dan minta bantuan',fn:()=>this.show('🌟 Tepat!','Tetap tenang dan minta bantuan orang dewasa. Untuk luka kecil, bersihkan tangan, tekan perdarahan ringan dengan kain bersih, bilas luka dengan air bersih, lalu tutup dengan kasa atau plester bersih. Jangan mengoleskan bahan sembarangan. Jika perdarahan banyak atau luka dalam, segera minta bantuan medis.',[{label:'Kembali',fn:()=>this.clinicMenu()}])},
    {label:'🏃 Biarkan teman tanpa bantuan',fn:()=>this.show('💡 Coba Lagi','Saat ada teman terluka, cari bantuan orang dewasa atau petugas kesehatan.',[{label:'Coba Lagi',fn:()=>this.clinicFirstAid()}])}
   ]);
  }
@@ -538,10 +538,10 @@ window.addEventListener('keydown',this.keyboardNotebookHandler);this.events.once
  }
  readNutritionBook(){
   this.show('📗 Buku Gizi Ceria',
-   'Makanan pokok memberi energi, lauk menjadi sumber protein, dan sayur serta buah menyumbang serat, vitamin, dan mineral. Yuk makan beragam dan minum air putih!',[
+   'Makanan pokok memberi energi, lauk menyediakan protein, serta sayur dan buah menyumbang serat, vitamin, dan mineral. Isi Piringku untuk sekali makan: sekitar 1/3 piring makanan pokok, 1/6 lauk, 1/3 sayur, dan 1/6 buah. Ini panduan umum, bukan ukuran wajib yang sama bagi semua anak. Tempe, tahu, telur, ikan, dan sayur lokal juga pilihan bergizi. Minum cukup air putih dan batasi makanan terlalu manis, asin, atau berlemak.',[
     {label:'🧠 Coba kuis setelah membaca',fn:()=>this.startQuiz()},
     {label:'Kembali ke rak buku',fn:()=>this.libraryMenu()}
-   ],'<div class="nutrition-tip">🍚 Makanan pokok · 🐟 Lauk · 🥬 Sayur · 🍊 Buah<br><small>Isi Piringku: setengah piring sayur dan buah, setengah lagi makanan pokok dan lauk.</small></div>');
+   ],'<div class="nutrition-tip">🍚 Makanan pokok · 🐟 Lauk · 🥬 Sayur · 🍊 Buah<br><small>Isi Piringku: ⅓ makanan pokok · ⅙ lauk · ⅓ sayur · ⅙ buah. Sumber: Kemenkes RI.</small></div>');
  }
  missionsMenu(){
   if(this.notebook?.visible)return;
