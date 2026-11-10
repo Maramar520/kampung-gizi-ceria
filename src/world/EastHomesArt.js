@@ -12,7 +12,7 @@ export class EastHomesArt{
   // Jalan harus di atas SEMUA lapisan rumput/dekorasi tanah, termasuk distrik timur.
   const path=scene.add.graphics().setDepth(-60);
   // Jalan utama timur berada di lapisan depan agar tidak tertutup terrain.
-  const mainRoad=scene.add.graphics().setDepth(43);
+  const mainRoad=scene.add.graphics().setDepth(-59);
   // Semua isi rumah ada pada SATU graphics foreground: lantai tidak dapat
   // tertutup oleh tekstur rumput, dekorasi atau objek terrain lain.
   const houses=scene.add.graphics().setDepth(40);
