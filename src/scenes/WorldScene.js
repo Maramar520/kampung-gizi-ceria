@@ -88,16 +88,16 @@ export class WorldScene extends Phaser.Scene {
    {x:405,y:317},{x:414,y:282},{x:484,y:282},{x:483,y:315}
   ]});
   this.rani=new NPC(this,{x:692,y:207,name:'KAK RANI',texture:'rani',stops:[{x:692,y:207},{x:692,y:186},{x:692,y:207}]});
-  this.mayor=new NPC(this,{x:1204,y:180,name:'KEPALA DESA',texture:'mayor',stops:[{x:1204,y:180}]});
-  this.wargaA=new NPC(this,{x:1200,y:452,name:'WARGA LINA',texture:'nia',stops:[{x:1200,y:452}]});
-  this.wargaB=new NPC(this,{x:1080,y:471,name:'WARGA ARIF',texture:'tani',stops:[{x:1080,y:471}]});
+  this.mayor=new NPC(this,{x:1204,y:180,name:'KEPALA DESA ARIF',texture:'mayor',stops:[{x:1204,y:180}]});
+  this.wargaA=new NPC(this,{x:1200,y:452,name:'LINA',texture:'nia',stops:[{x:1200,y:452}]});
+  this.wargaB=new NPC(this,{x:1080,y:471,name:'ARIF',texture:'tani',stops:[{x:1080,y:471}]});
   // Staf puskesmas dan warga pasien bergerak sesuai fase waktu.
   this.clinicDoctor=new NPC(this,{x:1520,y:450,name:'DOKTER MAYA',texture:'rani',stops:[{x:1520,y:450}]});
-  this.clinicNurse=new NPC(this,{x:1460,y:410,name:'PERAWAT DINA',texture:'sari',stops:[{x:1460,y:410}]});
+  this.clinicNurse=new NPC(this,{x:1460,y:410,name:'PERAWAT MAYA',texture:'sari',stops:[{x:1460,y:410}]});
   this.clinicPatient=new NPC(this,{x:1530,y:385,name:'DIMAS',texture:'tani',stops:[{x:1530,y:385}]});
   // Semua petugas/pasien menggunakan collision yang sama dengan pemain.
   for(const npc of [this.clinicDoctor,this.clinicNurse,this.clinicPatient])npc.walkable=(x,y)=>canStand(x,y);
-  this.schoolTeacher=new NPC(this,{x:839,y:106,name:'BU GURU MAYA',texture:'rani',stops:[{x:839,y:106}]});
+  this.schoolTeacher=new NPC(this,{x:839,y:106,name:'BU GURU LIA',texture:'rani',stops:[{x:839,y:106}]});
   this.schoolStudents=[
    new NPC(this,{x:1420,y:247,name:'SELA',texture:'nia',stops:[{x:1420,y:247}]}),
    new NPC(this,{x:1530,y:247,name:'REFAL',texture:'tani',stops:[{x:1530,y:247}]})
@@ -115,7 +115,9 @@ export class WorldScene extends Phaser.Scene {
    {x:1120,y:778,activity:'🎣 Memeriksa jala',pause:2},{x:1080,y:775},{x:1060,y:786,activity:'🐚 Mencari kerang',pause:2},{x:1120,y:778}
   ]});
   this.fisherman.walkable=(x,y)=>canStand(x,y);
-  this.zones=INTERACTIONS;
+  this.zones=[...INTERACTIONS,
+   ...[['lia','Bu Guru Lia'],['sela','Sela'],['refal','Refal'],['nurse','Perawat Maya'],['doctor','Dokter Maya'],['dimas','Dimas']].map(([id,label])=>({id,x:0,y:0,r:30,label}))
+  ];
   this.guide=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#ffffff',
    backgroundColor:'#557d57',padding:{x:6,y:4}}).setOrigin(.5).setDepth(1600);
   this.prompt=this.add.text(0,0,'',{fontFamily:'monospace',fontSize:'13px',color:'#446047',
@@ -196,7 +198,7 @@ export class WorldScene extends Phaser.Scene {
    ease:'Sine.easeOut',onComplete:()=>puff.destroy()});
  }
  npcById(id){
-  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia,rani:this.rani,mayor:this.mayor,arif:this.wargaB,lina:this.wargaA})[id]||null;
+  return ({npc:this.sari,chef:this.chef,tani:this.tani,nia:this.nia,rani:this.rani,mayor:this.mayor,arif:this.wargaB,lina:this.wargaA,lia:this.schoolTeacher,sela:this.schoolStudents[0],refal:this.schoolStudents[1],dino:this.fisherman,nurse:this.clinicNurse,doctor:this.clinicDoctor,dimas:this.clinicPatient})[id]||null;
  }
  updateRoutines(){
   const phase=this.clock.phase,day=this.game.state.data.day;
@@ -223,7 +225,7 @@ export class WorldScene extends Phaser.Scene {
     [...squareToHall,{x:1204,y:180,activity:'🏛️ Administrasi',pause:2}]):
    [{x:1204,y:180},...hallToSquare.map((p,i)=>i===4?{...p,activity:this.festival.active?'🎉 Memimpin festival':'🌳 Menyapa warga',pause:2}:p),
     ...squareToHall];
-  this.mayor.setRoutine(mayorRoute,'KEPALA DESA',!raining&&phase!==3);
+  this.mayor.setRoutine(mayorRoute,'KEPALA DESA ARIF',!raining&&phase!==3);
   const sheltered=raining||phase===3;
   const socialVisit=!sheltered&&phase===2&&day%3===1;
   const weekend=this.weekendVillage.event;
@@ -253,8 +255,8 @@ export class WorldScene extends Phaser.Scene {
   // v1.26: Lina dan Arif pulang ke rumah sendiri saat hujan/malam,
   // lalu keluar lewat pintu dan kembali bekerja di Alun-Alun saat pagi.
   for(const [id,npc,label,loop] of [
-   ['lina',this.wargaA,'WARGA LINA',plazaLoopA],
-   ['arif',this.wargaB,'WARGA ARIF',plazaLoopB]]){
+   ['lina',this.wargaA,'LINA',plazaLoopA],
+   ['arif',this.wargaB,'ARIF',plazaLoopB]]){
    const visitFriend=!sheltered&&phase===2&&((id==='arif'&&day%3===2)||(id==='lina'&&day%3===0));
    const friend=id==='arif'?'lina':'arif',friendHome=homePosition(friend);
    const friendVisitRoute=visitFriend?[{x:1155,y:452},{x:1155,y:345},{x:1155,y:281},
@@ -418,7 +420,7 @@ export class WorldScene extends Phaser.Scene {
     {x:839,y:106,activity:'📚 Mengajar gizi',pause:3},
     {x:854,y:106,activity:'🧼 Mengajar kebersihan',pause:3},
     {x:839,y:106}
-   ]:[{x:839,y:106,activity:'📚 Menyiapkan materi',pause:3}],'BU GURU MAYA',schoolOpen);
+   ]:[{x:839,y:106,activity:'📚 Menyiapkan materi',pause:3}],'BU GURU LIA',schoolOpen);
    this.schoolStudents.forEach((npc,i)=>{
     const homeX=i===0?1420:1530;
     const schoolRoute=[{x:homeX,y:247},{x:homeX,y:281},{x:1340,y:281},{x:960,y:281},{x:868,y:281},{x:868,y:250},{x:868,y:222},{x:868,y:195},{x:850+i*36,y:169,activity:'✏️ Belajar',pause:3},{x:868,y:195},{x:868,y:250},{x:868,y:281},{x:960,y:281},{x:1340,y:281},{x:homeX,y:281},{x:homeX,y:247}];
@@ -440,7 +442,7 @@ export class WorldScene extends Phaser.Scene {
     {x:1460,y:410,activity:'📋 Pendaftaran',pause:2},
     {x:1480,y:410},{x:1480,y:460,activity:'💊 Menyiapkan obat',pause:2},
     {x:1460,y:460}
-   ]:[{x:1460,y:410,activity:'🌙 Istirahat',pause:3}],'PERAWAT DINA',clinicOpen);
+   ]:[{x:1460,y:410,activity:'🌙 Istirahat',pause:3}],'PERAWAT MAYA',clinicOpen);
    // Rute wajib melalui pintu utara (1530,345), bukan menembus dinding.
    // Masuk -> daftar -> tunggu -> periksa -> keluar lewat pintu yang sama.
    // Pasien tetap berada di Puskesmas: antre -> diperiksa -> istirahat.
