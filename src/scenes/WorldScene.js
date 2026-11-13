@@ -14,7 +14,7 @@ import {ActionAnimator,ACTION_DURATION} from '../systems/ActionAnimator.js';
 import {SocialSystem} from '../systems/SocialSystem.js?v=v226-mayor';
 import {MissionSystem} from '../systems/MissionSystem.js';
 import {TimeWeatherSystem} from '../systems/TimeWeatherSystem.js?v=v123-time-speed';
-import {WeatherArt} from '../world/WeatherArt.js?v=v158-weather-sea-height';
+import {WeatherArt} from '../world/WeatherArt.js?v=v243-smooth-dawn';
 import {rainyRoute,dryReturnRoute,isInsideShelter} from '../world/ShelterRoutes.js';
 import {workRoute,rainWorkRoute} from '../world/NpcWorkRoutes.js?v=v123-rain-workers';
 import {HomeDecorSystem} from '../systems/HomeDecorSystem.js';
