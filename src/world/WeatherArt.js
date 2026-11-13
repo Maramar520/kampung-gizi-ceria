@@ -37,8 +37,9 @@ export class WeatherArt{
   }
   const dawnProgress=this.dawnStart===null?1:Math.min(1,Math.max(0,(ms-this.dawnStart)/4200));
   const dawnActive=this.dawnStart!==null&&dawnProgress<1;
-  if(this.dawnStart!==null&&!dawnActive)this.dawnStart=null;
-  if(force||this.lastSignature!==signature||dawnActive){
+  const dawnFinished=this.dawnStart!==null&&!dawnActive;
+  if(dawnFinished)this.dawnStart=null;
+  if(force||this.lastSignature!==signature||dawnActive||dawnFinished){
    this.lastSignature=signature;g.clear();
    const tint=TINTS[phase]||TINTS[0];
    if(dawnActive){
