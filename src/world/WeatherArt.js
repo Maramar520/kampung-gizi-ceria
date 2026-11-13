@@ -26,15 +26,28 @@ export class WeatherArt{
   const {phase,weather}=this.timeWeather;
   const signature=phase+'-'+weather;
   const g=this.atmosphere;
-  if(force||this.lastSignature!==signature){
-   if(this.previousPhase!==phase){
-    if(this.previousPhase===3&&phase===0)this.dawnStart=ms;
-    else this.phaseFade={from:this.previousPhase,start:ms};
+  if(this.previousPhase!==phase){
+   if(this.previousPhase===3&&phase===0){
+    this.dawnStart=ms;this.phaseFade=null;
+   }else{
+    this.phaseFade={from:this.previousPhase,start:ms};
+    this.dawnStart=null;
    }
    this.previousPhase=phase;
+  }
+  const dawnProgress=this.dawnStart===null?1:Math.min(1,Math.max(0,(ms-this.dawnStart)/4200));
+  const dawnActive=this.dawnStart!==null&&dawnProgress<1;
+  if(this.dawnStart!==null&&!dawnActive)this.dawnStart=null;
+  if(force||this.lastSignature!==signature||dawnActive){
    this.lastSignature=signature;g.clear();
    const tint=TINTS[phase]||TINTS[0];
-   g.fillStyle(tint.color,tint.alpha).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+   if(dawnActive){
+    // Malam memudar perlahan menjadi pagi, bukan berganti warna seketika.
+    const night=TINTS[3];
+    g.fillStyle(night.color,night.alpha*(1-dawnProgress)).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+    g.fillStyle(tint.color,tint.alpha*dawnProgress).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+    g.fillStyle(0xffdfac,.075*Math.sin(Math.PI*dawnProgress)).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+   }else g.fillStyle(tint.color,tint.alpha).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
 
    // Warna area di luar batas peta harus sama dengan laut yang terkena
    // pencahayaan waktu dan cuaca (agar tidak ada garis beda warna saat zoom out).
@@ -46,6 +59,10 @@ export class WeatherArt{
             Math.round(a[2]*(1-alpha)+b[2]*alpha);
    };
    let ocean=mix(0x65bfd0,tint.color,tint.alpha);
+   if(dawnActive){
+    ocean=mix(0x65bfd0,TINTS[3].color,TINTS[3].alpha*(1-dawnProgress));
+    ocean=mix(ocean,tint.color,tint.alpha*dawnProgress);
+   }
    if(weather==='Berawan')ocean=mix(ocean,0x7f9da8,.10);
    if(weather==='Hujan')ocean=mix(ocean,0x42668e,.19);
    this.scene.cameras.main.setBackgroundColor(ocean);
@@ -62,31 +79,25 @@ export class WeatherArt{
     veil.fillStyle(old.color,old.alpha*(1-t)).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
    }
   }
-  if(this.dawnStart!==null){
-   const progress=Math.min(1,Math.max(0,(ms-this.dawnStart)/2500));
-   if(progress<1){
-    // Transisi halus dari biru malam ke hangatnya pagi, tanpa layar hitam.
-    veil.fillStyle(0x162c58,.36*(1-progress)).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
-    veil.fillStyle(0xffe0a1,.13*Math.sin(Math.PI*progress)).fillRect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
-   }else this.dawnStart=null;
-  }
   const d=this.details;d.clear();
-  if(phase===3){
-   // Cahaya lampu kecil dan bintang lembut. Tidak menutupi interaksi.
+  const nightVisibility=phase===3?1:dawnActive?1-dawnProgress:0;
+  if(nightVisibility>0){
+   // Lampu dan bintang meredup mengikuti munculnya cahaya pagi.
    for(const [x,y] of [[139,72],[605,76],[211,361],[607,360],[869,354],[1155,85],[1155,344],[1280,454]]){
-    d.fillStyle(0xffd490,.12).fillCircle(x,y,24);
-    d.fillStyle(0xffefae,.8).fillRect(x-3,y-2,6,5);
+    d.fillStyle(0xffd490,.12*nightVisibility).fillCircle(x,y,24);
+    d.fillStyle(0xffefae,.8*nightVisibility).fillRect(x-3,y-2,6,5);
    }
    if(weather!=='Hujan')for(let i=0;i<22;i++){
     const x=23+i*61,y=21+(i%3)*18;
-    d.fillStyle(0xfff3d0,.2+.3*(1+Math.sin(ms/510+i))/2);
+    d.fillStyle(0xfff3d0,(.2+.3*(1+Math.sin(ms/510+i))/2)*nightVisibility);
     d.fillRect(x,y,2,3);
    }
-  }else if(phase===2){
+  }
+  if(phase===2){
    d.fillStyle(0xffdbab,.11);
    d.fillEllipse(94,16,210,43);
   }else if(phase===0){
-   d.fillStyle(0xfff1bc,.10);
+   d.fillStyle(0xfff1bc,.10*(dawnActive?dawnProgress:1));
    d.fillEllipse(80,28,190,58);
   }
   if(weather==='Berawan'||weather==='Hujan'){
